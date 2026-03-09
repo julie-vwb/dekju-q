@@ -1,418 +1,238 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>🌊 Queue System — Mitr Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Queue App — Modern Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #e8f6fd;
-            --bg2: #ddf0fb;
-            --sky: #dff1fb;
-            --sky2: #c8e8f8;
-            --sky3: #a8d8f0;
-            --blue: #5ab4e5;
-            --blue2: #3a9dd4;
-            --blue3: #1e7fb5;
-            --surf: rgba(255,255,255,0.92);
-            --bord: rgba(90,180,229,0.22);
-            --bord2: rgba(90,180,229,0.48);
-            --text: #1e4d6b;
-            --text2: #4a7f9a;
-            --text3: #90bfd5;
-            --sh: rgba(58,157,212,0.14);
-            --shM: rgba(58,157,212,0.26);
-            --shL: rgba(58,157,212,0.38);
-            --green: #34d399;
-            --orange: #fbbf24;
-            /* เน้นฟอนต์ Mitr เท่านั้น */
+            --primary: #a29bfe; --secondary: #fab1a0; --dark: #2d3436;
+            --bg: #f5f6fa; --card-bg: #ffffff; --gradient: linear-gradient(135deg, #a29bfe, #6c5ce7);
             --font: 'Mitr', sans-serif;
         }
 
-        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-        html { scroll-behavior: smooth; }
-        
         body {
-            font-family: var(--font);
-            background: linear-gradient(160deg, var(--bg) 0%, var(--bg2) 55%, #f0f8ff 100%);
-            min-height: 100vh;
-            color: var(--text);
-            overflow-x: hidden;
+            font-family: var(--font); background: var(--bg); color: var(--dark);
+            margin: 0; padding-bottom: 80px; overflow-x: hidden;
         }
 
-        body::before {
-            content: '';
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
-            background:
-                radial-gradient(ellipse at 12% 18%, rgba(168,216,240,.32) 0%, transparent 55%),
-                radial-gradient(ellipse at 88% 80%, rgba(90,180,229,.18) 0%, transparent 50%);
-        }
+        /* --- Header --- */
+        .header { padding: 30px 20px 10px; display: flex; justify-content: space-between; align-items: center; }
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: #dfe6e9; border: 2px solid white; }
+        .greeting { font-size: 0.9rem; color: #636e72; }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--sky); }
-        ::-webkit-scrollbar-thumb { background: var(--sky3); border-radius: 4px; }
+        /* --- Dashboard Cards --- */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        .dash-card { border-radius: 20px; padding: 20px; color: white; position: relative; overflow: hidden; height: 120px; }
+        .card-note { background: #b2bec3 linear-gradient(135deg, #a29bfe, #8e44ad); }
+        .card-task { background: #fab1a0 linear-gradient(135deg, #ff9f43, #ee5253); }
+        .dash-card h3 { margin: 0; font-size: 1.1rem; position: relative; z-index: 2; }
+        .dash-card span { font-size: 0.75rem; opacity: 0.9; position: relative; z-index: 2; }
 
-        /* Deco */
-        .deco-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-        .deco {
-            position: absolute; opacity: .42;
-            animation: fdeco var(--d,7s) var(--dl,0s) ease-in-out infinite;
-            font-size: var(--fs,1rem); user-select: none;
-        }
-        @keyframes fdeco {
-            0%,100% { transform: translateY(0) rotate(var(--r0,0deg)); }
-            50%      { transform: translateY(-13px) rotate(var(--r1,4deg)); }
-        }
+        /* --- Progress Section --- */
+        .section-card { background: var(--card-bg); margin: 0 20px 20px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
+        .prog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .prog-bar-outer { background: #f1f2f6; height: 12px; border-radius: 6px; overflow: hidden; }
+        .prog-bar-inner { background: linear-gradient(90deg, #fd79a8, #fab1a0); height: 100%; transition: 0.5s; width: 0%; }
 
-        .app { position: relative; z-index: 1; }
+        /* --- Search --- */
+        .search-container { padding: 0 20px 15px; }
+        .search-box { background: white; padding: 12px 20px; border-radius: 15px; display: flex; align-items: center; border: 1px solid #eee; }
+        .search-box input { border: none; outline: none; width: 100%; font-family: var(--font); margin-left: 10px; }
 
-        /* Topbar */
-        .topbar {
-            position: sticky; top: 0; z-index: 60;
-            height: 58px;
-            background: linear-gradient(130deg, var(--blue3) 0%, var(--blue2) 55%, var(--blue) 100%);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px;
-            box-shadow: 0 4px 20px var(--shM);
-        }
-        .tb-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 1rem; font-weight: 600; }
-        .tb-logo { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.22); border: 2px solid rgba(255,255,255,.4); display: flex; align-items: center; justify-content: center; font-size: .95rem; }
-        .tb-nav { display: flex; gap: 8px; }
-        .tb-btn {
-            padding: 6px 16px; border-radius: 999px;
-            border: 1.5px solid rgba(255,255,255,.38);
-            background: rgba(255,255,255,.16);
-            color: #fff; font-family: var(--font); font-size: .8rem;
-            cursor: pointer; transition: all .2s;
-            display: inline-flex; align-items: center; gap: 5px;
-        }
-        .tb-btn:hover { background: rgba(255,255,255,.3); }
-        .tb-btn.on { background: #fff; color: var(--blue3); font-weight: 600; border-color: #fff; }
+        /* --- Queue Item --- */
+        .task-list { padding: 0 20px; }
+        .task-item { background: white; margin-bottom: 12px; padding: 15px; border-radius: 18px; display: flex; align-items: center; gap: 15px; border-left: 6px solid var(--primary); }
+        .task-item.done { border-left-color: #55efc4; opacity: 0.8; }
+        .task-num { font-weight: 700; font-size: 1.2rem; color: var(--primary); min-width: 40px; }
+        .task-info h4 { margin: 0; font-size: 0.95rem; }
+        .task-info p { margin: 2px 0 0; font-size: 0.75rem; color: #b2bec3; }
 
-        /* Page */
-        .page { display: none; }
-        .page.on { display: block; animation: pgIn .35s ease both; }
-        @keyframes pgIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- Admin UI --- */
+        .admin-auth { text-align: center; padding: 50px 20px; }
+        .admin-input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 10px; text-align: center; }
+        .btn-action { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 12px; width: 100%; font-family: var(--font); cursor: pointer; }
 
-        /* Public Page */
-        .pub-wrap { max-width: 640px; margin: 0 auto; padding: 26px 16px 80px; }
-        .hero-card {
-            background: var(--surf); backdrop-filter: blur(14px);
-            border-radius: 24px; border: 1.5px solid var(--bord);
-            box-shadow: 0 6px 28px var(--sh);
-            padding: 30px 24px 26px; text-align: center;
-            position: relative; overflow: hidden; margin-bottom: 14px;
-        }
-        .hero-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-            background: linear-gradient(90deg, transparent 0%, var(--sky3) 30%, var(--blue) 50%, var(--sky3) 70%, transparent 100%);
-        }
-        .hero-av {
-            width: 88px; height: 88px; border-radius: 50%; margin: 0 auto 14px;
-            background: linear-gradient(135deg, var(--sky2), var(--blue));
-            border: 4px solid #fff; box-shadow: 0 0 0 5px var(--sky2), 0 8px 24px var(--shM);
-            display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
-        }
-        .hero-name { font-size: 1.55rem; font-weight: 700; color: var(--blue3); }
-        .hero-sub { font-size: .82rem; color: var(--text2); font-weight: 300; margin-top: 5px; }
-        .hero-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-top: 14px; }
-        .htag { padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.9); border: 1.5px solid var(--bord2); font-size: .79rem; color: var(--text2); box-shadow: 0 2px 8px var(--sh); }
+        /* --- Bottom Nav --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #2d3436; height: 75px; display: flex; justify-content: space-around; align-items: center; border-radius: 30px 30px 0 0; z-index: 1000; }
+        .nav-item { color: #636e72; font-size: 1.2rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; }
+        .nav-item.active { color: white; }
+        .nav-add { background: linear-gradient(135deg, #a29bfe, #6c5ce7); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; margin-top: -40px; border: 5px solid var(--bg); box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4); }
 
-        .status-pill { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 9px 22px; border-radius: 999px; background: rgba(255,255,255,.92); border: 2px dashed var(--blue); font-size: .88rem; font-weight: 500; color: var(--blue2); }
-        .sdot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); animation: lp 2s infinite; }
-        .sdot.off { background: var(--text3); animation: none; }
-        @keyframes lp { 0%,100% { box-shadow: 0 0 0 0 rgba(52,211,153,.55); } 50% { box-shadow: 0 0 0 5px rgba(52,211,153,0); } }
-
-        .ann-bar { display: flex; gap: 10px; align-items: flex-start; background: var(--surf); border-radius: 16px; padding: 13px 16px; border: 1.5px solid var(--bord); box-shadow: 0 2px 10px var(--sh); font-size: .85rem; line-height: 1.65; margin-bottom: 14px; }
-
-        .now-strip { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(130deg, var(--blue3), var(--blue2)); border-radius: 18px; padding: 14px 20px; margin-bottom: 22px; color: #fff; box-shadow: 0 5px 20px var(--shM); }
-        .now-lbl { font-size: .72rem; opacity: .75; }
-        .now-cnt { font-size: 1.9rem; font-weight: 700; }
-
-        .sec-h { display: flex; align-items: center; gap: 8px; font-size: .75rem; font-weight: 500; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin: 22px 0 10px; }
-        .sec-h::after { content: ''; flex: 1; height: 1px; background: var(--bord2); }
-        .sec-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .dot-prog { background: var(--blue); }
-        .dot-wait { background: var(--orange); }
-        .dot-done { background: var(--green); }
-
-        /* Queue Cards */
-        .q-list { display: flex; flex-direction: column; gap: 10px; }
-        .qcard { background: var(--surf); border-radius: 16px; border: 1.5px solid var(--bord); box-shadow: 0 3px 14px var(--sh); display: flex; align-items: stretch; overflow: hidden; transition: all .22s; min-height: 76px; }
-        .qcard:hover { transform: translateY(-2px); box-shadow: 0 7px 22px var(--shM); }
-        .qcard-bar { width: 6px; flex-shrink: 0; }
-        .qcard.sw .qcard-bar { background: var(--orange); }
-        .qcard.sp .qcard-bar { background: var(--blue); }
-        .qcard.sd .qcard-bar { background: var(--green); }
-        .qcard-num { width: 62px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; color: var(--blue2); border-right: 1px dashed var(--bord2); }
-        .qcard-body { flex: 1; padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; gap: 3px; }
-        .qcard-name { font-size: .92rem; font-weight: 600; }
-        .qcard-svc { font-size: .78rem; color: var(--text2); }
-        .qcard-right { padding: 12px 14px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 6px; }
-        .qbadge { padding: 4px 12px; border-radius: 999px; font-size: .7rem; font-weight: 600; }
-        .bw { background: #fff7ed; color: #c2410c; }
-        .bp { background: var(--sky2); color: var(--blue3); }
-        .bd { background: #f0fdf4; color: #15803d; }
-
-        /* Admin Panels */
-        .adm-wrap { max-width: 1000px; margin: 0 auto; padding: 26px 16px 80px; }
-        .panel { background: var(--surf); border-radius: 20px; border: 1.5px solid var(--bord); padding: 20px 18px; margin-bottom: 14px; }
-        .fg { margin-bottom: 12px; }
-        .fg label { display: block; font-size: .77rem; font-weight: 500; color: var(--text2); margin-bottom: 5px; }
-        .fg input, .fg select, .fg textarea { width: 100%; padding: 10px; border-radius: 12px; border: 1.5px solid var(--bord2); font-family: var(--font); outline: none; background: var(--sky); }
-        
-        .btn { padding: 8px 16px; border-radius: 999px; border: none; font-family: var(--font); cursor: pointer; transition: .2s; font-size: 0.8rem; }
-        .btn-blue { background: var(--blue); color: #fff; }
-        .btn-full { width: 100%; margin-top: 10px; }
-
-        /* Toast & Overlay */
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--blue3); color: #fff; padding: 10px 24px; border-radius: 999px; transition: .3s; z-index: 1000; }
-        .toast.on { transform: translateX(-50%) translateY(0); }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 200; }
-        .login-box { background: #fff; padding: 30px; border-radius: 20px; width: 320px; text-align: center; }
-
-        @media(max-width:480px){
-            .qcard-num { width: 50px; font-size: 1.2rem; }
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="deco-wrap">
-    <div class="deco" style="top:5%;left:3%;--d:7s;--dl:0s;--fs:1.2rem;">💎</div>
-    <div class="deco" style="top:15%;right:5%;--d:5s;--dl:1s;--fs:1rem;">✦</div>
-    <div class="deco" style="bottom:10%;left:5%;--d:8s;--dl:2s;--fs:1.1rem;">🎀</div>
-</div>
-
-<div class="app">
-    <header class="topbar">
-        <div class="tb-brand">
-            <div class="tb-logo">🌊</div>
-            <span id="nav-name">Your Shop</span>
-        </div>
-        <nav class="tb-nav">
-            <button class="tb-btn on" id="btn-pub" onclick="goPage('pub')">🌊 เช็คคิว</button>
-            <button class="tb-btn" id="btn-adm" onclick="tryAdmin()">⚙ แอดมิน</button>
-        </nav>
-    </header>
-
-    <main class="page on" id="page-pub">
-        <div class="pub-wrap">
-            <div class="hero-card">
-                <div class="hero-av" id="pub-av">🌊</div>
-                <div class="hero-name" id="pub-name">Your Shop</div>
-                <p class="hero-sub" id="pub-tag">รับออกแบบเว็บ · รับลงสี · รับทำป้าย</p>
-                <div class="status-pill" id="spill">
-                    <span class="sdot" id="sdot"></span>
-                    <span id="stext">Ready for orders 🎀</span>
-                </div>
-            </div>
-
-            <div class="ann-bar">
-                <span>📢</span>
-                <span id="pub-ann">ยินดีต้อนรับ! ทักมาสอบถามได้เลยนะคะ ✨</span>
-            </div>
-
-            <div class="now-strip">
+    <div id="app-public">
+        <header class="header">
+            <div class="user-profile">
+                <div class="avatar"></div>
                 <div>
-                    <div class="now-lbl">🎨 กำลังทำอยู่</div>
-                    <div class="now-nm" id="pub-now">–</div>
-                </div>
-                <div style="text-align:right">
-                    <div class="now-lbl">รอในคิว</div>
-                    <div class="now-cnt" id="pub-wn">0</div>
+                    <span class="greeting">สวัสดีตอนเช้า 👋</span>
+                    <div style="font-weight: 600;">ลูกค้าผู้น่ารัก</div>
                 </div>
             </div>
+            <div style="font-size: 1.4rem;">🔔</div>
+        </header>
 
-            <div class="sec-h"><span class="sec-dot dot-prog"></span>กำลังทำอยู่</div>
-            <div class="q-list" id="pg-prog"></div>
-
-            <div class="sec-h"><span class="sec-dot dot-wait"></span>คิวรอ</div>
-            <div class="q-list" id="pg-wait"></div>
-
-            <div class="sec-h"><span class="sec-dot dot-done"></span>เสร็จแล้ววันนี้</div>
-            <div class="q-list" id="pg-done"></div>
+        <div class="search-container">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="ค้นหาเลขคิวหรือชื่อ..." id="searchInp" oninput="renderPublic()">
+            </div>
         </div>
-    </main>
 
-    <main class="page" id="page-adm">
-        <div class="adm-wrap">
-            <div class="panel">
-                <h3>⚙ แผงควบคุม</h3>
-                <div class="fg">
-                    <label>ชื่อลูกค้า</label>
-                    <input type="text" id="fn" placeholder="ชื่อลูกค้า">
-                </div>
-                <div class="fg">
-                    <label>บริการ</label>
-                    <select id="fs"></select>
-                </div>
-                <button class="btn btn-blue btn-full" onclick="addQ()">เพิ่มคิวใหม่</button>
+        <div class="dashboard-grid">
+            <div class="dash-card card-note">
+                <span>Create</span>
+                <h3>New Note</h3>
             </div>
-            <div id="adm-lists">
-                <div class="panel">
-                    <h4>รายการคิวปัจจุบัน</h4>
-                    <div id="adm-all-q"></div>
-                </div>
+            <div class="dash-card card-task">
+                <span>Create</span>
+                <h3>New Task</h3>
             </div>
-            <button class="btn btn-full" style="background:#ff4757; color:#fff;" onclick="logout()">ออกจากระบบ</button>
         </div>
-    </main>
-</div>
 
-<div class="overlay" id="overlay" style="display:none">
-    <div class="login-box">
-        <h3>Admin Access</h3>
-        <p style="font-size: 0.8rem; color: #666; margin-bottom: 15px;">กรุณากรอกรหัสผ่าน</p>
-        <input type="password" id="lpw" style="width:100%; padding:10px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px;">
-        <button class="btn btn-blue btn-full" onclick="doLogin()">เข้าสู่ระบบ</button>
-        <button class="btn btn-full" onclick="el('overlay').style.display='none'">ยกเลิก</button>
+        <div class="section-card">
+            <div class="prog-header">
+                <span style="font-weight:600; font-size: 0.9rem;">ความคืบหน้าภาพรวม</span>
+                <span id="prog-val" style="color: var(--primary); font-weight:600;">0%</span>
+            </div>
+            <div class="prog-bar-outer">
+                <div class="prog-bar-inner" id="prog-bar"></div>
+            </div>
+        </div>
+
+        <div class="task-list" id="q-list-pub">
+            </div>
     </div>
-</div>
 
-<div class="toast" id="toast"></div>
+    <div id="app-admin" class="hidden">
+        <div id="admin-login" class="admin-auth">
+            <h2>ระบบจัดการหลังบ้าน ⚙️</h2>
+            <input type="password" id="pass" class="admin-input" placeholder="ใส่รหัสผ่านแอดมิน">
+            <button class="btn-action" onclick="checkAuth()">เข้าสู่ระบบ</button>
+        </div>
 
-<script>
-    const S = {
-        g(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-        s(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
-    };
-    const el = id => document.getElementById(id);
+        <div id="admin-panel" class="hidden" style="padding: 20px;">
+            <div class="section-card">
+                <h3>เพิ่มคิวลูกค้า ✨</h3>
+                <input type="text" id="custName" class="admin-input" placeholder="ชื่อลูกค้า">
+                <input type="text" id="custSvc" class="admin-input" placeholder="บริการ (เช่น ออกแบบโลโก้)">
+                <button class="btn-action" onclick="addQ()">ยืนยันเพิ่มคิว</button>
+            </div>
+            <div id="q-list-adm"></div>
+        </div>
+    </div>
 
-    function initData() {
-        if (!S.g('q')) S.s('q', []);
-        if (!S.g('svcs')) S.s('svcs', [
-            { id:1, cat:'Web', name:'Landing Page', price:800 },
-            { id:2, cat:'Art', name:'Character Color', price:500 }
-        ]);
-        if (!S.g('cfg')) S.s('cfg', {
-            name: 'Your Shop',
-            tagline: 'รับออกแบบเว็บ · รับลงสี · รับทำป้าย',
-            ann: 'ยินดีต้อนรับ! ทักมาสอบถามได้เลยนะคะ ✨',
-            open: true,
-            pw: 'admin1234',
-            nxt: 1
-        });
-    }
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="showSection('pub')">🏠</a>
+        <a href="#" class="nav-item">📋</a>
+        <div class="nav-add" onclick="showSection('adm')">+</div>
+        <a href="#" class="nav-item">📁</a>
+        <a href="#" class="nav-item" onclick="logout()">🔒</a>
+    </nav>
 
-    let authed = false;
-    function tryAdmin() {
-        if (authed) { goPage('adm'); return; }
-        el('overlay').style.display = 'flex';
-    }
+    <script>
+        let queues = JSON.parse(localStorage.getItem('myQueues')) || [];
+        const ADMIN_PASS = "1234"; // รหัสผ่านแอดมิน
 
-    function doLogin() {
-        if (el('lpw').value === S.g('cfg').pw) {
-            authed = true;
-            el('overlay').style.display = 'none';
-            goPage('adm');
-            toast('ยินดีต้อนรับ แอดมิน 🎀');
-        } else {
-            toast('รหัสผ่านไม่ถูกต้อง!');
+        function save() { 
+            localStorage.setItem('myQueues', JSON.stringify(queues));
+            renderPublic();
+            renderAdmin();
         }
-    }
 
-    function logout() { authed = false; goPage('pub'); }
+        function renderPublic() {
+            const list = document.getElementById('q-list-pub');
+            const search = document.getElementById('searchInp').value.toLowerCase();
+            const filtered = queues.filter(q => q.name.toLowerCase().includes(search) || q.id.toString().includes(search));
+            
+            // คำนวณความคืบหน้า
+            const totalProg = queues.length ? (queues.reduce((s, q) => s + q.prog, 0) / queues.length).toFixed(0) : 0;
+            document.getElementById('prog-bar').style.width = totalProg + '%';
+            document.getElementById('prog-val').innerText = totalProg + '% Done';
 
-    function goPage(p) {
-        document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
-        document.querySelectorAll('.tb-btn').forEach(x => x.classList.remove('on'));
-        el('page-' + p).classList.add('on');
-        el('btn-' + p).classList.add('on');
-        if (p === 'pub') renderPub();
-        if (p === 'adm') { renderAdm(); fillSel(); }
-    }
-
-    function addQ() {
-        const name = el('fn').value;
-        if(!name) return toast('กรุณาใส่ชื่อ!');
-        const q = S.g('q');
-        const cfg = S.g('cfg');
-        q.push({
-            id: Date.now(),
-            num: cfg.nxt++,
-            name: name,
-            svc: el('fs').value,
-            status: 'waiting',
-            time: new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})
-        });
-        S.s('q', q); S.s('cfg', cfg);
-        el('fn').value = '';
-        renderAdm(); toast('เพิ่มคิวสำเร็จ!');
-    }
-
-    function fillSel() {
-        const svcs = S.g('svcs');
-        el('fs').innerHTML = svcs.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
-    }
-
-    function renderPub() {
-        const q = S.g('q');
-        const cfg = S.g('cfg');
-        el('pub-name').textContent = cfg.name;
-        el('nav-name').textContent = cfg.name;
-        el('pub-tag').textContent = cfg.tagline;
-
-        const prog = q.filter(x => x.status === 'inprogress');
-        el('pub-now').textContent = prog.length ? prog[0].name : '-';
-        el('pub-wn').textContent = q.filter(x => x.status === 'waiting').length;
-
-        drawList('pg-prog', q.filter(x => x.status === 'inprogress'), 'sp');
-        drawList('pg-wait', q.filter(x => x.status === 'waiting'), 'sw');
-        drawList('pg-done', q.filter(x => x.status === 'done'), 'sd');
-    }
-
-    function drawList(id, items, cls) {
-        el(id).innerHTML = items.map(x => `
-            <div class="qcard ${cls}">
-                <div class="qcard-bar"></div>
-                <div class="qcard-num">#${x.num}</div>
-                <div class="qcard-body">
-                    <div class="qcard-name">${x.name}</div>
-                    <div class="qcard-svc">${x.svc}</div>
+            list.innerHTML = filtered.map(q => `
+                <div class="task-item ${q.prog == 100 ? 'done' : ''}">
+                    <div class="task-num">#${q.id}</div>
+                    <div class="task-info">
+                        <h4>คุณ${q.name}</h4>
+                        <p>${q.svc} | ⏳ ${q.prog}%</p>
+                    </div>
                 </div>
-                <div class="qcard-right">
-                    <div class="qcard-time">${x.time}</div>
+            `).join('');
+        }
+
+        function renderAdmin() {
+            const list = document.getElementById('q-list-adm');
+            list.innerHTML = queues.map(q => `
+                <div class="section-card" style="margin: 10px 0;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>#${q.id} ${q.name}</strong>
+                        <button onclick="deleteQ(${q.id})" style="color:red; border:none; background:none;">ลบ</button>
+                    </div>
+                    <input type="range" min="0" max="100" step="10" value="${q.prog}" 
+                           style="width:100%; margin:10px 0;" onchange="updateProg(${q.id}, this.value)">
+                    <div style="font-size:0.8rem; text-align:right;">ความคืบหน้า: ${q.prog}%</div>
                 </div>
-            </div>
-        `).join('') || '<p style="text-align:center; font-size:0.8rem; color:#aaa; padding:10px;">ไม่มีคิว</p>';
-    }
+            `).join('');
+        }
 
-    function renderAdm() {
-        const q = S.g('q');
-        el('adm-all-q').innerHTML = q.map(x => `
-            <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee; align-items:center;">
-                <span>#${x.num} ${x.name} (${x.status})</span>
-                <div>
-                    <button class="btn" onclick="setSt(${x.id},'inprogress')">เริ่ม</button>
-                    <button class="btn" onclick="setSt(${x.id},'done')">เสร็จ</button>
-                    <button class="btn" style="color:red" onclick="delQ(${x.id})">ลบ</button>
-                </div>
-            </div>
-        `).join('');
-    }
+        function addQ() {
+            const name = document.getElementById('custName').value;
+            const svc = document.getElementById('custSvc').value;
+            if(!name || !svc) return alert('ใส่ข้อมูลให้ครบก่อนนะค้าา 🎀');
+            queues.push({ id: queues.length + 1, name, svc, prog: 0 });
+            document.getElementById('custName').value = '';
+            document.getElementById('custSvc').value = '';
+            save();
+        }
 
-    function setSt(id, st) {
-        const q = S.g('q');
-        const i = q.find(x => x.id === id);
-        if(i) i.status = st;
-        S.s('q', q); renderAdm();
-    }
+        function updateProg(id, val) {
+            const q = queues.find(x => x.id === id);
+            if(q) q.prog = parseInt(val);
+            save();
+        }
 
-    function delQ(id) {
-        S.s('q', S.g('q').filter(x => x.id !== id));
-        renderAdm();
-    }
+        function deleteQ(id) {
+            if(confirm('ลบคิวนี้แน่ใจนะคะ?')) {
+                queues = queues.filter(x => x.id !== id);
+                save();
+            }
+        }
 
-    function toast(m) {
-        const t = el('toast'); t.textContent = m; t.classList.add('on');
-        setTimeout(() => t.classList.remove('on'), 2000);
-    }
+        function checkAuth() {
+            if(document.getElementById('pass').value === ADMIN_PASS) {
+                document.getElementById('admin-login').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                renderAdmin();
+            } else {
+                alert('รหัสผ่านไม่ถูกต้องนะคะ ❌');
+            }
+        }
 
-    initData();
-    renderPub();
-</script>
+        function showSection(type) {
+            if(type === 'pub') {
+                document.getElementById('app-public').classList.remove('hidden');
+                document.getElementById('app-admin').classList.add('hidden');
+            } else {
+                document.getElementById('app-public').classList.add('hidden');
+                document.getElementById('app-admin').classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            document.getElementById('pass').value = '';
+            document.getElementById('admin-login').classList.remove('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+            showSection('pub');
+        }
+
+        renderPublic();
+    </script>
 </body>
 </html>

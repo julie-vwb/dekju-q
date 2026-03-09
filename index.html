@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pinkjujapipi – ระบบเช็คคิวสุดพรีเมียม</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Itim&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-main: #a2d2ff;
+    --purple-main: #c8b6ff;
+    --purple-deep: #9381ff;
+    --blue-soft: #eef5ff;
+    --purple-soft: #f3f0ff;
+    --white: #ffffff;
+    --text-dark: #4a4e69;
+    --shadow: 0 10px 30px rgba(147, 129, 255, 0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Kanit', sans-serif;
+    background: linear-gradient(135deg, var(--blue-soft) 0%, var(--purple-soft) 100%);
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* --- 🌸 Floating Emoji Background --- */
+  .emoji-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: -1; overflow: hidden;
+  }
+  .emoji {
+    position: absolute; font-size: 24px; opacity: 0.5;
+    animation: float 15s linear infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* --- 🎀 Navigation --- */
+  nav {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 15px 25px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 2px solid var(--purple-main);
+  }
+  .brand { font-family: 'Itim', cursive; font-size: 1.8rem; color: var(--purple-deep); }
+  .btn-nav {
+    background: var(--purple-main); color: white; border: none;
+    padding: 8px 18px; border-radius: 50px; cursor: pointer;
+    font-family: 'Kanit'; transition: 0.3s; font-weight: 500;
+  }
+  .btn-nav:hover { background: var(--purple-deep); transform: scale(1.05); }
+
+  /* --- 📋 Container & Sections --- */
+  .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+
+  .hero-card {
+    background: var(--white); border-radius: 30px; padding: 30px;
+    text-align: center; box-shadow: var(--shadow); margin-bottom: 25px;
+    border: 2px dashed var(--blue-main);
+  }
+  .hero-card h1 { color: var(--purple-deep); margin-bottom: 10px; }
+
+  .status-info {
+    display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;
+  }
+  .info-box {
+    background: var(--blue-soft); padding: 10px 20px; border-radius: 20px;
+    border: 1px solid var(--blue-main); font-weight: 600;
+  }
+
+  /* --- ⭐️ Portfolio Links --- */
+  .portfolio-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px; margin-bottom: 30px;
+  }
+  .port-link {
+    background: white; padding: 10px; border-radius: 15px; text-align: center;
+    text-decoration: none; color: var(--purple-deep); font-size: 0.85rem;
+    border: 1px solid var(--purple-soft); transition: 0.3s;
+  }
+  .port-link:hover { background: var(--purple-main); color: white; }
+
+  /* --- ⏳ Queue Grid --- */
+  .section-title {
+    font-size: 1.2rem; font-weight: 600; margin: 20px 0 15px;
+    display: flex; align-items: center; gap: 10px; color: var(--purple-deep);
+  }
+  .queue-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+  
+  .q-card {
+    background: white; border-radius: 20px; padding: 20px; text-align: center;
+    box-shadow: var(--shadow); position: relative; border-top: 5px solid var(--blue-main);
+  }
+  .q-card.inprogress { border-top-color: var(--purple-deep); }
+  .q-number { font-size: 2rem; font-weight: 800; color: var(--purple-deep); }
+  .q-name { font-weight: 600; display: block; margin: 5px 0; }
+  .q-status { font-size: 0.75rem; padding: 4px 12px; border-radius: 50px; background: var(--blue-soft); }
+
+  /* --- ⚙️ Admin Panel --- */
+  .admin-panel { display: none; background: white; border-radius: 30px; padding: 25px; box-shadow: var(--shadow); }
+  .form-group { margin-bottom: 15px; }
+  label { display: block; margin-bottom: 5px; font-weight: 500; }
+  input, select, textarea {
+    width: 100%; padding: 12px; border-radius: 15px; border: 1.5px solid var(--purple-main);
+    font-family: 'Kanit'; outline: none;
+  }
+  .btn-action {
+    width: 100%; padding: 12px; border: none; border-radius: 15px;
+    background: var(--purple-deep); color: white; font-weight: 600; cursor: pointer;
+  }
+
+  /* --- 🔐 Login Overlay --- */
+  .login-overlay {
+    position: fixed; inset: 0; background: rgba(147, 129, 255, 0.4);
+    backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 200;
+  }
+  .login-box { background: white; padding: 35px; border-radius: 30px; width: 320px; text-align: center; box-shadow: var(--shadow); }
+
+  /* Mobile */
+  @media (max-width: 500px) { .queue-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="emoji-bg" id="emoji-bg"></div>
+
+<nav>
+  <div class="brand">🎀 pinkjujapipi</div>
+  <div id="nav-actions">
+    <button class="btn-nav" onclick="showPage('public')">🏠 หน้าหลัก</button>
+    <button class="btn-nav" style="background: var(--blue-main);" onclick="openLogin()">⚙️ แอดมิน</button>
+  </div>
+</nav>
+
+<div class="container">
+  
+  <div id="page-public">
+    <div class="hero-card">
+      <h1>ร้านจูรับทำเว็บครบวงจรนะแม่น้า 🎨</h1>
+      <p style="margin-bottom: 15px;">เว็บแอพพรีเมียม | เว็บเติมเกมส์ | เว็บทำป้าย</p>
+      
+      <div class="status-info">
+        <div class="info-box">🔥 กำลังทำ: <span id="count-active">0</span></div>
+        <div class="info-box">⏳ รอคิว: <span id="count-wait">0</span></div>
+      </div>
+
+      <p style="font-size: 0.85rem; color: #888;">⏳ รองานปกติ 4-8 ชม. | เร่งด่วนราคา *2 นะคะ</p>
+    </div>
+
+    <div class="section-title">⭐️ ตัวอย่างงาน (คลิกส่องความปัง)</div>
+    <div class="portfolio-grid">
+      <a href="https://julie-vwb.github.io/pinkjulie-land/" class="port-link" target="_blank">PinkJulie Land</a>
+      <a href="https://julie-vwb.github.io/luna-webstudio/" class="port-link" target="_blank">Luna WebStudio</a>
+      <a href="https://julie-vwb.github.io/mahatep-shop/" class="port-link" target="_blank">Mahatep Shop</a>
+      <a href="https://julie-vwb.github.io/cooper-shop/" class="port-link" target="_blank">Cooper Shop</a>
+    </div>
+
+    <div class="section-title">✨ คิวที่กำลังเสกความสวย</div>
+    <div class="queue-grid" id="grid-inprogress"></div>
+
+    <div class="section-title">⏳ คิวรอถัดไปน้าา</div>
+    <div class="queue-grid" id="grid-waiting"></div>
+  </div>
+
+  <div id="page-admin" class="admin-panel">
+    <h2 style="margin-bottom: 20px; color: var(--purple-deep);">⚙️ ระบบจัดการหลังบ้าน</h2>
+    
+    <div class="form-group">
+      <label>ชื่อลูกค้า / ชื่อร้าน</label>
+      <input type="text" id="adm-name" placeholder="เช่น คุณมินนี่">
+    </div>
+    <div class="form-group">
+      <label>ประเภทงาน</label>
+      <select id="adm-service">
+        <option>เว็บแอพพรีเมียม</option>
+        <option>เว็บรับเติมเกมส์</option>
+        <option>เว็บรับทำป้าย</option>
+      </select>
+    </div>
+    <button class="btn-action" onclick="addQueue()">เพิ่มคิวใหม่ 🎀</button>
+
+    <hr style="margin: 25px 0; opacity: 0.2;">
+    
+    <div id="admin-list-container"></div>
+    
+    <button onclick="logout()" style="margin-top: 20px; background: #ddd; border: none; padding: 10px; border-radius: 10px; width: 100%; cursor: pointer;">🚪 ออกจากระบบ</button>
+  </div>
+
+</div>
+
+<div class="login-overlay" id="login-overlay">
+  <div class="login-box">
+    <h2 style="margin-bottom: 15px;">รหัสผ่านแอดมิน 🔐</h2>
+    <input type="password" id="login-pw" placeholder="กรอกรหัส 4 หลัก" style="text-align: center; margin-bottom: 15px;">
+    <button class="btn-action" onclick="checkLogin()">เข้าสู่ระบบ</button>
+    <button onclick="closeLogin()" style="margin-top: 10px; border: none; background: none; color: #888; cursor: pointer;">ยกเลิก</button>
+  </div>
+</div>
+
+<script>
+  // --- Data & Logic ---
+  let queues = JSON.parse(localStorage.getItem('jujapi_queues')) || [];
+  let nextId = JSON.parse(localStorage.getItem('jujapi_id')) || 1;
+
+  function save() {
+    localStorage.setItem('jujapi_queues', JSON.stringify(queues));
+    localStorage.setItem('jujapi_id', JSON.stringify(nextId));
+    render();
+  }
+
+  function showPage(p) {
+    document.getElementById('page-public').style.display = (p === 'public') ? 'block' : 'none';
+    document.getElementById('page-admin').style.display = (p === 'admin') ? 'block' : 'none';
+  }
+
+  function openLogin() { document.getElementById('login-overlay').style.display = 'flex'; }
+  function closeLogin() { document.getElementById('login-overlay').style.display = 'none'; }
+
+  function checkLogin() {
+    const pw = document.getElementById('login-pw').value;
+    if(pw === "1234") {
+      closeLogin();
+      showPage('admin');
+      document.getElementById('login-pw').value = "";
+    } else {
+      alert("รหัสผิดนะแม่! ลองใหม่น้า");
+    }
+  }
+
+  function logout() { showPage('public'); }
+
+  function addQueue() {
+    const name = document.getElementById('adm-name').value;
+    const service = document.getElementById('adm-service').value;
+    if(!name) return alert("ใส่ชื่อลูกค้าก่อนนะแม่");
+    
+    queues.push({ id: Date.now(), qnum: nextId++, name, service, status: 'waiting' });
+    document.getElementById('adm-name').value = "";
+    save();
+  }
+
+  function updateStatus(id, stat) {
+    const q = queues.find(x => x.id === id);
+    if(q) q.status = stat;
+    save();
+  }
+
+  function removeQueue(id) {
+    if(confirm("ลบคิวนี้เลยใช่ไหมแม่?")) {
+      queues = queues.filter(x => x.id !== id);
+      save();
+    }
+  }
+
+  function render() {
+    const gridInp = document.getElementById('grid-inprogress');
+    const gridWait = document.getElementById('grid-waiting');
+    const admList = document.getElementById('admin-list-container');
+    
+    gridInp.innerHTML = ""; gridWait.innerHTML = ""; admList.innerHTML = "";
+
+    let waitCount = 0; let activeCount = 0;
+
+    queues.forEach(q => {
+      const cardHtml = `
+        <div class="q-card ${q.status}">
+          <div class="q-number">#${q.qnum}</div>
+          <span class="q-name">${q.name}</span>
+          <span class="q-status">${q.service}</span>
+        </div>
+      `;
+
+      if(q.status === 'inprogress') {
+        gridInp.innerHTML += cardHtml;
+        activeCount++;
+      } else if(q.status === 'waiting') {
+        gridWait.innerHTML += cardHtml;
+        waitCount++;
+      }
+
+      // Admin Management List
+      admList.innerHTML += `
+        <div style="background:var(--purple-soft); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong>#${q.qnum} ${q.name}</strong><br>
+            <small>${q.service} (${q.status})</small>
+          </div>
+          <div style="display:flex; gap:5px;">
+            <button onclick="updateStatus(${q.id}, 'inprogress')" style="background:var(--purple-deep); color:white; border:none; padding:5px 10px; border-radius:8px; cursor:pointer;">รับงาน</button>
+            <button onclick="updateStatus(${q.id}, 'done')" style="background:#70e000; color:white; border:none; padding:5px 10px; border-radius:8px; cursor:pointer;">เสร็จ</button>
+            <button onclick="removeQueue(${q.id})" style="background:#ff4d6d; color:white; border:none; padding:5px 10px; border-radius:8px; cursor:pointer;">ลบ</button>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById('count-active').innerText = activeCount;
+    document.getElementById('count-wait').innerText = waitCount;
+  }
+
+  // --- 🌸 Floating Emoji Logic ---
+  const emojis = ['💎', '✨', '💜', '💙', '💻', '🎨', '🎀', '☁️'];
+  const bg = document.getElementById('emoji-bg');
+  for (let i = 0; i < 15; i++) {
+    const e = document.createElement('div');
+    e.className = 'emoji';
+    e.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    e.style.left = Math.random() * 100 + 'vw';
+    e.style.animationDelay = Math.random() * 15 + 's';
+    e.style.fontSize = (Math.random() * 20 + 20) + 'px';
+    bg.appendChild(e);
+  }
+
+  render();
+</script>
+
+</body>
+</html>

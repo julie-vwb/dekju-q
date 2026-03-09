@@ -28,26 +28,21 @@
         .container { max-width: 500px; margin: 0 auto; padding: 20px; padding-bottom: 120px; }
         .section-title { font-size: 0.95rem; font-weight: 600; color: var(--pink-accent); margin: 30px 0 15px 10px; display: flex; align-items: center; gap: 8px; }
 
-        /* การ์ดคิวงาน */
-        .q-card { background: white; border-radius: var(--radius-main); padding: 30px; margin-bottom: 20px; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.06); border: 1.5px solid rgba(255,255,255,0.8); transition: 0.3s; }
+        .q-card { background: white; border-radius: var(--radius-main); padding: 30px; margin-bottom: 20px; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.06); border: 1.5px solid rgba(255,255,255,0.8); }
         .q-no { position: absolute; top: 30px; right: 30px; font-size: 0.75rem; font-weight: 600; color: white; background: var(--grad-pink); padding: 5px 15px; border-radius: 12px; }
+        
         .progress-container { background: #f2f2f2; border-radius: 20px; height: 18px; overflow: hidden; margin: 15px 0; border: 1px solid #fff; }
         .progress-bar { height: 100%; width: 0%; background: var(--grad-pink); background-size: 200% 100%; transition: width 0.8s ease; }
 
-        /* ระบบป๊อปอัพพรีเมียม (Custom Modal) */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 10000; animation: fadeIn 0.3s; }
-        .modal-content { background: white; width: 90%; max-width: 380px; padding: 40px 30px; border-radius: var(--radius-main); box-shadow: 0 20px 60px rgba(0,0,0,0.2); text-align: center; animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* Custom Modal พรีเมียม */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 10000; }
+        .modal-content { background: white; width: 90%; max-width: 380px; padding: 40px 30px; border-radius: var(--radius-main); box-shadow: 0 20px 60px rgba(0,0,0,0.2); text-align: center; }
         
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        /* ปุ่มและอินพุต */
-        .input-premium { width: 100%; border: 2px solid #ffdeeb; padding: 15px 25px; border-radius: 25px; outline: none; font-size: 1rem; margin-bottom: 20px; transition: 0.3s; }
-        .input-premium:focus { border-color: var(--pink-accent); box-shadow: 0 0 10px rgba(255,133,192,0.2); }
+        .input-premium { width: 100%; border: 2px solid #ffdeeb; padding: 15px 25px; border-radius: 25px; outline: none; font-size: 1rem; margin-bottom: 20px; }
         .btn-finish { background: var(--grad-pink); color: white; border-radius: 25px; padding: 12px 25px; border: none; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; }
-        .btn-finish:active { transform: scale(0.95); }
+        .btn-copy { background: #e6f7ff; color: #1890ff; font-size: 0.75rem; padding: 8px 15px; border-radius: 15px; border: none; cursor: pointer; font-weight: 600; }
 
-        /* แชทพรีเมียม */
+        /* แชท */
         #chat-box { position: fixed; bottom: 110px; right: 30px; width: 340px; height: 500px; background: white; border-radius: var(--radius-main); box-shadow: 0 25px 60px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; z-index: 9999; border: 3px solid #fff; }
         .chat-header { background: var(--grad-pink); color: white; padding: 20px; font-weight: 600; text-align: center; }
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; background: #fffcfd; display: flex; flex-direction: column; gap: 10px; }
@@ -57,6 +52,7 @@
         
         #chat-widget { position: fixed; bottom: 30px; right: 30px; z-index: 9999; }
         #chat-btn { width: 65px; height: 65px; border-radius: 50%; background: var(--grad-pink); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 10px 25px rgba(255,133,192,0.5); }
+        .toast { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 25px; border-radius: 30px; font-size: 0.8rem; display: none; z-index: 10001; }
     </style>
 </head>
 <body>
@@ -103,13 +99,10 @@
 
 <div id="login-modal" class="modal-overlay">
     <div class="modal-content">
-        <h3 style="margin-bottom:10px; color:var(--pink-accent);">ยืนยันตัวตนแอดมิน</h3>
-        <p style="font-size:0.85rem; color:#999; margin-bottom:20px;">กรุณากรอกรหัสผ่านเพื่อเข้าสู่ระบบ</p>
+        <h3 style="margin-bottom:10px; color:var(--pink-accent);">ยืนยันแอดมิน</h3>
         <input type="password" id="admin-pass" class="input-premium" placeholder="รหัสผ่าน (1234)">
-        <div style="display:flex; gap:10px;">
-            <button class="btn-finish" style="background:#f0f0f0; color:#999;" onclick="closeModal('login-modal')">ยกเลิก</button>
-            <button class="btn-finish" onclick="checkAdminLogin()">ตกลง ✨</button>
-        </div>
+        <button class="btn-finish" onclick="checkAdminLogin()">ตกลง ✨</button>
+        <button class="btn-finish" style="background:#f0f0f0; color:#999; margin-top:10px;" onclick="closeModal('login-modal')">ยกเลิก</button>
     </div>
 </div>
 
@@ -117,14 +110,13 @@
     <div id="chat-box">
         <div class="chat-header">Julie Support ✨</div>
         <div id="chat-auth" style="padding:40px 20px; text-align:center;">
-            <p style="font-size:0.85rem; margin-bottom:15px;">กรุณาระบุชื่อหรือเลขออเดอร์<br>เพื่อความสะดวกในการบริการค่ะ 🎀</p>
-            <input type="text" id="chat-user-id" class="input-premium" placeholder="PJ-001 หรือ ชื่อของคุณ">
+            <input type="text" id="chat-user-id" class="input-premium" placeholder="เลขออเดอร์ หรือ ชื่อ">
             <button class="btn-finish" onclick="startChat()">เริ่มแชท ✨</button>
         </div>
         <div id="chat-main" style="display:none; flex-direction:column; height:100%;">
             <div class="chat-messages" id="chat-messages"></div>
             <div style="padding:15px; display:flex; gap:8px;">
-                <input type="text" id="chat-input" class="input-premium" style="margin-bottom:0;" placeholder="พิมพ์คุยกับแอดมิน...">
+                <input type="text" id="chat-input" class="input-premium" style="margin-bottom:0;" placeholder="คุยกับแอดมิน...">
                 <button class="btn-finish" style="width:60px;" onclick="sendMessage('user')">✈️</button>
             </div>
         </div>
@@ -132,22 +124,24 @@
     <button id="chat-btn" onclick="toggleChat()">💬</button>
 </div>
 
+<div id="toast" class="toast">คัดลอกข้อความแล้วค่ะ ✨</div>
+
 <script>
-    let db = JSON.parse(localStorage.getItem('pj_final_v15')) || { q: [], chats: [], nextNo: 1 };
+    let db = JSON.parse(localStorage.getItem('pj_final_v16')) || { q: [], chats: [], nextNo: 1 };
     let authed = false;
     let currentUser = "";
 
-    function save() { localStorage.setItem('pj_final_v15', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('pj_final_v16', JSON.stringify(db)); render(); }
 
     function render() {
-        const draw = (list) => list.length === 0 ? `<div style="text-align:center; padding:20px; color:#ccc; font-size:0.8rem;">ไม่มีคิวงานจ้า ✨</div>` : list.map(x => `
+        const draw = (list) => list.length === 0 ? `<div style="text-align:center; padding:20px; color:#ccc; font-size:0.8rem;">ไม่มีข้อมูลค่ะ ✨</div>` : list.map(x => `
             <div class="q-card">
                 <div class="q-no">${x.no}</div>
                 <div style="font-weight:600;">คุณ ${x.name}</div>
                 <div style="font-size:0.85rem; color:#999;">${x.svc}</div>
                 <div class="progress-container"><div class="progress-bar" style="width:${x.progress}%"></div></div>
                 <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--pink-accent); font-weight:600;">
-                    <span>${x.progress === 100 ? 'งานเสร็จแล้วค่ะ!' : 'กำลังเร่งทำให้นะคะ'}</span>
+                    <span>${x.progress === 100 ? 'เสร็จเรียบร้อยจ้า' : 'กำลังดำเนินการ'}</span>
                     <span>${x.progress}%</span>
                 </div>
             </div>
@@ -162,9 +156,10 @@
                 <div class="q-card">
                     <div class="q-no">${x.no}</div>
                     <div style="font-weight:600;">คุณ ${x.name}</div>
-                    <div style="display:flex; gap:8px; margin-top:10px;">
-                        <button class="btn-finish" style="padding:5px 10px; font-size:0.7rem;" onclick="updateQ(${x.id})">+10%</button>
-                        <button class="btn-finish" style="padding:5px 10px; font-size:0.7rem; background:#ff4d4f;" onclick="delQ(${x.id})">ลบ</button>
+                    <div style="display:flex; gap:8px; margin-top:15px; flex-wrap:wrap;">
+                        <button class="btn-finish" style="padding:5px 12px; font-size:0.7rem; width:auto;" onclick="updateQ(${x.id})">+10%</button>
+                        <button class="btn-copy" onclick="copyCap('${x.name}', '${x.no}')">ก๊อปส่งลูกค้า 📋</button>
+                        <button class="btn-finish" style="padding:5px 12px; font-size:0.7rem; background:#ff4d4f; width:auto;" onclick="delQ(${x.id})">ลบ</button>
                     </div>
                 </div>
             `).join('');
@@ -173,28 +168,24 @@
         renderMessages();
     }
 
-    // ระบบ Modal
-    function showLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    function checkAdminLogin() {
-        const pass = document.getElementById('admin-pass').value;
-        if (pass === '1234') {
-            authed = true;
-            closeModal('login-modal');
-            goPage('adm');
-        } else {
-            alert('รหัสผ่านไม่ถูกต้องค่ะ!');
-        }
+    function copyCap(name, no) {
+        const text = `ลงออเดอร์เรียบร้อยนะคะคุณ ${name} ✨\nเลขออเดอร์ของคุณคือ ${no} นะคะ 🎀\nตรวจสอบสถานะคิวได้ที่หน้าเว็บเลยน้า ขอบคุณมากค่ะ! 🔥`;
+        navigator.clipboard.writeText(text).then(() => {
+            const t = document.getElementById('toast');
+            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000);
+        });
     }
 
+    function showLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function checkAdminLogin() { if(document.getElementById('admin-pass').value === '1234') { authed = true; closeModal('login-modal'); goPage('adm'); } }
+    
     function startChat() {
         const user = document.getElementById('chat-user-id').value;
-        if (!user) return alert('กรุณาระบุตัวตนก่อนแชทนะคะ');
+        if (!user) return;
         currentUser = user;
         document.getElementById('chat-auth').style.display = 'none';
         document.getElementById('chat-main').style.display = 'flex';
-        db.chats.push({ role: 'admin', text: `สวัสดีค่ะคุณ ${user} มีอะไรให้ช่วยไหมคะ?`, user: 'Admin' });
         save();
     }
 
@@ -226,17 +217,9 @@
     }
 
     function updateQ(id) { const i = db.q.find(x => x.id === id); if (i) { i.progress = Math.min(i.progress + 10, 100); save(); } }
-    function delQ(id) { if(confirm('ลบคิวนี้?')) { db.q = db.q.filter(x => x.id !== id); save(); } }
-    function goPage(p) { 
-        document.getElementById('page-pub').style.display = p === 'pub' ? 'block' : 'none'; 
-        document.getElementById('page-adm').style.display = p === 'adm' ? 'block' : 'none'; 
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.id.includes(p))); 
-        render();
-    }
-    function toggleChat() { 
-        const box = document.getElementById('chat-box');
-        box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
-    }
+    function delQ(id) { if(confirm('ลบ?')) { db.q = db.q.filter(x => x.id !== id); save(); } }
+    function goPage(p) { document.getElementById('page-pub').style.display = p === 'pub' ? 'block' : 'none'; document.getElementById('page-adm').style.display = p === 'adm' ? 'block' : 'none'; document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.id.includes(p))); render(); }
+    function toggleChat() { const box = document.getElementById('chat-box'); box.style.display = box.style.display === 'flex' ? 'none' : 'flex'; }
 
     render();
 </script>

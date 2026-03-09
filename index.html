@@ -11,7 +11,7 @@
             --pink-accent: #ff85c0;
             --pink-soft: #ffdeeb;
             --grad-pink: linear-gradient(90deg, #ff9a9e, #fecfef, #ff9a9e);
-            --radius-main: 35px;
+            --radius-main: 40px; /* ความมนระดับพรีเมียม */
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Mitr', sans-serif; }
         body { background: var(--bg-grad); background-attachment: fixed; min-height: 100vh; color: #595959; }
@@ -26,19 +26,24 @@
         .nav-btn.active { background: var(--grad-pink); color: #fff; box-shadow: 0 4px 10px rgba(255,154,158,0.3); }
 
         .container { max-width: 500px; margin: 0 auto; padding: 20px; padding-bottom: 120px; }
-        .q-card { background: white; border-radius: var(--radius-main); padding: 30px; margin-bottom: 25px; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.06); border: 1.5px solid rgba(255,255,255,0.8); }
         
-        /* แก้ไขตำแหน่ง PJ-Number ไม่ให้ทับขอบ */
+        /* ช่องค้นหา */
+        .search-box { background: #fff; border-radius: 25px; padding: 10px 20px; display: flex; align-items: center; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.04); border: 1.5px solid #fff; }
+        .search-input { border: none; outline: none; width: 100%; font-size: 0.9rem; color: #666; }
+
+        .q-card { background: white; border-radius: var(--radius-main); padding: 30px; margin-bottom: 25px; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.06); border: 1.5px solid rgba(255,255,255,0.8); animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .q-no { position: absolute; top: 30px; right: 30px; font-size: 0.75rem; font-weight: 600; color: white; background: var(--grad-pink); padding: 5px 15px; border-radius: 12px; }
 
         .progress-container { background: #f2f2f2; border-radius: 20px; height: 18px; overflow: hidden; margin: 15px 0; border: 1px solid #fff; }
-        .progress-bar { height: 100%; width: 0%; background: var(--grad-pink); background-size: 200% 100%; transition: width 1s ease; animation: progressMoving 2s linear infinite; }
+        .progress-bar { height: 100%; width: 0%; background: var(--grad-pink); background-size: 200% 100%; transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); animation: progressMoving 2s linear infinite; }
         @keyframes progressMoving { 0% { background-position: 0% 0%; } 100% { background-position: -200% 0%; } }
 
         /* Chat Widget & Notification */
         #chat-widget { position: fixed; bottom: 30px; right: 30px; z-index: 9999; }
         #chat-btn { width: 65px; height: 65px; border-radius: 50%; background: var(--grad-pink); border: none; cursor: pointer; box-shadow: 0 10px 25px rgba(255,133,192,0.5); display: flex; align-items: center; justify-content: center; font-size: 28px; position: relative; }
-        .notif-badge { position: absolute; top: 0; right: 0; width: 18px; height: 18px; background: #ff4d4f; border-radius: 50%; border: 2px solid #fff; display: none; }
+        .notif-badge { position: absolute; top: 0; right: 0; width: 20px; height: 20px; background: #ff4d4f; border-radius: 50%; border: 2.5px solid #fff; display: none; }
         
         #chat-box { position: fixed; bottom: 110px; right: 30px; width: 340px; height: 500px; background: white; border-radius: 40px; box-shadow: 0 25px 60px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; border: 3px solid #fff; animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -50,12 +55,18 @@
         .msg-user { background: var(--pink-soft); color: var(--pink-accent); align-self: flex-end; border-bottom-right-radius: 5px; }
         
         .chat-input-area { padding: 15px; display: flex; gap: 10px; background: white; border-top: 1px solid #eee; }
-        .chat-input { flex: 1; border: 2px solid #ffdeeb; padding: 12px 20px; border-radius: 25px; outline: none; }
+        .chat-input { flex: 1; border: 2px solid #ffdeeb; padding: 12px 20px; border-radius: 25px; outline: none; font-size: 0.9rem; }
         .chat-send { background: var(--pink-accent); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         .btn-sm { background: var(--pink-soft); color: var(--pink-accent); border: none; padding: 10px 18px; border-radius: 18px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
-        .btn-finish { background: var(--grad-pink); color: white; border-radius: 20px; padding: 10px 25px; margin-left: auto; }
-        .toast { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 12px 30px; border-radius: 30px; display: none; z-index: 10000; }
+        .btn-finish { background: var(--grad-pink); color: white; border-radius: 25px; padding: 12px 25px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-finish:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(255,154,158,0.4); }
+        .toast { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 12px 30px; border-radius: 30px; display: none; z-index: 10000; font-size: 0.85rem; }
+        
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; margin-bottom: 8px; }
+        .status-wait { background: #fff1f0; color: #ff4d4f; }
+        .status-doing { background: #e6f7ff; color: #1890ff; }
+        .status-done { background: #f6ffed; color: #52c41a; }
     </style>
 </head>
 <body>
@@ -66,16 +77,39 @@
     </div>
     <div class="shop-name">PINK — JULIE</div>
     <div class="nav-pill">
-        <button class="nav-btn active" id="tab-pub" onclick="goPage('pub')">เช็คคิวงาน</button>
-        <button class="nav-btn" id="tab-adm" onclick="tryAdmin()">แอดมินร้าน</button>
+        <button class="nav-btn active" id="tab-pub" onclick="goPage('pub')">คิวงานลูกค้า</button>
+        <button class="nav-btn" id="tab-adm" onclick="tryAdmin()">แอดมิน</button>
     </div>
 </header>
 
 <div class="container">
     <main id="page-pub">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="search-q" class="search-input" placeholder="ค้นหาเลขออเดอร์ / ชื่อลูกค้า / LINE ID" oninput="render()">
+        </div>
         <div id="list-q"></div>
     </main>
-    <main id="page-adm" style="display:none;"><div id="admin-content"></div></main>
+
+    <main id="page-adm" style="display:none;">
+        <div class="q-card" style="border: 2px solid var(--pink-soft);">
+            <div style="font-weight:600; color:var(--pink-accent); margin-bottom:15px;">🎀 เพิ่มออเดอร์ใหม่</div>
+            <input type="text" id="in-name" class="chat-input" style="width:100%; margin-bottom:10px;" placeholder="ชื่อลูกค้า / LINE ID">
+            <input type="text" id="in-svc" class="chat-input" style="width:100%; margin-bottom:10px;" placeholder="รายละเอียดงาน">
+            <input type="text" id="in-note" class="chat-input" style="width:100%; margin-bottom:15px;" placeholder="โน้ตอัปเดต (เช่น กำลังร่างแบบ...)">
+            <button class="btn-finish" style="width:100%;" onclick="addNewOrder()">บันทึกคิว ✨</button>
+        </div>
+        <div id="adm-q-list"></div>
+        
+        <div class="q-card" style="margin-top:20px;">
+            <div style="font-weight:600; margin-bottom:10px;">💬 ห้องแชทตอบลูกค้า</div>
+            <div id="adm-chat-history" style="max-height:180px; overflow-y:auto; margin-bottom:15px; font-size:0.85rem; border:1px solid #f0f0f0; padding:10px; border-radius:20px;"></div>
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="adm-reply-input" class="chat-input" style="padding:10px 15px;" placeholder="พิมพ์ตอบลูกค้า...">
+                <button class="btn-sm btn-finish" style="margin:0;" onclick="sendMessage('admin')">ส่ง</button>
+            </div>
+        </div>
+    </main>
 </div>
 
 <div id="chat-widget">
@@ -95,45 +129,46 @@
 <div id="toast" class="toast"></div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('pj_final_fixed')) || { q: [], chats: [], unread: false, nextNo: 1 };
+    let db = JSON.parse(localStorage.getItem('pj_final_pro')) || { q: [], chats: [], unread: false, nextNo: 1 };
     let authed = false;
 
-    function save() { localStorage.setItem('pj_final_fixed', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('pj_final_pro', JSON.stringify(db)); render(); }
+
+    function getStatusLabel(prog) {
+        if (prog === 0) return '<span class="status-badge status-wait">รอเริ่มงาน</span>';
+        if (prog < 100) return '<span class="status-badge status-doing">กำลังทำ</span>';
+        return '<span class="status-badge status-done">เสร็จแล้ว ✨</span>';
+    }
 
     function render() {
+        const searchVal = document.getElementById('search-q').value.toLowerCase();
         const qContainer = document.getElementById('list-q');
-        qContainer.innerHTML = db.q.length === 0 ? `<div style="text-align:center; padding:40px; color:#ccc;">ยังไม่มีคิวงานจ้า</div>` : 
-            db.q.map(x => `
+        
+        const filteredQ = db.q.filter(x => 
+            x.name.toLowerCase().includes(searchVal) || 
+            x.no.toLowerCase().includes(searchVal) ||
+            x.svc.toLowerCase().includes(searchVal)
+        );
+
+        qContainer.innerHTML = filteredQ.length === 0 ? `<div style="text-align:center; padding:40px; color:#ccc;">ไม่พบข้อมูลออเดอร์จ้า</div>` : 
+            filteredQ.map((x, idx) => `
                 <div class="q-card">
                     <div class="q-no">${x.no}</div>
+                    ${getStatusLabel(x.progress)}
                     <div style="font-weight:600; font-size:1.1rem;">คุณ ${x.name}</div>
-                    <div style="font-size:0.85rem; color:#999;">${x.svc}</div>
+                    <div style="font-size:0.85rem; color:#999; margin-top:5px;">งาน: ${x.svc}</div>
                     <div class="progress-container"><div class="progress-bar" style="width:${x.progress}%"></div></div>
                     <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--pink-accent); font-weight:600;">
-                        <span>อัปเดตล่าสุด</span>
+                        <span>${x.note || 'อัปเดตล่าสุด: รอดำเนินการ'}</span>
                         <span>${x.progress}%</span>
+                    </div>
+                    <div style="font-size:0.7rem; color:#ccc; margin-top:10px; border-top:1px dashed #eee; padding-top:10px;">
+                        อัปเดตเมื่อ: ${x.lastUpdate || '---'} | คิวที่: ${idx + 1}
                     </div>
                 </div>
             `).join('');
 
-        if (authed && document.getElementById('admin-content')) {
-            document.getElementById('admin-content').innerHTML = `
-                <div class="q-card" style="border: 2px solid var(--pink-soft);">
-                    <div style="font-weight:600; color:var(--pink-accent); margin-bottom:15px;">🎀 เพิ่มคิวใหม่</div>
-                    <input type="text" id="in-name" class="chat-input" style="width:100%; margin-bottom:10px;" placeholder="ชื่อลูกค้า">
-                    <input type="text" id="in-svc" class="chat-input" style="width:100%; margin-bottom:15px;" placeholder="งานที่สั่ง">
-                    <button class="btn-finish" style="width:100%; height:50px;" onclick="addNewOrder()">บันทึกคิว ✨</button>
-                </div>
-                <div id="adm-q-list"></div>
-                <div class="q-card" style="margin-top:20px;">
-                    <div style="font-weight:600; margin-bottom:10px;">💬 ห้องแชทและตอบกลับ</div>
-                    <div id="adm-chat-history" style="max-height:180px; overflow-y:auto; margin-bottom:15px; font-size:0.85rem;"></div>
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" id="adm-reply-input" class="chat-input" style="padding:10px 15px;" placeholder="พิมพ์ตอบลูกค้า...">
-                        <button class="btn-sm btn-finish" style="margin:0;" onclick="sendMessage('admin')">ส่ง</button>
-                    </div>
-                </div>
-            `;
+        if (authed && document.getElementById('adm-q-list')) {
             renderAdminQ();
             renderAdminChatHistory();
         }
@@ -146,10 +181,12 @@
             <div class="q-card">
                 <div class="q-no">${x.no}</div>
                 <div style="font-weight:600;">คุณ ${x.name}</div>
-                <div style="display:flex; gap:10px; margin-top:15px;">
-                    <button class="btn-sm" onclick="updateQ(${x.id})">+10%</button>
-                    <button class="btn-sm" style="background:#e6f7ff; color:#1890ff;" onclick="copyCap('${x.name}', '${x.no}')">ก๊อปแคปชั่น 📋</button>
-                    <button class="btn-finish" onclick="delQ(${x.id})">ลบ</button>
+                <div style="font-size:0.85rem; margin:10px 0;">โน้ต: ${x.note || '-'}</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
+                    <button class="btn-sm" onclick="updateQ(${x.id}, 10)">+10%</button>
+                    <button class="btn-sm" onclick="updateNote(${x.id})">แก้ไขโน้ต 📝</button>
+                    <button class="btn-sm" style="background:#e6f7ff; color:#1890ff;" onclick="copyCap('${x.name}', '${x.no}')">ก๊อปส่งลูกค้า 📋</button>
+                    <button class="btn-sm" style="background:#fff1f0; color:#ff4d4f;" onclick="delQ(${x.id})">ลบ</button>
                 </div>
             </div>
         `).join('');
@@ -179,37 +216,58 @@
 
     function renderAdminChatHistory() {
         const container = document.getElementById('adm-chat-history');
-        if (container) container.innerHTML = db.chats.map(m => `<div style="margin-bottom:5px;"><strong>${m.role==='user'?'ลูกค้า':'แอดมิน'}:</strong> ${m.text}</div>`).join('');
-    }
-
-    function copyCap(name, no) {
-        const text = `ลงออเดอร์เรียบร้อยนะคะคุณ ${name} ✨\n` +
-                     `เลขออเดอร์ของคุณคือ ${no} นะคะ 🎀\n` +
-                     `ขอบคุณที่ไว้วางใจให้ ดูแลนะคะ รองานสวยๆ ได้เลย จะรีบปั่นให้สุดฝีมือเลยค่ะ! 🔥\n\n` +
-                     `🔍 ตรวจสอบสถานะคิวได้ที่นี่น้า:\n` +
-                     `https://julie-vwb.github.io/dekju-q/\n` +
-                     `(ใส่หมายเลขออเดอร์ในช่องค้นหาได้เลยค่ะ)`;
-        navigator.clipboard.writeText(text).then(() => {
-            const t = document.getElementById('toast');
-            t.innerText = "คัดลอกข้อความแล้วค่ะ ✨";
-            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000);
-        });
+        if (container) container.innerHTML = db.chats.map(m => `<div style="margin-bottom:8px;"><strong>${m.role==='user'?'👤':'👩‍💻'}:</strong> ${m.text}</div>`).join('');
     }
 
     function addNewOrder() {
         const n = document.getElementById('in-name').value;
         const s = document.getElementById('in-svc').value;
+        const note = document.getElementById('in-note').value;
         if (n) {
-            db.q.push({ id: Date.now(), no: "PJ-" + db.nextNo.toString().padStart(3, '0'), name: n, svc: s, progress: 0 });
+            db.q.push({ 
+                id: Date.now(), 
+                no: "PJ-" + db.nextNo.toString().padStart(3, '0'), 
+                name: n, 
+                svc: s, 
+                note: note,
+                progress: 0,
+                lastUpdate: new Date().toLocaleDateString('th-TH')
+            });
             db.nextNo++;
             save();
+            document.getElementById('in-name').value = '';
+            document.getElementById('in-svc').value = '';
+            document.getElementById('in-note').value = '';
         }
     }
 
-    function updateQ(id) { const i = db.q.find(x => x.id === id); if (i) { i.progress = Math.min(i.progress + 10, 100); save(); } }
-    function delQ(id) { if(confirm('ลบ?')) { db.q = db.q.filter(x => x.id !== id); save(); } }
+    function updateQ(id, val) { 
+        const i = db.q.find(x => x.id === id); 
+        if (i) { 
+            i.progress = Math.min(i.progress + val, 100); 
+            i.lastUpdate = new Date().toLocaleDateString('th-TH');
+            save(); 
+        } 
+    }
+
+    function updateNote(id) {
+        const i = db.q.find(x => x.id === id);
+        const newNote = prompt("พิมพ์ข้อความอัปเดตใหม่:", i.note);
+        if (newNote !== null) { i.note = newNote; i.lastUpdate = new Date().toLocaleDateString('th-TH'); save(); }
+    }
+
+    function copyCap(name, no) {
+        const text = `ลงออเดอร์เรียบร้อยนะคะคุณ ${name} ✨\nเลขออเดอร์ของคุณคือ ${no} นะคะ 🎀\nขอบคุณที่ไว้วางใจให้ดูแลนะคะ รองานสวยๆ ได้เลย จะรีบปั่นให้สุดฝีมือเลยค่ะ! 🔥\n\n🔍 ตรวจสอบสถานะคิวได้ที่นี่น้า:\nhttps://julie-vwb.github.io/dekju-q/\n(ใส่หมายเลขออเดอร์ในช่องค้นหาได้เลยค่ะ)`;
+        navigator.clipboard.writeText(text).then(() => {
+            const t = document.getElementById('toast');
+            t.innerText = "คัดลอกข้อความลงออเดอร์แล้วค่ะ ✨";
+            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000);
+        });
+    }
+
+    function delQ(id) { if(confirm('ลบคิวนี้ใช่ไหม?')) { db.q = db.q.filter(x => x.id !== id); save(); } }
     function goPage(p) { document.getElementById('page-pub').style.display = p === 'pub' ? 'block' : 'none'; document.getElementById('page-adm').style.display = p === 'adm' ? 'block' : 'none'; document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.id === 'tab-' + p)); render(); }
-    function tryAdmin() { if (prompt("รหัส:") === '1234') { authed = true; goPage('adm'); } }
+    function tryAdmin() { if (prompt("รหัสแอดมิน (1234):") === '1234') { authed = true; goPage('adm'); } }
     function toggleChat() { document.getElementById('chat-box').style.display = document.getElementById('chat-box').style.display === 'flex' ? 'none' : 'flex'; if (authed) db.unread = false; save(); }
 
     render();

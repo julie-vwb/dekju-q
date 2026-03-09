@@ -26,45 +26,47 @@
         .nav-btn.active { background: linear-gradient(45deg, #ff9a9e, #fecfef); color: #fff; }
 
         .container { max-width: 450px; margin: 0 auto; padding: 20px; }
-        .search-box { width: 100%; padding: 12px 20px; border-radius: 20px; border: 2px solid #fff; background: #fff; margin-bottom: 20px; outline: none; box-shadow: 0 5px 15px rgba(0,0,0,0.03); font-size: 0.9rem; }
+        .search-box { width: 100%; padding: 12px 20px; border-radius: 20px; border: 2px solid #fff; background: #fff; margin-bottom: 20px; outline: none; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
 
         .q-card { background: var(--card-bg); border-radius: 25px; padding: 22px; margin-bottom: 18px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.03); border: 1px solid #fff; }
-
         .date-stamp { font-size: 0.65rem; color: #ccc; margin-bottom: 4px; display: block; }
-        
-        /* แถบโหลดดิ้งแบบวิ่งดุ๊กดิ๊ก */
+
         .progress-container { background: #f0f0f0; border-radius: 10px; height: 14px; overflow: hidden; margin: 10px 0; position: relative; }
         .progress-bar { 
-            height: 100%; width: 0%; 
-            background: var(--grad-pink); 
-            background-size: 200% 100%;
-            border-radius: 10px; 
-            transition: width 0.8s ease; 
-            animation: progressMoving 2s linear infinite;
-            position: relative;
+            height: 100%; width: 0%; background: var(--grad-pink); background-size: 200% 100%; border-radius: 10px; transition: width 0.8s ease; 
+            animation: progressMoving 2s linear infinite; position: relative;
         }
         .progress-bar::after {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            animation: shine 1.5s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent); animation: shine 1.5s infinite;
         }
         @keyframes progressMoving { 0% { background-position: 0% 0%; } 100% { background-position: -200% 0%; } }
         @keyframes shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
         .note-box { background: var(--bg-grad); padding: 10px; border-radius: 12px; font-size: 0.75rem; color: var(--pink-accent); margin-top: 10px; border-left: 3px solid var(--pink-accent); }
 
-        /* ปุ่มกดสถานะ */
         .btn-group { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
         .btn-sm { background: var(--pink-soft); color: var(--pink-accent); border: none; padding: 6px 12px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-sm:active { transform: scale(0.95); }
         .btn-copy { background: #e6f7ff; color: #1890ff; }
         .btn-start { background: #e6fffb; color: #13c2c2; }
         .btn-finish { background: linear-gradient(45deg, #ff9a9e, #fecfef); color: white; border: none; padding: 6px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; cursor: pointer; margin-left: auto; }
 
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 192, 203, 0.2); backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .modal-content {
+            background: rgba(255, 255, 255, 0.9); width: 85%; max-width: 340px; padding: 30px 25px;
+            border-radius: 30px; text-align: center; box-shadow: 0 20px 40px rgba(255, 133, 192, 0.15);
+            border: 2px solid #fff; animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-title { font-size: 1.1rem; font-weight: 600; color: var(--pink-accent); margin-bottom: 20px; }
+        .modal-input { width: 100%; padding: 15px; border-radius: 15px; border: 2px solid #ffdeeb; margin-bottom: 25px; text-align: center; outline: none; }
+
         .section-label { font-size: 0.85rem; color: var(--pink-accent); margin: 25px 0 12px 5px; font-weight: 600; }
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 0.75rem; display: none; z-index: 2000; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #fff; width: 85%; max-width: 320px; padding: 25px; border-radius: 25px; text-align: center; }
     </style>
 </head>
 <body>
@@ -80,7 +82,7 @@
 
 <div class="container">
     <main id="page-pub" class="page on">
-        <input type="text" id="searchQ" class="search-box" placeholder="🔍 ค้นหาคิว หรือ ชื่อ..." onkeyup="render()">
+        <input type="text" id="searchQ" class="search-box" placeholder="🔍 ค้นหาคิว หรือ ชื่อลูกค้า..." onkeyup="render()">
         <div class="section-label">💖 กำลังตั้งใจทำอยู่นะคะ</div>
         <div id="list-progress"></div>
         <div class="section-label">⏳ คิวถัดไปเตรียมตัวเลย</div>
@@ -93,26 +95,36 @@
 
 <div id="goyUp" class="modal-overlay">
     <div class="modal-content">
-        <div id="modalTitle" style="font-weight:600; margin-bottom:15px;">อัปเดตงาน</div>
-        <input type="text" id="modalInput" style="width:100%; padding:12px; border-radius:12px; border:1px solid #ffdeeb; margin-bottom:20px; text-align:center; outline:none;">
-        <div style="display:flex; gap:10px;">
-            <button style="flex:1; padding:10px; border:none; border-radius:12px; background:#eee;" onclick="closeModal()">ยกเลิก</button>
-            <button style="flex:1; padding:10px; border:none; border-radius:12px; background:#ff85c0; color:white;" id="modalConfirmBtn">ตกลง</button>
+        <div id="modalTitle" class="modal-title">🎀 อัปเดตงาน 🎀</div>
+        <input type="text" id="modalInput" class="modal-input" placeholder="พิมพ์ข้อความที่นี่...">
+        <div style="display:flex; gap:12px;">
+            <button class="btn-sm" style="flex:1; background:#f5f5f5; color:#999; height:45px;" onclick="closeModal()">ยกเลิก</button>
+            <button class="btn-sm" style="flex:1; background:var(--grad-pink); color:white; height:45px;" id="modalConfirmBtn">ตกลงค่ะ ✨</button>
         </div>
     </div>
 </div>
 
-<div id="toast" class="toast">คัดลอกแล้วค่ะ ✨</div>
+<div id="toast" class="toast">คัดลอกแคปชั่นแล้วค่ะ ✨</div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('pj_final_v5')) || { q: [], nextNo: 1 };
+    let db = JSON.parse(localStorage.getItem('pj_final_v7')) || { q: [], nextNo: 1 };
     let authed = false;
 
-    function save() { localStorage.setItem('pj_final_v5', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('pj_final_v7', JSON.stringify(db)); render(); }
 
     function getNow() {
         const d = new Date();
         return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()+543} ${d.getHours()}:${d.getMinutes().toString().padStart(2,'0')}`;
+    }
+
+    function copyCaption(id) {
+        const x = db.q.find(i => i.id === id);
+        const statusText = x.progress === 100 ? "เสร็จเรียบร้อยพร้อมส่งความสวยค่ะ! 🌸" : (x.progress === 0 ? "รอคิวอีกนิดนะคะคนสวย ⏳" : `กำลังปั่นงานให้อย่างไวเลยค่ะ ${x.progress}% 🪄`);
+        const text = `#พร้อมส่ง ✨\n\n🎀 สินค้า: ${x.svc}\n🎨 รหัสคิว: ${x.no}\n👤 ลูกค้า: คุณ ${x.name}\n\n📊 สถานะ: ${x.progress}% - ${statusText}\n📢 โน้ต: ${x.note || '-'}\n\n📅 ลงคิวเมื่อ: ${x.createdAt}\n✨ อัปเดตล่าสุด: ${x.updatedAt}\n\nใครอยากได้งานสวยๆ แบบนี้ทักแชทจองคิวแอดมินได้เลยนะคะ ใจละลายแน่นอน! 💖👑`;
+        navigator.clipboard.writeText(text).then(() => {
+            const t = document.getElementById('toast');
+            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000);
+        });
     }
 
     function render() {
@@ -171,9 +183,9 @@
             document.getElementById('admin-content').innerHTML = `
                 <div class="q-card">
                     <div class="section-label" style="margin-top:0;">🎀 เพิ่มคิวใหม่</div>
-                    <input type="text" id="in-name" style="width:100%; padding:12px; border-radius:12px; border:1px solid #ffdeeb; margin-bottom:10px; outline:none;" placeholder="ชื่อลูกค้า">
-                    <input type="text" id="in-svc" style="width:100%; padding:12px; border-radius:12px; border:1px solid #ffdeeb; margin-bottom:15px; outline:none;" placeholder="งานที่สั่ง">
-                    <button class="btn-finish" style="width:100%; padding:12px; font-size:0.9rem;" onclick="addNewOrder()">บันทึกคิว ✨</button>
+                    <input type="text" id="in-name" style="width:100%; padding:15px; border-radius:15px; border:1px solid #ffdeeb; margin-bottom:10px; outline:none;" placeholder="ชื่อลูกค้า">
+                    <input type="text" id="in-svc" style="width:100%; padding:15px; border-radius:15px; border:1px solid #ffdeeb; margin-bottom:15px; outline:none;" placeholder="งานที่สั่ง">
+                    <button class="btn-finish" style="width:100%; padding:15px; font-size:0.9rem;" onclick="addNewOrder()">บันทึกคิว ✨</button>
                 </div>
                 <div id="adm-list"></div>
             `;
@@ -197,24 +209,16 @@
         if (type === 'prog') { item.progress = Math.min(item.progress + 10, 100); item.updatedAt = getNow(); save(); }
         if (type === 'done') { item.progress = 100; item.updatedAt = getNow(); save(); }
         if (type === 'note') {
-            openModal("โน้ตอัปเดตงาน:", (val) => { item.note = val; item.updatedAt = getNow(); save(); });
+            openModal("🎀 อัปเดตโน้ตงาน 🎀", (val) => { item.note = val; item.updatedAt = getNow(); save(); });
         }
     }
 
-    function copyCaption(id) {
-        const x = db.q.find(i => i.id === id);
-        const text = `#พร้อมส่ง\nสินค้า: ${x.svc}\nรหัส: ${x.no}\nสถานะ: ${x.progress}%\nอัปเดต: ${x.updatedAt}\nจองคิวทักแชทนะคะเจ้าหญิง 🌸`;
-        navigator.clipboard.writeText(text).then(() => {
-            const t = document.getElementById('toast');
-            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000);
-        });
-    }
-
     function openModal(title, callback) {
+        document.getElementById('modalTitle').innerText = title;
         document.getElementById('goyUp').style.display = 'flex';
         document.getElementById('modalConfirmBtn').onclick = () => { callback(document.getElementById('modalInput').value); closeModal(); };
     }
-    function closeModal() { document.getElementById('goyUp').style.display = 'none'; }
+    function closeModal() { document.getElementById('goyUp').style.display = 'none'; document.getElementById('modalInput').value = ""; }
     function goPage(p) {
         document.querySelectorAll('.page').forEach(x => x.style.display = 'none');
         document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));

@@ -12,7 +12,7 @@
             --pink-accent: #ff85c0;
             --pink-soft: #ffdeeb;
             --text-main: #595959;
-            --grad-pink: linear-gradient(45deg, #ff9a9e, #fecfef);
+            --grad-pink: linear-gradient(90deg, #ff9a9e, #fecfef, #ff9a9e);
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Mitr', sans-serif; }
         body { background: var(--bg-grad); background-attachment: fixed; color: var(--text-main); min-height: 100vh; }
@@ -23,46 +23,48 @@
         
         .nav-pill { display: inline-flex; background: #fff; padding: 5px; border-radius: 999px; margin-top: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .nav-btn { padding: 8px 25px; border-radius: 999px; border: none; cursor: pointer; font-size: 0.85rem; color: #999; background: transparent; }
-        .nav-btn.active { background: var(--grad-pink); color: #fff; }
+        .nav-btn.active { background: linear-gradient(45deg, #ff9a9e, #fecfef); color: #fff; }
 
         .container { max-width: 450px; margin: 0 auto; padding: 20px; }
-        
-        /* ช่องค้นหา */
-        .search-box { width: 100%; padding: 12px 20px; border-radius: 20px; border: 2px solid #fff; background: #fff; margin-bottom: 20px; outline: none; box-shadow: 0 5px 15px rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); }
-        .search-box:focus { border-color: var(--pink-soft); }
+        .search-box { width: 100%; padding: 12px 20px; border-radius: 20px; border: 2px solid #fff; background: #fff; margin-bottom: 20px; outline: none; box-shadow: 0 5px 15px rgba(0,0,0,0.03); font-size: 0.9rem; }
 
         .q-card { background: var(--card-bg); border-radius: 25px; padding: 22px; margin-bottom: 18px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.03); border: 1px solid #fff; }
 
-        .progress-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: #bbb; margin-bottom: 6px; }
-        .progress-container { background: #f0f0f0; border-radius: 10px; height: 14px; overflow: hidden; margin-bottom: 10px; }
-        .progress-bar { height: 100%; width: 0%; background: var(--grad-pink); border-radius: 10px; transition: 0.8s ease-in-out; }
+        .date-stamp { font-size: 0.65rem; color: #ccc; margin-bottom: 4px; display: block; }
+        
+        /* แถบโหลดดิ้งแบบวิ่งดุ๊กดิ๊ก */
+        .progress-container { background: #f0f0f0; border-radius: 10px; height: 14px; overflow: hidden; margin: 10px 0; position: relative; }
+        .progress-bar { 
+            height: 100%; width: 0%; 
+            background: var(--grad-pink); 
+            background-size: 200% 100%;
+            border-radius: 10px; 
+            transition: width 0.8s ease; 
+            animation: progressMoving 2s linear infinite;
+            position: relative;
+        }
+        .progress-bar::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shine 1.5s infinite;
+        }
+        @keyframes progressMoving { 0% { background-position: 0% 0%; } 100% { background-position: -200% 0%; } }
+        @keyframes shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
         .note-box { background: var(--bg-grad); padding: 10px; border-radius: 12px; font-size: 0.75rem; color: var(--pink-accent); margin-top: 10px; border-left: 3px solid var(--pink-accent); }
 
+        /* ปุ่มกดสถานะ */
         .btn-group { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
-        .btn-sm { background: var(--pink-soft); color: var(--pink-accent); border: none; padding: 5px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: 600; cursor: pointer; }
+        .btn-sm { background: var(--pink-soft); color: var(--pink-accent); border: none; padding: 6px 12px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-sm:active { transform: scale(0.95); }
         .btn-copy { background: #e6f7ff; color: #1890ff; }
-        .btn-finish { background: var(--grad-pink); color: white; border: none; padding: 5px 15px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; cursor: pointer; margin-left: auto; text-transform: lowercase; }
+        .btn-start { background: #e6fffb; color: #13c2c2; }
+        .btn-finish { background: linear-gradient(45deg, #ff9a9e, #fecfef); color: white; border: none; padding: 6px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; cursor: pointer; margin-left: auto; }
 
-        /* Goy Up (Modal) */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #fff; width: 85%; max-width: 320px; padding: 25px; border-radius: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .modal-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 15px; }
-        .modal-input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--pink-soft); margin-bottom: 20px; outline: none; text-align: center; }
-        .modal-btns { display: flex; gap: 10px; }
-        .m-btn { flex: 1; padding: 10px; border-radius: 12px; border: none; font-size: 0.85rem; cursor: pointer; }
-        .m-btn-cancel { background: #f5f5f5; color: #999; }
-        .m-btn-ok { background: var(--pink-accent); color: #fff; }
-
-        .empty-state { background: rgba(255,255,255,0.4); padding: 25px; border-radius: 20px; text-align: center; color: #ffb3d9; font-size: 0.8rem; border: 2px dashed rgba(255,133,192,0.1); margin-bottom: 15px; }
         .section-label { font-size: 0.85rem; color: var(--pink-accent); margin: 25px 0 12px 5px; font-weight: 600; }
-        
-        .page { display: none; }
-        .page.on { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Toast Alert */
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 0.75rem; display: none; z-index: 2000; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: #fff; width: 85%; max-width: 320px; padding: 25px; border-radius: 25px; text-align: center; }
     </style>
 </head>
 <body>
@@ -71,15 +73,14 @@
     <img src="https://via.placeholder.com/150/ffdeeb/ff85c0?text=PJ" class="profile-img">
     <div class="shop-name">PINK — JULIE</div>
     <div class="nav-pill">
-        <button class="nav-btn active" id="tab-pub" onclick="goPage('pub')">เช็คคิวงาน</button>
+        <button class="nav-btn active" id="tab-pub" onclick="goPage('pub')">คิวงานลูกค้า</button>
         <button class="nav-btn" id="tab-adm" onclick="tryAdmin()">แอดมิน</button>
     </div>
 </header>
 
 <div class="container">
     <main id="page-pub" class="page on">
-        <input type="text" id="searchQ" class="search-box" placeholder="🔍 ค้นหาเลขคิว หรือ ชื่อลูกค้า..." onkeyup="render()">
-        
+        <input type="text" id="searchQ" class="search-box" placeholder="🔍 ค้นหาคิว หรือ ชื่อ..." onkeyup="render()">
         <div class="section-label">💖 กำลังตั้งใจทำอยู่นะคะ</div>
         <div id="list-progress"></div>
         <div class="section-label">⏳ คิวถัดไปเตรียมตัวเลย</div>
@@ -87,19 +88,16 @@
         <div class="section-label">🌸 งานสวยๆ เสร็จแล้วจ้า</div>
         <div id="list-done"></div>
     </main>
-
-    <main id="page-adm" class="page">
-        <div id="admin-content"></div>
-    </main>
+    <main id="page-adm" class="page" style="display:none;"><div id="admin-content"></div></main>
 </div>
 
 <div id="goyUp" class="modal-overlay">
     <div class="modal-content">
-        <div id="modalTitle" class="modal-title">อัปเดตข้อมูล</div>
-        <input type="text" id="modalInput" class="modal-input">
-        <div class="modal-btns">
-            <button class="m-btn m-btn-cancel" onclick="closeModal()">ยกเลิก</button>
-            <button class="m-btn m-btn-ok" id="modalConfirmBtn">ตกลง</button>
+        <div id="modalTitle" style="font-weight:600; margin-bottom:15px;">อัปเดตงาน</div>
+        <input type="text" id="modalInput" style="width:100%; padding:12px; border-radius:12px; border:1px solid #ffdeeb; margin-bottom:20px; text-align:center; outline:none;">
+        <div style="display:flex; gap:10px;">
+            <button style="flex:1; padding:10px; border:none; border-radius:12px; background:#eee;" onclick="closeModal()">ยกเลิก</button>
+            <button style="flex:1; padding:10px; border:none; border-radius:12px; background:#ff85c0; color:white;" id="modalConfirmBtn">ตกลง</button>
         </div>
     </div>
 </div>
@@ -107,22 +105,14 @@
 <div id="toast" class="toast">คัดลอกแล้วค่ะ ✨</div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('pj_final_v3')) || { q: [], nextNo: 1 };
+    let db = JSON.parse(localStorage.getItem('pj_final_v5')) || { q: [], nextNo: 1 };
     let authed = false;
 
-    function save() { localStorage.setItem('pj_final_v3', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('pj_final_v5', JSON.stringify(db)); render(); }
 
-    // ฟังก์ชันสร้างข้อความแคปชั่น
-    function getCaption(x) {
-        return `#พร้อมส่ง\nสินค้า: ${x.svc}\nรหัสคิว: ${x.no}\nสถานะ: ${x.progress}%\nโน้ต: ${x.note || 'รอดำเนินการ'}\nจองคิวทักแชทได้เลยนะคะเจ้าหญิง 🌸`;
-    }
-
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            const t = document.getElementById('toast');
-            t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 2000);
-        });
+    function getNow() {
+        const d = new Date();
+        return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()+543} ${d.getHours()}:${d.getMinutes().toString().padStart(2,'0')}`;
     }
 
     function render() {
@@ -133,12 +123,13 @@
             const container = document.getElementById(id);
             if (!container) return;
             if (list.length === 0) {
-                container.innerHTML = `<div class="empty-state">ไม่มีข้อมูลค่ะ ✨</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:20px; color:#ffb3d9; font-size:0.75rem; border:2px dashed #ffdeeb; border-radius:20px;">ไม่มีข้อมูลค่ะ ✨</div>`;
                 return;
             }
             container.innerHTML = list.map(x => `
                 <div class="q-card">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <span class="date-stamp">📅 ลงเมื่อ: ${x.createdAt}</span>
+                    <div style="display:flex; justify-content:space-between;">
                         <div>
                             <div style="font-weight:600; font-size:0.95rem;">${x.name}</div>
                             <div style="font-size:0.75rem; color:#999;">${x.svc}</div>
@@ -146,21 +137,26 @@
                         <div style="font-size:0.7rem; font-weight:600; color:var(--pink-accent); background:var(--pink-soft); padding:2px 8px; border-radius:6px;">${x.no}</div>
                     </div>
 
-                    <div style="margin-top:15px;">
-                        <div class="progress-label"><span>ความคืบหน้า</span><span>${x.progress}%</span></div>
+                    <div style="margin-top:12px;">
                         <div class="progress-container"><div class="progress-bar" style="width:${x.progress}%"></div></div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.6rem; color:#ffb3d9;">
+                            <span>อัปเดต: ${x.updatedAt}</span>
+                            <span>${x.progress}%</span>
+                        </div>
                     </div>
 
                     ${x.note ? `<div class="note-box">📢 ${x.note}</div>` : ''}
 
                     <div class="btn-group">
-                        <button class="btn-sm btn-copy" onclick="copyToClipboard(getCaption(db.q.find(i=>i.id===${x.id})))">ก๊อปแคปชั่น 📋</button>
+                        <button class="btn-sm btn-copy" onclick="copyCaption(${x.id})">ก๊อปแคปชั่น 📋</button>
                         ${isAdm ? `
-                            ${x.progress < 100 ? `
-                                <button class="btn-sm" onclick="add10(${x.id})">+ 10% 🪄</button>
-                                <button class="btn-sm" onclick="promptNote(${x.id})">โน้ต</button>
-                                <button class="btn-finish" onclick="setDone(${x.id})">finish</button>
-                            ` : `<button class="btn-sm" style="color:#ff4d4d; background:none" onclick="delQ(${x.id})">ลบคิว</button>`}
+                            ${x.progress === 0 ? `<button class="btn-sm btn-start" onclick="updateQ(${x.id}, 'start')">เริ่มคิวงาน 🪄</button>` : ''}
+                            ${x.progress > 0 && x.progress < 100 ? `
+                                <button class="btn-sm" onclick="updateQ(${x.id}, 'prog')">+ 10%</button>
+                                <button class="btn-sm" onclick="updateQ(${x.id}, 'note')">โน้ต</button>
+                                <button class="btn-finish" onclick="updateQ(${x.id}, 'done')">finish</button>
+                            ` : ''}
+                            ${x.progress === 100 ? `<button class="btn-sm" style="color:#ff4d4d; background:none" onclick="delQ(${x.id})">ลบคิว</button>` : ''}
                         ` : ''}
                     </div>
                 </div>
@@ -168,16 +164,16 @@
         };
 
         draw(allQ.filter(x => x.progress > 0 && x.progress < 100), 'list-progress');
-        draw(allQ.filter(x => x.progress == 0), 'list-waiting');
-        draw(allQ.filter(x => x.progress == 100), 'list-done');
+        draw(allQ.filter(x => x.progress === 0), 'list-waiting');
+        draw(allQ.filter(x => x.progress === 100), 'list-done');
 
         if (authed && document.getElementById('admin-content')) {
             document.getElementById('admin-content').innerHTML = `
                 <div class="q-card">
                     <div class="section-label" style="margin-top:0;">🎀 เพิ่มคิวใหม่</div>
-                    <input type="text" id="in-name" class="modal-input" placeholder="ชื่อลูกค้า" style="margin-bottom:10px;">
-                    <input type="text" id="in-svc" class="modal-input" placeholder="รายละเอียดงาน" style="margin-bottom:15px;">
-                    <button class="btn-finish" style="width:100%; padding:12px; font-size:0.85rem;" onclick="addNewOrder()">บันทึกคิวงาน 🪄</button>
+                    <input type="text" id="in-name" style="width:100%; padding:12px; border-radius:12px; border:1px solid #ffdeeb; margin-bottom:10px; outline:none;" placeholder="ชื่อลูกค้า">
+                    <input type="text" id="in-svc" style="width:100%; padding:12px; border-radius:12px; border:1px solid #ffdeeb; margin-bottom:15px; outline:none;" placeholder="งานที่สั่ง">
+                    <button class="btn-finish" style="width:100%; padding:12px; font-size:0.9rem;" onclick="addNewOrder()">บันทึกคิว ✨</button>
                 </div>
                 <div id="adm-list"></div>
             `;
@@ -189,49 +185,44 @@
         const name = document.getElementById('in-name').value;
         const svc = document.getElementById('in-svc').value;
         if (!name) return;
-        db.q.push({ id: Date.now(), no: "PJ-" + db.nextNo.toString().padStart(3, '0'), name, svc, progress: 0, note: '' });
+        const now = getNow();
+        db.q.push({ id: Date.now(), no: "PJ-" + db.nextNo.toString().padStart(3, '0'), name, svc, progress: 0, note: '', createdAt: now, updatedAt: now });
         db.nextNo++; save();
     }
 
-    function add10(id) {
+    function updateQ(id, type) {
         const item = db.q.find(x => x.id === id);
-        if (item && item.progress < 100) { item.progress = Math.min(item.progress + 10, 100); save(); }
+        if (!item) return;
+        if (type === 'start') { item.progress = 10; item.updatedAt = getNow(); save(); }
+        if (type === 'prog') { item.progress = Math.min(item.progress + 10, 100); item.updatedAt = getNow(); save(); }
+        if (type === 'done') { item.progress = 100; item.updatedAt = getNow(); save(); }
+        if (type === 'note') {
+            openModal("โน้ตอัปเดตงาน:", (val) => { item.note = val; item.updatedAt = getNow(); save(); });
+        }
     }
 
-    function promptNote(id) {
-        openModal("เขียนข้อความอัปเดตงาน:", (val) => {
-            const item = db.q.find(x => x.id === id);
-            if (item) { item.note = val; save(); }
+    function copyCaption(id) {
+        const x = db.q.find(i => i.id === id);
+        const text = `#พร้อมส่ง\nสินค้า: ${x.svc}\nรหัส: ${x.no}\nสถานะ: ${x.progress}%\nอัปเดต: ${x.updatedAt}\nจองคิวทักแชทนะคะเจ้าหญิง 🌸`;
+        navigator.clipboard.writeText(text).then(() => {
+            const t = document.getElementById('toast');
+            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000);
         });
     }
 
-    function setDone(id) {
-        const item = db.q.find(x => x.id === id);
-        if (item) { item.progress = 100; save(); }
-    }
-
     function openModal(title, callback) {
-        const m = document.getElementById('goyUp');
-        const input = document.getElementById('modalInput');
-        document.getElementById('modalTitle').innerText = title;
-        input.value = "";
-        m.style.display = 'flex';
-        document.getElementById('modalConfirmBtn').onclick = () => { callback(input.value); closeModal(); };
+        document.getElementById('goyUp').style.display = 'flex';
+        document.getElementById('modalConfirmBtn').onclick = () => { callback(document.getElementById('modalInput').value); closeModal(); };
     }
-
     function closeModal() { document.getElementById('goyUp').style.display = 'none'; }
     function goPage(p) {
-        document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
+        document.querySelectorAll('.page').forEach(x => x.style.display = 'none');
         document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
-        document.getElementById('page-' + p).classList.add('on');
+        document.getElementById('page-' + p).style.display = 'block';
         document.getElementById('tab-' + p).classList.add('active');
         render();
     }
-
-    function tryAdmin() {
-        const pass = prompt("รหัสแอดมิน (1234):");
-        if (pass === '1234') { authed = true; goPage('adm'); }
-    }
+    function tryAdmin() { const p = prompt("รหัส (1234):"); if (p === '1234') { authed = true; goPage('adm'); } }
     function delQ(id) { if(confirm('ลบคิวนี้ใช่ไหมคะ?')) { db.q = db.q.filter(x => x.id !== id); save(); } }
 
     render();

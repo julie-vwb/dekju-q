@@ -3,28 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Queue System Full Option ✨</title>
+    <title>Professional Queue Dashboard ✨</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --main: #b78bdb; --pink: #f472b6; }
+        :root { --p-dark: #ff4d6d; --p-main: #ff85a1; --p-soft: #ffc8dd; --bg: #fff5f8; }
         * { font-family: 'Segoe UI', 'Noto Sans Thai', sans-serif; border-radius: 25px !important; }
-        body { background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%); min-height: 100vh; padding: 20px; }
-        .card-cute { background: white; border: 2px solid #e9d5ff; padding: 25px; box-shadow: 0 10px 30px rgba(183,139,219,0.1); }
-        .btn-grad { background: linear-gradient(135deg, var(--main), var(--pink)); color: white; font-weight: bold; border: none; cursor: pointer; padding: 14px; transition: 0.3s; }
-        .btn-grad:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(244,114,182,0.3); }
-        .btn-step { background: #fdf2f8; color: #db2777; border: 2px solid #fbcfe8; padding: 10px; font-weight: bold; flex: 1; cursor: pointer; }
-        .status-waiting { background: #fee2e2; color: #dc2626; }
-        .status-doing { background: #fef3c7; color: #d97706; }
-        .status-done { background: #dcfce7; color: #166534; }
-        .progress-bar { height: 16px; background: #f3f0ff; overflow: hidden; border: 1px solid #e9d5ff; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--main), var(--pink)); transition: width 0.5s ease; }
-        .verify-box { background: #f5f3ff; border: 2px solid #ddd6fe; padding: 15px; text-align: center; margin-top: 15px; }
-        .chat-box { position: fixed; bottom: 105px; right: 30px; width: 320px; height: 450px; background: white; z-index: 1000; display: flex; flex-direction: column; border: 2px solid #e9d5ff; box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
-        .copy-btn { background: #dcfce7; color: #15803d; border: 2px solid #bbf7d0; width: 100%; font-weight: bold; padding: 12px; cursor: pointer; margin: 15px 0; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
+        body { background-color: var(--bg); padding: 20px; color: #4a4a4a; }
+        
+        /* Header แบบพรีเมียมตามรูป */
+        .header-card { background: var(--p-main); padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; color: white; box-shadow: 0 10px 25px rgba(255,133,161,0.3); }
+        .banner-pixel { width: 100%; height: 160px; background: #ffafcc url('https://i.pinimg.com/originals/8c/6b/6b/8c6b6b3e3e3e3e3e3e3e3e3e3e3e3e3e.gif') center/cover; margin-top: 15px; border: 4px solid white; }
+
+        /* Dashboard Stats ตามรูป */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .stat-card { background: white; padding: 20px; text-align: center; border: 1px solid #ffe1eb; }
+        .stat-val { font-size: 32px; font-weight: 900; color: var(--p-dark); line-height: 1; }
+        .stat-label { font-size: 10px; font-weight: bold; color: #ff85a1; text-transform: uppercase; margin-top: 5px; }
+
+        /* Task Card ดีไซน์เนี๊ยบ */
+        .task-card { background: white; padding: 20px; margin-top: 15px; border: 1px solid #ffeef2; box-shadow: 0 8px 20px rgba(255,182,193,0.15); position: relative; }
+        .platform-tag { background: #f0f2f5; font-size: 9px; padding: 3px 10px; font-weight: 900; color: #1877f2; }
+        
+        .custom-progress { height: 12px; background: #eee; border-radius: 50px !important; overflow: hidden; margin: 15px 0; }
+        .custom-progress-fill { height: 100%; background: linear-gradient(90deg, #ff85a1, #ff4d6d); transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); position: relative; }
+        .rabbit-icon { position: absolute; right: -5px; top: -5px; font-size: 18px; }
+
+        .btn-action { background: #00b4d8; color: white; padding: 10px 20px; font-size: 12px; font-weight: bold; cursor: pointer; border: none; }
+        
+        /* Floating Chat System */
+        .chat-trigger { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: #ff4d6d; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 10px 30px rgba(255,77,109,0.4); z-index: 1000; cursor: pointer; }
+        .chat-window { position: fixed; bottom: 105px; right: 30px; width: 320px; height: 450px; background: white; border: 2px solid #ffc8dd; z-index: 1000; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
@@ -32,100 +45,112 @@
     <script type="text/babel">
         const { useState } = React;
         const App = () => {
-            const [searchId, setSearchId] = useState('');
-            const [order, setOrder] = useState(null);
+            const [verified, setVerified] = useState(false);
             const [isChatOpen, setIsChatOpen] = useState(false);
-            const [isVerified, setIsVerified] = useState(false);
-            const [copied, setCopied] = useState(false);
-            const [db, setDb] = useState({
-                "A001": { name: "นารีย์", job: "ออกแบบโลโก้", progress: 0 }
-            });
+            
+            // ข้อมูลจำลองตามรูป
+            const [tasks, setTasks] = useState([
+                { id: "PJ-69", customer: "Warut Suphancha...", progress: 100, platform: "FACEBOOK", date: "04/03/69" },
+                { id: "PJ-70", customer: "Mochi Friends", progress: 45, platform: "FACEBOOK", date: "08/03/69" }
+            ]);
 
             const getStatusText = (p) => {
-                if (p === 0) return "รอคิวถัดไป";
-                if (p < 100) return "กำลังทำ";
-                return "เสร็จแล้ว";
+                if (p === 0) return "รอคิวถัดไป ⏳";
+                if (p < 100) return "กำลังปั้นงาน 🎨";
+                return "เสร็จสมบูรณ์ ✨";
             };
 
-            const handleSearch = () => {
-                const key = searchId.toUpperCase().trim();
-                if (db[key]) {
-                    setOrder({ ...db[key], id: key });
-                    setIsVerified(false);
-                } else {
-                    alert("หารหัสนี้ไม่เจอค่ะพี่!");
-                }
-            };
-
-            const updateProg = (val) => {
-                const next = val === 0 ? 0 : Math.min(order.progress + val, 100);
-                const updated = { ...order, progress: next };
-                setOrder(updated);
-                setDb({ ...db, [order.id]: updated });
-                setCopied(false);
-            };
-
-            const copyStatus = () => {
-                const statusTxt = getStatusText(order.progress);
-                const text = `🌸 อัปเดตสถานะออเดอร์ #${order.id} 🌸\n👤 คุณ: ${order.name}\n📊 คืบหน้า: ${order.progress}%\n✨ สถานะ: ${statusTxt}\n----------------\nเช็คที่นี่: [ลิงก์เว็บของคุณ]`;
-                navigator.clipboard.writeText(text);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
+            const copyStatus = (t) => {
+                const msg = `🎀 อัปเดตงาน #${t.id}\n👤 คุณ: ${t.customer}\n📊 ความคืบหน้า: ${t.progress}%\n✨ สถานะ: ${getStatusText(t.progress)}\n------------------\nติดตามคิวได้ที่ bunny-q.co`;
+                navigator.clipboard.writeText(msg);
+                alert("คัดลอกสถานะแล้วค่ะพี่!");
             };
 
             return (
-                <div className="max-w-md mx-auto pb-20">
-                    <div className="text-center py-6"><h1 className="text-3xl font-bold text-purple-600">💜 ระบบเช็คคิว Full Option</h1></div>
-                    <div className="card-cute mb-6">
-                        <div className="flex gap-2">
-                            <input className="w-full p-4 border-2 border-purple-50 outline-none" placeholder="ใส่รหัสออเดอร์" value={searchId} onChange={e => setSearchId(e.target.value)} />
-                            <button className="btn-grad px-6" onClick={handleSearch}>ค้นหา</button>
+                <div className="max-w-md mx-auto pb-24">
+                    {/* Header Top */}
+                    <div className="header-card rounded-3xl">
+                        <div>
+                            <div className="text-xl italic font-black">bunnynap.co <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full">GUEST</span></div>
+                            <div className="text-[10px] tracking-[4px] opacity-80">—— C H E C K Q</div>
+                        </div>
+                        <div className="w-12 h-12 bg-white rounded-full overflow-hidden border-2 border-white">
+                            <img src="https://i.pinimg.com/736x/8e/1d/41/8e1d41870197711204d8f58b093375f1.jpg" />
                         </div>
                     </div>
-                    {order && (
-                        <div className="card-cute animate-fade-in border-t-8 border-purple-400">
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-2xl font-bold text-purple-900">#{order.id}</h2>
-                                <span className={`px-4 py-1 text-sm font-bold ${order.progress === 0 ? 'status-waiting' : order.progress < 100 ? 'status-doing' : 'status-done'}`}>{getStatusText(order.progress)}</span>
-                            </div>
-                            <div className="mb-6">
-                                <div className="flex justify-between text-xs font-bold mb-2"><span className="text-gray-400">ความคืบหน้า {order.progress}%</span></div>
-                                <div className="progress-bar"><div className="progress-fill" style={{ width: `${order.progress}%` }}></div></div>
-                            </div>
-                            <div className="flex gap-2 mb-4">
-                                <button className="btn-step" onClick={() => updateProg(10)}>+ 10%</button>
-                                <button className="btn-step" onClick={() => updateProg(20)}>+ 20%</button>
-                                <button className="btn-step bg-gray-50 text-gray-400 border-gray-200" onClick={() => updateProg(0)}>ล้าง</button>
-                            </div>
-                            <button className="copy-btn" onClick={copyStatus}><i className={`fa-solid ${copied ? 'fa-check' : 'fa-copy'}`}></i>{copied ? 'คัดลอกสำเร็จแล้ว!' : 'คัดลอกแคปชั่นอัปเดต'}</button>
-                            {!isVerified ? (
-                                <div className="verify-box">
-                                    <p className="text-xs text-purple-500 mb-3 font-bold italic text-center">⚠️ ยืนยันตัวตนก่อนทักแชท</p>
-                                    <button className="btn-grad w-full text-sm" onClick={() => setIsVerified(true)}>✅ ยืนยันว่าฉันคือ คุณ{order.name}</button>
-                                </div>
-                            ) : (
-                                <div className="bg-green-50 border-2 border-green-200 p-3 text-center text-green-600 font-bold text-sm">🔓 ยืนยันตัวตนสำเร็จ! ทักแชทได้เลย</div>
-                            )}
+
+                    {/* Banner Pixel */}
+                    <div className="banner-pixel rounded-[40px]"></div>
+
+                    {/* Stats Dashboard */}
+                    <div className="stat-grid">
+                        <div className="stat-card rounded-3xl">
+                            <div className="text-[10px] text-pink-300 font-black mb-1">NEXT QUEUE</div>
+                            <div className="stat-val">9</div>
+                            <div className="stat-label">MAR 2026</div>
                         </div>
-                    )}
-                    <button className={`fixed bottom-8 right-8 w-16 h-16 shadow-2xl flex items-center justify-center text-2xl ${isVerified ? 'btn-grad' : 'bg-gray-300 text-white cursor-not-allowed'}`} onClick={() => isVerified ? setIsChatOpen(!isChatOpen) : alert("ยืนยันตัวตนก่อนนะพี่!")}>
-                        {isChatOpen ? <i className="fa-solid fa-xmark"></i> : <i className="fa-solid fa-comment-dots"></i>}
-                    </button>
-                    {isChatOpen && (
-                        <div className="chat-box overflow-hidden animate-slide-up">
-                            <div className="btn-grad p-4 flex justify-between items-center"><span>💬 คุยกับแอดมิน (Verified)</span><i className="fa-solid fa-circle text-[8px] text-green-400 animate-pulse"></i></div>
-                            <div className="flex-1 bg-purple-50 p-4 space-y-3">
-                                <div className="bg-purple-200 p-2 text-[10px] text-purple-700 text-center font-bold">ออเดอร์ #{order.id}</div>
-                                <div className="bg-white p-3 rounded-2xl rounded-tl-none text-xs text-gray-600 shadow-sm">สวัสดีค่ะ คุณ<b>{order.name}</b> แอดมินรับทราบตัวตนแล้วค่ะ ทิ้งแชทไว้ได้เลยนะคะ ✨</div>
+                        <div className="stat-card rounded-3xl">
+                            <div className="text-[10px] text-pink-300 font-black mb-1">คิวก่อนหน้า</div>
+                            <div className="stat-val bg-pink-100 w-12 h-12 flex items-center justify-center rounded-full mx-auto">3</div>
+                            <div className="stat-label">คิว</div>
+                        </div>
+                    </div>
+
+                    {/* Task List */}
+                    <div className="mt-8">
+                        <div className="text-[12px] font-black text-pink-400 italic mb-4">— TODAY'S TASK</div>
+                        {tasks.map(t => (
+                            <div key={t.id} className="task-card rounded-3xl">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="text-sm font-black text-gray-600">{t.customer}</div>
+                                    <div className="flex gap-1">
+                                        <span className="platform-tag rounded-full">{t.platform}</span>
+                                        <span className="platform-tag bg-pink-50 text-pink-500 rounded-full">📅 {t.date}</span>
+                                    </div>
+                                </div>
+                                
+                                <div className="text-[10px] font-bold text-gray-400 mb-1">{getStatusText(t.progress)}</div>
+                                <div className="custom-progress">
+                                    <div className="custom-progress-fill" style={{ width: `${t.progress}%` }}>
+                                        <span className="rabbit-icon">🐰</span>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex justify-between items-center mt-4">
+                                    <button className="btn-action rounded-xl" onClick={() => copyStatus(t)}>ก๊อปแคปชั่น 📋</button>
+                                    {!verified ? (
+                                        <button className="text-[10px] text-pink-400 font-bold underline" onClick={() => setVerified(true)}>
+                                            ยืนยันตัวตนเพื่อทักแอดมิน
+                                        </button>
+                                    ) : (
+                                        <span className="text-[10px] text-green-500 font-bold">✅ Verified</span>
+                                    )}
+                                </div>
                             </div>
-                            <div className="p-3 bg-white border-t flex gap-2"><input className="flex-1 text-xs outline-none bg-gray-50 p-3 rounded-xl" placeholder="พิมพ์ข้อความ..." /><button className="text-purple-500 px-2"><i className="fa-solid fa-paper-plane"></i></button></div>
+                        ))}
+                    </div>
+
+                    {/* แชททักแอดมิน */}
+                    <div className={`chat-trigger rounded-full ${!verified && 'opacity-50'}`} onClick={() => verified && setIsChatOpen(!isChatOpen)}>
+                        {isChatOpen ? <i className="fa-solid fa-xmark"></i> : <i className="fa-solid fa-comment-dots"></i>}
+                    </div>
+
+                    {isChatOpen && (
+                        <div className="chat-window rounded-3xl overflow-hidden animate-slide-up">
+                            <div className="bg-pink-400 p-4 text-white font-bold text-sm">Chat Support (Verified)</div>
+                            <div className="flex-1 bg-pink-50 p-4 text-[11px] text-gray-500">
+                                สวัสดีค่ะ แอดมินรับทราบตัวตนผ่านรหัสออเดอร์แล้วค่ะ ทิ้งข้อความไว้ได้เลยนะคะ ✨
+                            </div>
+                            <div className="p-3 bg-white border-t flex gap-2">
+                                <input className="flex-1 text-xs outline-none" placeholder="พิมพ์ข้อความ..." />
+                                <button className="text-pink-400"><i className="fa-solid fa-paper-plane"></i></button>
+                            </div>
                         </div>
                     )}
                 </div>
             );
         };
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     </script>
 </body>
 </html>

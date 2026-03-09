@@ -3,319 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Queue Check System ✨</title>
+    <title>Queue System Full Option ✨</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        :root {
-            --primary: #b78bdb;
-            --secondary: #f472b6;
-            --accent: #a78bfa;
-            --light: #f3e8ff;
-            --white: #ffffff;
-            --radius-main: 25px;
-        }
-
-        * { font-family: 'Segoe UI', 'Noto Sans Thai', sans-serif; }
-
-        body {
-            background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%);
-            min-height: 100vh;
-        }
-
-        /* --- UI COMPONENTS --- */
-        .card-cute {
-            background: white;
-            border: 2px solid #e9d5ff;
-            border-radius: var(--radius-main) !important;
-            padding: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-cute:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(180, 83, 205, 0.15);
-            border-color: #c084fc;
-        }
-
-        .cute-header {
-            background: linear-gradient(135deg, #b78bdb 0%, #f472b6 100%);
-            color: white;
-            padding: 30px 20px;
-            border-radius: var(--radius-main) !important;
-            text-align: center;
-            position: relative;
-        }
-
-        .gradient-btn {
-            background: linear-gradient(135deg, #b78bdb 0%, #f472b6 100%);
-            color: white;
-            font-weight: bold;
-            border-radius: 15px !important;
-            padding: 12px;
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .gradient-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(180, 83, 205, 0.3);
-        }
-
-        .input-cute, .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e9d5ff;
-            border-radius: 15px !important;
-            transition: all 0.3s ease;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 50px !important;
-            font-weight: 600;
-            font-size: 12px;
-        }
-
-        .status-waiting { background: #dbeafe; color: #1e40af; }
-        .status-progress { background: #fef3c7; color: #92400e; }
-        .status-completed { background: #dcfce7; color: #15803d; }
-
-        .progress-bar {
-            height: 10px;
-            background: #e9d5ff;
-            border-radius: 50px !important;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #b78bdb 0%, #f472b6 100%);
-            border-radius: 50px !important;
-            transition: width 0.5s ease;
-        }
-
-        .modal-overlay {
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
-            position: fixed;
-            inset: 0;
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        .order-item {
-            background: white;
-            border: 2px solid #e9d5ff;
-            border-radius: 20px !important;
-            padding: 16px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .range-slider {
-            width: 100%;
-            accent-color: var(--primary);
-        }
+        :root { --main: #b78bdb; --pink: #f472b6; }
+        * { font-family: 'Segoe UI', 'Noto Sans Thai', sans-serif; border-radius: 25px !important; }
+        body { background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%); min-height: 100vh; padding: 20px; }
+        .card-cute { background: white; border: 2px solid #e9d5ff; padding: 25px; box-shadow: 0 10px 30px rgba(183,139,219,0.1); }
+        .btn-grad { background: linear-gradient(135deg, var(--main), var(--pink)); color: white; font-weight: bold; border: none; cursor: pointer; padding: 14px; transition: 0.3s; }
+        .btn-grad:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(244,114,182,0.3); }
+        .btn-step { background: #fdf2f8; color: #db2777; border: 2px solid #fbcfe8; padding: 10px; font-weight: bold; flex: 1; cursor: pointer; }
+        .status-waiting { background: #fee2e2; color: #dc2626; }
+        .status-doing { background: #fef3c7; color: #d97706; }
+        .status-done { background: #dcfce7; color: #166534; }
+        .progress-bar { height: 16px; background: #f3f0ff; overflow: hidden; border: 1px solid #e9d5ff; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--main), var(--pink)); transition: width 0.5s ease; }
+        .verify-box { background: #f5f3ff; border: 2px solid #ddd6fe; padding: 15px; text-align: center; margin-top: 15px; }
+        .chat-box { position: fixed; bottom: 105px; right: 30px; width: 320px; height: 450px; background: white; z-index: 1000; display: flex; flex-direction: column; border: 2px solid #e9d5ff; box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
+        .copy-btn { background: #dcfce7; color: #15803d; border: 2px solid #bbf7d0; width: 100%; font-weight: bold; padding: 12px; cursor: pointer; margin: 15px 0; display: flex; align-items: center; justify-content: center; gap: 8px; }
     </style>
 </head>
 <body>
     <div id="root"></div>
-
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState } = React;
+        const App = () => {
+            const [searchId, setSearchId] = useState('');
+            const [order, setOrder] = useState(null);
+            const [isChatOpen, setIsChatOpen] = useState(false);
+            const [isVerified, setIsVerified] = useState(false);
+            const [copied, setCopied] = useState(false);
+            const [db, setDb] = useState({
+                "A001": { name: "นารีย์", job: "ออกแบบโลโก้", progress: 0 }
+            });
 
-        const OrderQueueSystem = () => {
-            // Initial Mock Data
-            const [orders, setOrders] = useState([
-                { id: 'A101', queueNumber: 1, customerName: 'คุณนารีย์', phone: '0898765432', lineId: 'naree2025', facebookName: 'Naree Sook', jobDescription: '💻 ปรับปรุงเว็บไซต์ร้านค้า', status: 'in-progress', progress: 75, lastUpdate: '2026-03-09', updateMessage: '🔧 ติดตั้งระบบเสร็จแล้ว กำลังทดสอบค่ะ' },
-                { id: 'A102', queueNumber: 2, customerName: 'คุณแนน', phone: '0867543210', lineId: 'nann_design', facebookName: 'Nann Design', jobDescription: '🎨 ออกแบบโลโก้แบรนด์', status: 'waiting', progress: 0, lastUpdate: '2026-03-10', updateMessage: '⏳ รับออเดอร์แล้ว รอเริ่มงานตามคิวนะคะ' }
-            ]);
-
-            const [isAdminLogin, setIsAdminLogin] = useState(false);
-            const [currentPage, setCurrentPage] = useState('search');
-            const [searchQuery, setSearchQuery] = useState('');
-            const [searchResults, setSearchResults] = useState([]);
-            const [selectedOrder, setSelectedOrder] = useState(null);
-            const [editingOrder, setEditingOrder] = useState(null);
-
-            const statusLabels = { 'waiting': '⏳ รอคิว', 'in-progress': '⚡ กำลังทำ', 'completed': '✨ เสร็จแล้ว' };
-
-            const handleSearch = (e) => {
-                e.preventDefault();
-                const q = searchQuery.toLowerCase().trim();
-                if (!q) return setSearchResults([]);
-                const filtered = orders.filter(o => 
-                    o.id.toLowerCase().includes(q) || 
-                    o.customerName.includes(q) || 
-                    o.lineId.includes(q)
-                );
-                setSearchResults(filtered);
+            const getStatusText = (p) => {
+                if (p === 0) return "รอคิวถัดไป";
+                if (p < 100) return "กำลังทำ";
+                return "เสร็จแล้ว";
             };
 
-            const handleSaveOrder = (updated) => {
-                if (updated.id) {
-                    setOrders(orders.map(o => o.id === updated.id ? updated : o));
+            const handleSearch = () => {
+                const key = searchId.toUpperCase().trim();
+                if (db[key]) {
+                    setOrder({ ...db[key], id: key });
+                    setIsVerified(false);
                 } else {
-                    const newId = `A${100 + orders.length + 1}`;
-                    setOrders([...orders, { ...updated, id: newId, queueNumber: orders.length + 1 }]);
+                    alert("หารหัสนี้ไม่เจอค่ะพี่!");
                 }
-                setEditingOrder(null);
             };
 
-            // --- UI: SEARCH PAGE ---
-            if (!isAdminLogin && currentPage === 'search') return (
-                <div className="max-w-2xl mx-auto py-10 px-4">
-                    <div className="cute-header mb-8">
-                        <h1 className="text-3xl font-bold">💜 Order Queue</h1>
-                        <p className="opacity-90">เช็คคิวงานของคุณได้ง่ายๆ ที่นี่ ✨</p>
-                    </div>
-                    
-                    <div className="card-cute mb-6">
-                        <form onSubmit={handleSearch} className="space-y-4">
-                            <input className="input-cute" placeholder="Order ID / ชื่อ / LINE ID" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-                            <button type="submit" className="gradient-btn w-full text-lg py-3">🔍 ค้นหาคิวของฉัน</button>
-                        </form>
-                        <button className="w-full mt-4 text-xs text-purple-400 opacity-50" onClick={() => setCurrentPage('login')}>🔐 สำหรับแอดมิน</button>
-                    </div>
+            const updateProg = (val) => {
+                const next = val === 0 ? 0 : Math.min(order.progress + val, 100);
+                const updated = { ...order, progress: next };
+                setOrder(updated);
+                setDb({ ...db, [order.id]: updated });
+                setCopied(false);
+            };
 
-                    <div className="space-y-3">
-                        {searchResults.map(order => (
-                            <div key={order.id} className="order-item" onClick={() => setSelectedOrder(order)}>
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="font-bold text-purple-900">Order #{order.id}</span>
-                                    <span className={`status-badge status-${order.status}`}>{statusLabels[order.status]}</span>
-                                </div>
-                                <p className="text-sm text-gray-600 mb-2">คุณ {order.customerName}</p>
+            const copyStatus = () => {
+                const statusTxt = getStatusText(order.progress);
+                const text = `🌸 อัปเดตสถานะออเดอร์ #${order.id} 🌸\n👤 คุณ: ${order.name}\n📊 คืบหน้า: ${order.progress}%\n✨ สถานะ: ${statusTxt}\n----------------\nเช็คที่นี่: [ลิงก์เว็บของคุณ]`;
+                navigator.clipboard.writeText(text);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            return (
+                <div className="max-w-md mx-auto pb-20">
+                    <div className="text-center py-6"><h1 className="text-3xl font-bold text-purple-600">💜 ระบบเช็คคิว Full Option</h1></div>
+                    <div className="card-cute mb-6">
+                        <div className="flex gap-2">
+                            <input className="w-full p-4 border-2 border-purple-50 outline-none" placeholder="ใส่รหัสออเดอร์" value={searchId} onChange={e => setSearchId(e.target.value)} />
+                            <button className="btn-grad px-6" onClick={handleSearch}>ค้นหา</button>
+                        </div>
+                    </div>
+                    {order && (
+                        <div className="card-cute animate-fade-in border-t-8 border-purple-400">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-2xl font-bold text-purple-900">#{order.id}</h2>
+                                <span className={`px-4 py-1 text-sm font-bold ${order.progress === 0 ? 'status-waiting' : order.progress < 100 ? 'status-doing' : 'status-done'}`}>{getStatusText(order.progress)}</span>
+                            </div>
+                            <div className="mb-6">
+                                <div className="flex justify-between text-xs font-bold mb-2"><span className="text-gray-400">ความคืบหน้า {order.progress}%</span></div>
                                 <div className="progress-bar"><div className="progress-fill" style={{ width: `${order.progress}%` }}></div></div>
                             </div>
-                        ))}
-                    </div>
-
-                    {/* Detail Modal */}
-                    {selectedOrder && (
-                        <div className="modal-overlay" onClick={() => setSelectedOrder(null)}>
-                            <div className="card-cute max-w-md w-full m-4" onClick={e => e.stopPropagation()}>
-                                <div className="flex justify-between items-center mb-6">
-                                    <h2 className="text-xl font-bold">รายละเอียดออเดอร์</h2>
-                                    <button onClick={() => setSelectedOrder(null)} className="text-2xl">×</button>
-                                </div>
-                                <div className="space-y-4">
-                                    <div className="bg-purple-50 p-4 rounded-xl">
-                                        <p className="text-xs text-purple-400">สถานะปัจจุบัน</p>
-                                        <p className="font-bold text-lg">{statusLabels[selectedOrder.status]} ({selectedOrder.progress}%)</p>
-                                        <div className="progress-bar mt-2"><div className="progress-fill" style={{ width: `${selectedOrder.progress}%` }}></div></div>
-                                    </div>
-                                    <p><strong>👤 ลูกค้า:</strong> {selectedOrder.customerName}</p>
-                                    <p><strong>📋 งาน:</strong> {selectedOrder.jobDescription}</p>
-                                    <p className="text-sm text-purple-600 bg-white border border-purple-100 p-3 rounded-lg"><strong>💬 อัปเดต:</strong> {selectedOrder.updateMessage}</p>
-                                    <div className="flex gap-2 mt-4">
-                                        <a href={`https://line.me/ti/p/${selectedOrder.lineId}`} target="_blank" className="flex-1 text-center bg-green-500 text-white py-2 rounded-xl text-sm">Line Admin</a>
-                                        <button onClick={() => setSelectedOrder(null)} className="flex-1 bg-gray-100 py-2 rounded-xl text-sm">ปิด</button>
-                                    </div>
-                                </div>
+                            <div className="flex gap-2 mb-4">
+                                <button className="btn-step" onClick={() => updateProg(10)}>+ 10%</button>
+                                <button className="btn-step" onClick={() => updateProg(20)}>+ 20%</button>
+                                <button className="btn-step bg-gray-50 text-gray-400 border-gray-200" onClick={() => updateProg(0)}>ล้าง</button>
                             </div>
+                            <button className="copy-btn" onClick={copyStatus}><i className={`fa-solid ${copied ? 'fa-check' : 'fa-copy'}`}></i>{copied ? 'คัดลอกสำเร็จแล้ว!' : 'คัดลอกแคปชั่นอัปเดต'}</button>
+                            {!isVerified ? (
+                                <div className="verify-box">
+                                    <p className="text-xs text-purple-500 mb-3 font-bold italic text-center">⚠️ ยืนยันตัวตนก่อนทักแชท</p>
+                                    <button className="btn-grad w-full text-sm" onClick={() => setIsVerified(true)}>✅ ยืนยันว่าฉันคือ คุณ{order.name}</button>
+                                </div>
+                            ) : (
+                                <div className="bg-green-50 border-2 border-green-200 p-3 text-center text-green-600 font-bold text-sm">🔓 ยืนยันตัวตนสำเร็จ! ทักแชทได้เลย</div>
+                            )}
                         </div>
                     )}
-                </div>
-            );
-
-            // --- UI: LOGIN ---
-            if (!isAdminLogin && currentPage === 'login') return (
-                <div className="max-w-md mx-auto py-20 px-4">
-                    <div className="card-cute text-center">
-                        <h2 className="text-2xl font-bold mb-6">🔐 Admin Access</h2>
-                        <input id="pass" type="password" className="input-cute mb-4" placeholder="ระบุรหัสผ่านแอดมิน" />
-                        <button className="gradient-btn w-full" onClick={() => {
-                            if(document.getElementById('pass').value === 'admin123') setIsAdminLogin(true);
-                            else alert('รหัสผิดค่ะ!');
-                        }}>เข้าสู่ระบบ</button>
-                        <button className="mt-4 text-sm text-gray-400" onClick={() => setCurrentPage('search')}>ยกเลิก</button>
-                    </div>
-                </div>
-            );
-
-            // --- UI: ADMIN DASHBOARD ---
-            return (
-                <div className="max-w-5xl mx-auto py-10 px-4">
-                    <div className="cute-header flex justify-between items-center px-8 mb-8">
-                        <div className="text-left">
-                            <h1 className="text-2xl font-bold">💎 Admin Management</h1>
-                            <p className="text-xs opacity-80">จัดการออเดอร์และคิวงาน</p>
-                        </div>
-                        <button className="bg-white text-purple-500 px-6 py-2 rounded-full font-bold shadow-sm" onClick={() => setIsAdminLogin(false)}>Log Out</button>
-                    </div>
-
-                    <button className="gradient-btn px-8 py-3 mb-8 text-lg" onClick={() => setEditingOrder({})}>➕ เพิ่มออเดอร์ใหม่</button>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {orders.map(o => (
-                            <div key={o.id} className="card-cute">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div>
-                                        <p className="font-bold text-lg">#{o.id}</p>
-                                        <p className="text-sm text-gray-500">{o.customerName}</p>
-                                    </div>
-                                    <span className={`status-badge status-${o.status}`}>{statusLabels[o.status]}</span>
-                                </div>
-                                <p className="text-sm line-clamp-2 mb-4 h-10">{o.jobDescription}</p>
-                                <div className="progress-bar mb-4"><div className="progress-fill" style={{ width: `${o.progress}%` }}></div></div>
-                                <div className="flex gap-2">
-                                    <button className="flex-1 bg-purple-100 text-purple-600 py-2 rounded-lg text-sm font-bold" onClick={() => setEditingOrder(o)}>แก้ไข</button>
-                                    <button className="flex-1 bg-red-50 text-red-400 py-2 rounded-lg text-sm" onClick={() => setOrders(orders.filter(item => item.id !== o.id))}>ลบ</button>
-                                </div>
+                    <button className={`fixed bottom-8 right-8 w-16 h-16 shadow-2xl flex items-center justify-center text-2xl ${isVerified ? 'btn-grad' : 'bg-gray-300 text-white cursor-not-allowed'}`} onClick={() => isVerified ? setIsChatOpen(!isChatOpen) : alert("ยืนยันตัวตนก่อนนะพี่!")}>
+                        {isChatOpen ? <i className="fa-solid fa-xmark"></i> : <i className="fa-solid fa-comment-dots"></i>}
+                    </button>
+                    {isChatOpen && (
+                        <div className="chat-box overflow-hidden animate-slide-up">
+                            <div className="btn-grad p-4 flex justify-between items-center"><span>💬 คุยกับแอดมิน (Verified)</span><i className="fa-solid fa-circle text-[8px] text-green-400 animate-pulse"></i></div>
+                            <div className="flex-1 bg-purple-50 p-4 space-y-3">
+                                <div className="bg-purple-200 p-2 text-[10px] text-purple-700 text-center font-bold">ออเดอร์ #{order.id}</div>
+                                <div className="bg-white p-3 rounded-2xl rounded-tl-none text-xs text-gray-600 shadow-sm">สวัสดีค่ะ คุณ<b>{order.name}</b> แอดมินรับทราบตัวตนแล้วค่ะ ทิ้งแชทไว้ได้เลยนะคะ ✨</div>
                             </div>
-                        ))}
-                    </div>
-
-                    {/* Edit/Add Modal */}
-                    {editingOrder && (
-                        <div className="modal-overlay">
-                            <div className="card-cute max-w-lg w-full m-4">
-                                <h2 className="text-xl font-bold mb-6">{editingOrder.id ? '✏️ แก้ไขออเดอร์' : '➕ เพิ่มออเดอร์'}</h2>
-                                <div className="grid grid-cols-2 gap-4 mb-4">
-                                    <input className="form-input" placeholder="ชื่อลูกค้า" defaultValue={editingOrder.customerName} onChange={e => editingOrder.customerName = e.target.value} />
-                                    <input className="form-input" placeholder="Line ID" defaultValue={editingOrder.lineId} onChange={e => editingOrder.lineId = e.target.value} />
-                                </div>
-                                <textarea className="form-textarea mb-4" placeholder="รายละเอียดงาน" defaultValue={editingOrder.jobDescription} onChange={e => editingOrder.jobDescription = e.target.value}></textarea>
-                                <div className="grid grid-cols-2 gap-4 mb-4">
-                                    <select className="form-select" defaultValue={editingOrder.status} onChange={e => editingOrder.status = e.target.value}>
-                                        <option value="waiting">รอคิว</option>
-                                        <option value="in-progress">กำลังทำ</option>
-                                        <option value="completed">เสร็จแล้ว</option>
-                                    </select>
-                                    <div className="px-2">
-                                        <label className="text-xs">Progress: {editingOrder.progress || 0}%</label>
-                                        <input type="range" className="range-slider" defaultValue={editingOrder.progress || 0} onChange={e => editingOrder.progress = e.target.value} />
-                                    </div>
-                                </div>
-                                <textarea className="form-textarea mb-6" placeholder="ข้อความอัปเดตถึงลูกค้า" defaultValue={editingOrder.updateMessage} onChange={e => editingOrder.updateMessage = e.target.value}></textarea>
-                                <div className="flex gap-3">
-                                    <button className="gradient-btn flex-1" onClick={() => handleSaveOrder(editingOrder)}>บันทึกข้อมูล</button>
-                                    <button className="flex-1 bg-gray-100 rounded-xl" onClick={() => setEditingOrder(null)}>ยกเลิก</button>
-                                </div>
-                            </div>
+                            <div className="p-3 bg-white border-t flex gap-2"><input className="flex-1 text-xs outline-none bg-gray-50 p-3 rounded-xl" placeholder="พิมพ์ข้อความ..." /><button className="text-purple-500 px-2"><i className="fa-solid fa-paper-plane"></i></button></div>
                         </div>
                     )}
                 </div>
             );
         };
-
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<OrderQueueSystem />);
+        root.render(<App />);
     </script>
 </body>
 </html>

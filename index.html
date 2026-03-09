@@ -3,236 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Queue App — Modern Edition</title>
+    <title>Baby Blue Queue ✨ Client Notify</title>
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #a29bfe; --secondary: #fab1a0; --dark: #2d3436;
-            --bg: #f5f6fa; --card-bg: #ffffff; --gradient: linear-gradient(135deg, #a29bfe, #6c5ce7);
-            --font: 'Mitr', sans-serif;
+            --bg: #e8f6fd; --sky: #dff1fb; --blue: #5ab4e5; --blue2: #3a9dd4;
+            --text: #1e4d6b; --card: #ffffff; --font: 'Mitr', sans-serif;
+            --green: #2ecc71;
         }
 
-        body {
-            font-family: var(--font); background: var(--bg); color: var(--dark);
-            margin: 0; padding-bottom: 80px; overflow-x: hidden;
-        }
+        body { font-family: var(--font); background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
+        .topbar { background: linear-gradient(135deg, var(--blue2), var(--blue)); padding: 25px; text-align: center; color: white; border-radius: 0 0 30px 30px; }
+        
+        .search-wrap { padding: 15px 20px; }
+        .search-input { width: 100%; padding: 12px; border-radius: 15px; border: 2px solid var(--sky); outline: none; font-family: var(--font); box-sizing: border-box; }
 
-        /* --- Header --- */
-        .header { padding: 30px 20px 10px; display: flex; justify-content: space-between; align-items: center; }
-        .user-profile { display: flex; align-items: center; gap: 10px; }
-        .avatar { width: 45px; height: 45px; border-radius: 50%; background: #dfe6e9; border: 2px solid white; }
-        .greeting { font-size: 0.9rem; color: #636e72; }
+        .card { background: var(--card); margin: 15px; padding: 20px; border-radius: 25px; border: 1.5px solid var(--sky); box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; }
+        
+        /* Progress & Badges */
+        .prog-outer { background: #eee; height: 10px; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+        .prog-inner { background: linear-gradient(90deg, var(--blue), #55efc4); height: 100%; transition: 0.5s; }
+        .status-badge { font-size: 0.7rem; padding: 3px 10px; border-radius: 10px; background: var(--sky); color: var(--blue2); font-weight: 500; }
 
-        /* --- Dashboard Cards --- */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .dash-card { border-radius: 20px; padding: 20px; color: white; position: relative; overflow: hidden; height: 120px; }
-        .card-note { background: #b2bec3 linear-gradient(135deg, #a29bfe, #8e44ad); }
-        .card-task { background: #fab1a0 linear-gradient(135deg, #ff9f43, #ee5253); }
-        .dash-card h3 { margin: 0; font-size: 1.1rem; position: relative; z-index: 2; }
-        .dash-card span { font-size: 0.75rem; opacity: 0.9; position: relative; z-index: 2; }
+        /* Admin UI */
+        .admin-input { width: 100%; padding: 10px; border-radius: 12px; border: 1.5px solid var(--sky); margin-bottom: 10px; font-family: var(--font); box-sizing: border-box; }
+        .btn-main { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 15px; width: 100%; cursor: pointer; font-family: var(--font); font-weight: 500; }
+        .btn-line { background: var(--green); color: white; border: none; padding: 8px 15px; border-radius: 10px; font-family: var(--font); font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; }
 
-        /* --- Progress Section --- */
-        .section-card { background: var(--card-bg); margin: 0 20px 20px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
-        .prog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .prog-bar-outer { background: #f1f2f6; height: 12px; border-radius: 6px; overflow: hidden; }
-        .prog-bar-inner { background: linear-gradient(90deg, #fd79a8, #fab1a0); height: 100%; transition: 0.5s; width: 0%; }
-
-        /* --- Search --- */
-        .search-container { padding: 0 20px 15px; }
-        .search-box { background: white; padding: 12px 20px; border-radius: 15px; display: flex; align-items: center; border: 1px solid #eee; }
-        .search-box input { border: none; outline: none; width: 100%; font-family: var(--font); margin-left: 10px; }
-
-        /* --- Queue Item --- */
-        .task-list { padding: 0 20px; }
-        .task-item { background: white; margin-bottom: 12px; padding: 15px; border-radius: 18px; display: flex; align-items: center; gap: 15px; border-left: 6px solid var(--primary); }
-        .task-item.done { border-left-color: #55efc4; opacity: 0.8; }
-        .task-num { font-weight: 700; font-size: 1.2rem; color: var(--primary); min-width: 40px; }
-        .task-info h4 { margin: 0; font-size: 0.95rem; }
-        .task-info p { margin: 2px 0 0; font-size: 0.75rem; color: #b2bec3; }
-
-        /* --- Admin UI --- */
-        .admin-auth { text-align: center; padding: 50px 20px; }
-        .admin-input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 10px; text-align: center; }
-        .btn-action { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 12px; width: 100%; font-family: var(--font); cursor: pointer; }
-
-        /* --- Bottom Nav --- */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #2d3436; height: 75px; display: flex; justify-content: space-around; align-items: center; border-radius: 30px 30px 0 0; z-index: 1000; }
-        .nav-item { color: #636e72; font-size: 1.2rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; }
-        .nav-item.active { color: white; }
-        .nav-add { background: linear-gradient(135deg, #a29bfe, #6c5ce7); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; margin-top: -40px; border: 5px solid var(--bg); box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4); }
+        /* Bottom Nav */
+        .nav-bottom { position: fixed; bottom: 15px; left: 15px; right: 15px; background: white; height: 65px; border-radius: 20px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid var(--sky); z-index: 1000; }
+        .nav-btn { font-size: 1.4rem; cursor: pointer; opacity: 0.4; }
+        .nav-btn.active { opacity: 1; color: var(--blue2); }
 
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="app-public">
-        <header class="header">
-            <div class="user-profile">
-                <div class="avatar"></div>
-                <div>
-                    <span class="greeting">สวัสดีตอนเช้า 👋</span>
-                    <div style="font-weight: 600;">ลูกค้าผู้น่ารัก</div>
-                </div>
-            </div>
-            <div style="font-size: 1.4rem;">🔔</div>
+    <div id="page-pub">
+        <header class="topbar">
+            <div style="font-size: 1.3rem; font-weight: 600;">Queue Status 🎀</div>
+            <div style="font-size: 0.8rem; opacity: 0.9;">ค้นหาหมายเลขคิวเพื่อเช็คสถานะปัจจุบันนะคะ</div>
         </header>
 
-        <div class="search-container">
-            <div class="search-box">
-                <span>🔍</span>
-                <input type="text" placeholder="ค้นหาเลขคิวหรือชื่อ..." id="searchInp" oninput="renderPublic()">
-            </div>
+        <div class="search-wrap">
+            <input type="text" class="search-input" id="searchQ" placeholder="🔍 ใส่หมายเลขคิวของคุณ..." oninput="renderPub()">
         </div>
 
-        <div class="dashboard-grid">
-            <div class="dash-card card-note">
-                <span>Create</span>
-                <h3>New Note</h3>
-            </div>
-            <div class="dash-card card-task">
-                <span>Create</span>
-                <h3>New Task</h3>
-            </div>
-        </div>
-
-        <div class="section-card">
-            <div class="prog-header">
-                <span style="font-weight:600; font-size: 0.9rem;">ความคืบหน้าภาพรวม</span>
-                <span id="prog-val" style="color: var(--primary); font-weight:600;">0%</span>
-            </div>
-            <div class="prog-bar-outer">
-                <div class="prog-bar-inner" id="prog-bar"></div>
-            </div>
-        </div>
-
-        <div class="task-list" id="q-list-pub">
-            </div>
+        <div id="q-list-pub"></div>
     </div>
 
-    <div id="app-admin" class="hidden">
-        <div id="admin-login" class="admin-auth">
-            <h2>ระบบจัดการหลังบ้าน ⚙️</h2>
-            <input type="password" id="pass" class="admin-input" placeholder="ใส่รหัสผ่านแอดมิน">
-            <button class="btn-action" onclick="checkAuth()">เข้าสู่ระบบ</button>
+    <div id="page-adm" class="hidden">
+        <div id="adm-login" style="padding: 50px 20px;">
+            <div class="card" style="text-align: center;">
+                <h3>Admin Access 🔒</h3>
+                <input type="password" id="pw" class="admin-input" placeholder="ใส่รหัสผ่าน">
+                <button class="btn-main" onclick="checkLogin()">Login</button>
+            </div>
         </div>
 
-        <div id="admin-panel" class="hidden" style="padding: 20px;">
-            <div class="section-card">
+        <div id="adm-content" class="hidden" style="padding: 20px;">
+            <div class="card">
                 <h3>เพิ่มคิวลูกค้า ✨</h3>
-                <input type="text" id="custName" class="admin-input" placeholder="ชื่อลูกค้า">
-                <input type="text" id="custSvc" class="admin-input" placeholder="บริการ (เช่น ออกแบบโลโก้)">
-                <button class="btn-action" onclick="addQ()">ยืนยันเพิ่มคิว</button>
+                <input type="text" id="cName" class="admin-input" placeholder="ชื่อลูกค้า">
+                <input type="text" id="cSvc" class="admin-input" placeholder="งาน/บริการ">
+                <input type="text" id="cLine" class="admin-input" placeholder="ID LINE หรือ เบอร์โทร (สำหรับส่งลิงก์)">
+                <input type="text" id="cNote" class="admin-input" placeholder="หมายเหตุ (ถ้ามี)">
+                <button class="btn-main" onclick="addQ()">เพิ่มลงรายการ</button>
             </div>
             <div id="q-list-adm"></div>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item active" onclick="showSection('pub')">🏠</a>
-        <a href="#" class="nav-item">📋</a>
-        <div class="nav-add" onclick="showSection('adm')">+</div>
-        <a href="#" class="nav-item">📁</a>
-        <a href="#" class="nav-item" onclick="logout()">🔒</a>
+    <nav class="nav-bottom">
+        <div class="nav-btn active" id="btn-pub" onclick="show('pub')">🏠</div>
+        <div class="nav-btn" id="btn-adm" onclick="show('adm')">⚙️</div>
     </nav>
 
-    <script>
-        let queues = JSON.parse(localStorage.getItem('myQueues')) || [];
-        const ADMIN_PASS = "1234"; // รหัสผ่านแอดมิน
+<script>
+    let qs = JSON.parse(localStorage.getItem('myQs')) || [];
 
-        function save() { 
-            localStorage.setItem('myQueues', JSON.stringify(queues));
-            renderPublic();
-            renderAdmin();
-        }
+    // ฟังก์ชันส่งข้อความหาลูกค้า
+    function notifyClient(qId) {
+        const q = qs.find(x => x.id === qId);
+        const msg = encodeURIComponent(`สวัสดีค่ะคุณ ${q.name} ✨ คิวที่ #${q.id} (${q.svc}) ถึงลำดับของคุณแล้วนะคะ รบกวนทักหาทางร้านได้เลยค่า 🎀`);
+        // สร้างลิงก์สำหรับส่งข้อความ
+        window.open(`https://line.me/R/msg/text/?${msg}`, '_blank');
+    }
 
-        function renderPublic() {
-            const list = document.getElementById('q-list-pub');
-            const search = document.getElementById('searchInp').value.toLowerCase();
-            const filtered = queues.filter(q => q.name.toLowerCase().includes(search) || q.id.toString().includes(search));
-            
-            // คำนวณความคืบหน้า
-            const totalProg = queues.length ? (queues.reduce((s, q) => s + q.prog, 0) / queues.length).toFixed(0) : 0;
-            document.getElementById('prog-bar').style.width = totalProg + '%';
-            document.getElementById('prog-val').innerText = totalProg + '% Done';
+    function renderPub() {
+        const list = document.getElementById('q-list-pub');
+        const key = document.getElementById('searchQ').value;
+        const filtered = qs.filter(q => q.id.toString().includes(key) || q.name.includes(key));
 
-            list.innerHTML = filtered.map(q => `
-                <div class="task-item ${q.prog == 100 ? 'done' : ''}">
-                    <div class="task-num">#${q.id}</div>
-                    <div class="task-info">
-                        <h4>คุณ${q.name}</h4>
-                        <p>${q.svc} | ⏳ ${q.prog}%</p>
-                    </div>
+        list.innerHTML = filtered.map(q => `
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:700; font-size:1.4rem; color:var(--blue2);">#${q.id}</span>
+                    <span class="status-badge">${q.prog == 100 ? 'เสร็จเรียบร้อย' : 'กำลังรอนะคะ'}</span>
                 </div>
-            `).join('');
-        }
-
-        function renderAdmin() {
-            const list = document.getElementById('q-list-adm');
-            list.innerHTML = queues.map(q => `
-                <div class="section-card" style="margin: 10px 0;">
-                    <div style="display:flex; justify-content:space-between;">
-                        <strong>#${q.id} ${q.name}</strong>
-                        <button onclick="deleteQ(${q.id})" style="color:red; border:none; background:none;">ลบ</button>
-                    </div>
-                    <input type="range" min="0" max="100" step="10" value="${q.prog}" 
-                           style="width:100%; margin:10px 0;" onchange="updateProg(${q.id}, this.value)">
-                    <div style="font-size:0.8rem; text-align:right;">ความคืบหน้า: ${q.prog}%</div>
+                <div style="margin-top:10px;">
+                    <strong style="font-size:1.1rem;">คุณ${q.name}</strong>
+                    <div style="font-size:0.8rem; color:#636e72;">งาน: ${q.svc} | ${q.date}</div>
+                    ${q.note ? `<div style="font-size:0.75rem; color:#ff7675; margin-top:5px;">📝 ${q.note}</div>` : ''}
                 </div>
-            `).join('');
-        }
+                <div style="font-size:0.7rem; margin-top:15px; text-align:right;">ความคืบหน้า: ${q.prog}%</div>
+                <div class="prog-outer"><div class="prog-inner" style="width:${q.prog}%"></div></div>
+            </div>
+        `).join('') || '<p style="text-align:center; opacity:0.5; margin-top:20px;">ไม่พบข้อมูลคิวค่ะ 🎀</p>';
+    }
 
-        function addQ() {
-            const name = document.getElementById('custName').value;
-            const svc = document.getElementById('custSvc').value;
-            if(!name || !svc) return alert('ใส่ข้อมูลให้ครบก่อนนะค้าา 🎀');
-            queues.push({ id: queues.length + 1, name, svc, prog: 0 });
-            document.getElementById('custName').value = '';
-            document.getElementById('custSvc').value = '';
+    function renderAdm() {
+        const list = document.getElementById('q-list-adm');
+        list.innerHTML = qs.map(q => `
+            <div class="card">
+                <strong>#${q.id} คุณ${q.name}</strong>
+                <p style="font-size:0.8rem; margin:5px 0;">${q.svc}</p>
+                <input type="range" min="0" max="100" step="10" value="${q.prog}" 
+                       style="width:100%" onchange="updateP(${q.id}, this.value)">
+                
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
+                    <div>
+                        ${q.prog >= 80 ? `<button class="btn-line" onclick="notifyClient(${q.id})">💬 แจ้งลูกค้า</button>` : `<small style="color:#aaa">ใกล้ถึง 80% ถึงจะแจ้งได้</small>`}
+                    </div>
+                    <button onclick="del(${q.id})" style="color:#ff7675; background:none; border:none; cursor:pointer; font-size:0.8rem;">ลบรายการ</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function addQ() {
+        const name = document.getElementById('cName').value;
+        const svc = document.getElementById('cSvc').value;
+        const note = document.getElementById('cNote').value;
+        if(!name) return alert('กรุณาใส่ชื่อลูกค้าด้วยนะคะ');
+        
+        const date = new Date().toLocaleDateString('th-TH', {day:'numeric', month:'short'});
+        const newQ = { id: qs.length + 1, name, svc, note, prog: 0, date };
+        qs.push(newQ);
+        save();
+        document.getElementById('cName').value = '';
+        document.getElementById('cSvc').value = '';
+        document.getElementById('cNote').value = '';
+        alert('เพิ่มคิวเรียบร้อยแล้วค่ะ! ✨');
+    }
+
+    function updateP(id, val) {
+        const q = qs.find(x => x.id === id);
+        q.prog = parseInt(val);
+        save();
+        if(val == 100) alert('งานสำเร็จ 100% แล้ว! อย่าลืมกดปุ่มแจ้งเตือนลูกค้านะคะ');
+    }
+
+    function del(id) {
+        if(confirm('ต้องการลบคิวนี้ใช่ไหมคะ?')) {
+            qs = qs.filter(x => x.id !== id);
             save();
         }
+    }
 
-        function updateProg(id, val) {
-            const q = queues.find(x => x.id === id);
-            if(q) q.prog = parseInt(val);
-            save();
-        }
+    function save() {
+        localStorage.setItem('myQs', JSON.stringify(qs));
+        renderPub(); renderAdm();
+    }
 
-        function deleteQ(id) {
-            if(confirm('ลบคิวนี้แน่ใจนะคะ?')) {
-                queues = queues.filter(x => x.id !== id);
-                save();
-            }
-        }
+    function checkLogin() {
+        if(document.getElementById('pw').value === "1234") {
+            document.getElementById('adm-login').classList.add('hidden');
+            document.getElementById('adm-content').classList.remove('hidden');
+            renderAdm();
+        } else { alert('รหัสผ่านไม่ถูกต้องนะคะ'); }
+    }
 
-        function checkAuth() {
-            if(document.getElementById('pass').value === ADMIN_PASS) {
-                document.getElementById('admin-login').classList.add('hidden');
-                document.getElementById('admin-panel').classList.remove('hidden');
-                renderAdmin();
-            } else {
-                alert('รหัสผ่านไม่ถูกต้องนะคะ ❌');
-            }
-        }
+    function show(page) {
+        document.getElementById('page-pub').classList.toggle('hidden', page === 'adm');
+        document.getElementById('page-adm').classList.toggle('hidden', page === 'pub');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + page).classList.add('active');
+    }
 
-        function showSection(type) {
-            if(type === 'pub') {
-                document.getElementById('app-public').classList.remove('hidden');
-                document.getElementById('app-admin').classList.add('hidden');
-            } else {
-                document.getElementById('app-public').classList.add('hidden');
-                document.getElementById('app-admin').classList.remove('hidden');
-            }
-        }
-
-        function logout() {
-            document.getElementById('pass').value = '';
-            document.getElementById('admin-login').classList.remove('hidden');
-            document.getElementById('admin-panel').classList.add('hidden');
-            showSection('pub');
-        }
-
-        renderPublic();
-    </script>
+    renderPub();
+</script>
 </body>
 </html>

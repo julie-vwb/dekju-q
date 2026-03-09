@@ -107,7 +107,6 @@
 
 <div id="toast" class="toast">คัดลอกข้อความแล้ว ✨</div>
 <script>
-    // ดึงข้อมูลจากเครื่อง หรือตั้งค่าเริ่มต้น (รันเลข 1 = A0001)
     let db = JSON.parse(localStorage.getItem('shopData_v2')) || { q: [], nextNo: 1 };
     let authed = false;
 
@@ -116,13 +115,11 @@
         render(); 
     }
 
-    // ฟังก์ชันสร้างคิว และคัดลอกข้อความ
     function addAndCopy() {
         const name = document.getElementById('in-name').value;
         const svc = document.getElementById('in-svc').value;
-        if(!name) return alert("กรุณาใส่ชื่อลูกค้าด้วยน้า ✨");
+        if(!name) return alert("งื้อออ ลืมใส่ชื่อลูกค้าคนสวยหรือเปล่าคะ? ✨");
 
-        // รันเลขคิวอัตโนมัติแบบ A0001 - A1000
         const qNum = "A" + db.nextNo.toString().padStart(4, '0');
         
         const newQ = {
@@ -134,19 +131,24 @@
         };
 
         db.q.push(newQ);
-        db.nextNo = (db.nextNo >= 1000) ? 1 : db.nextNo + 1; // ถ้ารันถึง 1000 จะวนกลับไป 1 ใหม่ (หรือปรับตามใจชอบ)
+        db.nextNo = (db.nextNo >= 1000) ? 1 : db.nextNo + 1;
         
-        // ข้อความคัดลอกสไตล์ผู้หญิงขาย พร้อมคำเชียร์
         const shopUrl = window.location.href; 
-        const copyText = `รับออเดอร์เรียบร้อยนะคะคุณ ${name} ✨\n` +
-                         `เลขออเดอร์ของคุณคือ 【 ${qNum} 】 นะคะ 🎀\n` +
-                         `ขอบคุณที่ไว้วางใจให้ Your Shop ดูแลนะคะ รองานสวยๆ ได้เลย แอดมินจะรีบปั่นให้สุดฝีมือเลยค่ะ! 🔥\n\n` +
-                         `🔍 ตรวจสอบสถานะคิวได้ที่นี่น้า:\n${shopUrl}\n` +
-                         `(ใส่หมายเลขออเดอร์ในช่องค้นหาได้เลยค่ะ)`;
+        
+        // ปรับจูนข้อความใหม่ให้สดใส สไตล์ผู้หญิงขาย พร้อมแคปชั่นดึงดูดใจ
+        const copyText = `🌈 #พร้อมส่ง ความสวยถึงมือแล้วค่าา ✨\n\n` +
+                         `ขอบคุณคุณ ${name} ที่เลือกให้เราดูแลนะคะ 🎀\n` +
+                         `งานนี้แอดมินตั้งใจทำสุดฝีมือ รับรองสวยฉ่ำถูกใจแน่นอนค่ะ!\n\n` +
+                         `📌 รายละเอียดออเดอร์\n` +
+                         `สินค้า: ${svc}\n` +
+                         `เลขออเดอร์: 【 ${qNum} 】\n` +
+                         `สถานะ: กำลังเตรียมความปัง 🔥\n\n` +
+                         `💖 เช็คสถานะคิวงานได้ที่นี่เลยน้า:\n` +
+                         `${shopUrl}\n\n` +
+                         `รอนิดเดียวนะคะคนดี เดี๋ยวรีบส่งความสวยให้เล้ยยย! 💨`;
 
-        // คัดลอกลง Clipboard
         navigator.clipboard.writeText(copyText).then(() => {
-            showToast("สร้างคิว " + qNum + " และคัดลอกข้อความแล้วค่ะ 💖");
+            showToast("รับออเดอร์เรียบร้อย! คัดลอกข้อความส่งต่อได้เลยค่ะ 💖");
         });
 
         document.getElementById('in-name').value = '';
@@ -155,7 +157,6 @@
 
     function render() {
         const keyword = document.getElementById('searchQ').value.toLowerCase();
-        // ค้นหาได้ทั้งชื่อ และ เลขคิว
         const activeQ = db.q.filter(x => x.name.toLowerCase().includes(keyword) || x.no.toLowerCase().includes(keyword));
 
         const draw = (list, id, isAdm = false) => {
@@ -176,15 +177,13 @@
                         </div>
                     ` : ''}
                 </div>
-            `).join('') || '<p style="text-align:center; padding:10px; font-size:0.75rem; color:#ccc;">ไม่มีรายการจ้า ✨</p>';
+            `).join('') || '<p style="text-align:center; padding:10px; font-size:0.75rem; color:#ccc;">ยังไม่มีรายการน้า มาเปิดบิลกันเถอะ ✨</p>';
         };
 
-        // แสดงผลหน้าลูกค้า (แยกตามสถานะ)
         draw(activeQ.filter(x => x.status === 'inprogress'), 'list-progress');
         draw(activeQ.filter(x => x.status === 'waiting'), 'list-waiting');
         draw(activeQ.filter(x => x.status === 'done'), 'list-done');
         
-        // แสดงผลหน้าแอดมิน (ทั้งหมด)
         if(document.getElementById('adm-list')) draw(db.q, 'adm-list', true);
     }
 
@@ -195,7 +194,7 @@
     }
 
     function delQ(id) {
-        if(confirm('ลบคิวนี้ใช่ไหมคะ?')) {
+        if(confirm('จะลบคิวลูกค้าคนนี้จริงๆ หรอคะ? 🥺')) {
             db.q = db.q.filter(x => x.id !== id);
             save();
         }
@@ -216,14 +215,13 @@
 
     function tryAdmin() {
         if(authed) return goPage('adm');
-        const pw = prompt("กรุณาใส่รหัสผ่านแอดมิน (รหัสคือ 1234):");
+        const pw = prompt("ขอรหัสผ่านแอดมินหน่อยค่าา (1234):");
         if(pw === "1234") { authed = true; goPage('adm'); }
-        else if(pw !== null) alert("รหัสผ่านไม่ถูกต้องนะคะ ❌");
+        else if(pw !== null) alert("รหัสผิดน้า ลองใหม่อีกทีนะคะคนสวย ❌");
     }
 
     function logout() { authed = false; goPage('pub'); }
 
-    // เริ่มต้นระบบ
     render();
 </script>
 </body>

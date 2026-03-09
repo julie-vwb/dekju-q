@@ -7,117 +7,83 @@
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet"/>
     <style>
         :root {
-            --bg-grad: linear-gradient(135deg, #fff0f6 0%, #e6f7ff 100%); /* ชมพู-ฟ้า ละมุน */
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --empty-bg: rgba(255, 255, 255, 0.4); /* สีขาวจางๆ สำหรับช่องไม่มีข้อมูล */
+            --bg-grad: linear-gradient(135deg, #fff0f6 0%, #e6f7ff 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
             --pink-accent: #ff85c0;
             --pink-soft: #ffdeeb;
             --text-main: #595959;
-            --grad-button: linear-gradient(45deg, #ff9a9e, #fecfef);
+            --grad-pink: linear-gradient(45deg, #ff9a9e, #fecfef);
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Mitr', sans-serif; }
-        body { 
-            background: var(--bg-grad); 
-            background-attachment: fixed;
-            color: var(--text-main); 
-            min-height: 100vh; 
-        }
+        body { background: var(--bg-grad); background-attachment: fixed; color: var(--text-main); min-height: 100vh; }
 
-        header { padding: 40px 20px; text-align: center; }
-        .profile-img { width: 90px; height: 90px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 4px 15px rgba(255,133,192,0.2); margin-bottom: 15px; }
-        .shop-name { font-size: 1.7rem; font-weight: 600; color: var(--pink-accent); letter-spacing: 1px; }
+        header { padding: 30px 20px; text-align: center; }
+        .profile-img { width: 85px; height: 85px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 4px 15px rgba(255,133,192,0.2); margin-bottom: 12px; }
+        .shop-name { font-size: 1.6rem; font-weight: 600; color: var(--pink-accent); }
         
-        .nav-pill { display: inline-flex; background: #fff; padding: 5px; border-radius: 999px; margin-top: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .nav-btn { padding: 8px 25px; border-radius: 999px; border: none; cursor: pointer; font-size: 0.9rem; color: #999; background: transparent; transition: 0.3s; }
-        .nav-btn.active { background: var(--grad-button); color: #fff; }
+        .nav-pill { display: inline-flex; background: #fff; padding: 5px; border-radius: 999px; margin-top: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .nav-btn { padding: 8px 25px; border-radius: 999px; border: none; cursor: pointer; font-size: 0.85rem; color: #999; background: transparent; }
+        .nav-btn.active { background: var(--grad-pink); color: #fff; }
 
         .container { max-width: 450px; margin: 0 auto; padding: 20px; }
+        
+        /* ช่องค้นหา */
+        .search-box { width: 100%; padding: 12px 20px; border-radius: 20px; border: 2px solid #fff; background: #fff; margin-bottom: 20px; outline: none; box-shadow: 0 5px 15px rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); }
+        .search-box:focus { border-color: var(--pink-soft); }
 
-        /* การ์ดคิวงาน */
-        .q-card { 
-            background: var(--card-bg); 
-            border-radius: 25px; 
-            padding: 20px; 
-            margin-bottom: 15px; 
-            border: 1px solid #fff;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.02);
-            position: relative;
-        }
+        .q-card { background: var(--card-bg); border-radius: 25px; padding: 22px; margin-bottom: 18px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.03); border: 1px solid #fff; }
 
-        /* แถบสถานะแบบใหม่ (ไม่แบ่งช่อง / ไล่สี) */
-        .progress-container { 
-            background: #f0f0f0; 
-            border-radius: 10px; 
-            height: 14px; 
-            margin: 15px 0; 
-            overflow: hidden; 
-        }
-        .progress-bar { 
-            height: 100%; 
-            width: 0%; 
-            background: linear-gradient(90deg, #ff9a9e, #fad0c4); 
-            border-radius: 10px;
-            transition: 1s ease-in-out;
-        }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: #bbb; margin-bottom: 6px; }
+        .progress-container { background: #f0f0f0; border-radius: 10px; height: 14px; overflow: hidden; margin-bottom: 10px; }
+        .progress-bar { height: 100%; width: 0%; background: var(--grad-pink); border-radius: 10px; transition: 0.8s ease-in-out; }
 
-        /* ช่องไม่มีข้อมูล (สีชมพูอ่อนจางๆ) */
-        .empty-state {
-            background: var(--empty-bg);
-            border: 2px dashed rgba(255, 133, 192, 0.2);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            color: #ffb3d9;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
+        .note-box { background: var(--bg-grad); padding: 10px; border-radius: 12px; font-size: 0.75rem; color: var(--pink-accent); margin-top: 10px; border-left: 3px solid var(--pink-accent); }
 
-        .section-label { font-size: 0.9rem; color: var(--pink-accent); margin: 25px 0 10px 5px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .btn-group { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+        .btn-sm { background: var(--pink-soft); color: var(--pink-accent); border: none; padding: 5px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: 600; cursor: pointer; }
+        .btn-copy { background: #e6f7ff; color: #1890ff; }
+        .btn-finish { background: var(--grad-pink); color: white; border: none; padding: 5px 15px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; cursor: pointer; margin-left: auto; text-transform: lowercase; }
 
-        /* ปุ่ม Finish แบบใหม่ */
-        .btn-finish {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            background: var(--grad-button);
-            color: white;
-            border: none;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 3px 8px rgba(255, 154, 158, 0.3);
-            text-transform: lowercase;
-        }
+        /* Goy Up (Modal) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: #fff; width: 85%; max-width: 320px; padding: 25px; border-radius: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .modal-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 15px; }
+        .modal-input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--pink-soft); margin-bottom: 20px; outline: none; text-align: center; }
+        .modal-btns { display: flex; gap: 10px; }
+        .m-btn { flex: 1; padding: 10px; border-radius: 12px; border: none; font-size: 0.85rem; cursor: pointer; }
+        .m-btn-cancel { background: #f5f5f5; color: #999; }
+        .m-btn-ok { background: var(--pink-accent); color: #fff; }
 
-        .admin-box { background: #fff; border-radius: 25px; padding: 25px; border: 1px solid var(--pink-soft); margin-bottom: 25px; }
-        .btn-add { width: 100%; padding: 15px; border-radius: 15px; border: none; background: var(--grad-button); color: white; font-weight: 600; cursor: pointer; }
-
+        .empty-state { background: rgba(255,255,255,0.4); padding: 25px; border-radius: 20px; text-align: center; color: #ffb3d9; font-size: 0.8rem; border: 2px dashed rgba(255,133,192,0.1); margin-bottom: 15px; }
+        .section-label { font-size: 0.85rem; color: var(--pink-accent); margin: 25px 0 12px 5px; font-weight: 600; }
+        
         .page { display: none; }
-        .page.on { display: block; animation: fadeIn 0.4s; }
+        .page.on { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Toast Alert */
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 0.75rem; display: none; z-index: 2000; }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="https://via.placeholder.com/150/ffdeeb/ff85c0?text=Logo" alt="Profile" class="profile-img">
+    <img src="https://via.placeholder.com/150/ffdeeb/ff85c0?text=PJ" class="profile-img">
     <div class="shop-name">PINK — JULIE</div>
     <div class="nav-pill">
-        <button class="nav-btn active" id="tab-pub" onclick="goPage('pub')">คิวงานลูกค้า</button>
+        <button class="nav-btn active" id="tab-pub" onclick="goPage('pub')">เช็คคิวงาน</button>
         <button class="nav-btn" id="tab-adm" onclick="tryAdmin()">แอดมิน</button>
     </div>
 </header>
 
 <div class="container">
     <main id="page-pub" class="page on">
+        <input type="text" id="searchQ" class="search-box" placeholder="🔍 ค้นหาเลขคิว หรือ ชื่อลูกค้า..." onkeyup="render()">
+        
         <div class="section-label">💖 กำลังตั้งใจทำอยู่นะคะ</div>
         <div id="list-progress"></div>
-        
         <div class="section-label">⏳ คิวถัดไปเตรียมตัวเลย</div>
         <div id="list-waiting"></div>
-        
         <div class="section-label">🌸 งานสวยๆ เสร็จแล้วจ้า</div>
         <div id="list-done"></div>
     </main>
@@ -127,45 +93,91 @@
     </main>
 </div>
 
+<div id="goyUp" class="modal-overlay">
+    <div class="modal-content">
+        <div id="modalTitle" class="modal-title">อัปเดตข้อมูล</div>
+        <input type="text" id="modalInput" class="modal-input">
+        <div class="modal-btns">
+            <button class="m-btn m-btn-cancel" onclick="closeModal()">ยกเลิก</button>
+            <button class="m-btn m-btn-ok" id="modalConfirmBtn">ตกลง</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast">คัดลอกแล้วค่ะ ✨</div>
+
 <script>
-    let db = JSON.parse(localStorage.getItem('pj_final_v1')) || { q: [], nextNo: 1 };
+    let db = JSON.parse(localStorage.getItem('pj_final_v3')) || { q: [], nextNo: 1 };
     let authed = false;
 
-    function save() { localStorage.setItem('pj_final_v1', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('pj_final_v3', JSON.stringify(db)); render(); }
+
+    // ฟังก์ชันสร้างข้อความแคปชั่น
+    function getCaption(x) {
+        return `#พร้อมส่ง\nสินค้า: ${x.svc}\nรหัสคิว: ${x.no}\nสถานะ: ${x.progress}%\nโน้ต: ${x.note || 'รอดำเนินการ'}\nจองคิวทักแชทได้เลยนะคะเจ้าหญิง 🌸`;
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const t = document.getElementById('toast');
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2000);
+        });
+    }
 
     function render() {
+        const keyword = document.getElementById('searchQ')?.value.toLowerCase() || "";
+        const allQ = db.q.filter(x => x.name.toLowerCase().includes(keyword) || x.no.toLowerCase().includes(keyword));
+
         const draw = (list, id, isAdm = false) => {
             const container = document.getElementById(id);
             if (!container) return;
             if (list.length === 0) {
-                container.innerHTML = `<div class="empty-state">ไม่มีข้อมูลคิวในส่วนนี้ค่ะ ✨</div>`;
+                container.innerHTML = `<div class="empty-state">ไม่มีข้อมูลค่ะ ✨</div>`;
                 return;
             }
             container.innerHTML = list.map(x => `
                 <div class="q-card">
-                    <div style="font-weight:600; font-size:0.95rem; margin-bottom:5px;">${x.name} <span style="font-size:0.7rem; color:#ccc;">#${x.no}</span></div>
-                    <div style="font-size:0.75rem; color:#999;">${x.svc}</div>
-                    
-                    <div class="progress-container"><div class="progress-bar" style="width:${x.progress}%"></div></div>
-                    <div style="font-size:0.65rem; color:#bbb;">คืบหน้า: ${x.progress}%</div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div>
+                            <div style="font-weight:600; font-size:0.95rem;">${x.name}</div>
+                            <div style="font-size:0.75rem; color:#999;">${x.svc}</div>
+                        </div>
+                        <div style="font-size:0.7rem; font-weight:600; color:var(--pink-accent); background:var(--pink-soft); padding:2px 8px; border-radius:6px;">${x.no}</div>
+                    </div>
 
-                    ${isAdm && x.progress < 100 ? `<button class="btn-finish" onclick="setDone(${x.id})">finish</button>` : ''}
+                    <div style="margin-top:15px;">
+                        <div class="progress-label"><span>ความคืบหน้า</span><span>${x.progress}%</span></div>
+                        <div class="progress-container"><div class="progress-bar" style="width:${x.progress}%"></div></div>
+                    </div>
+
+                    ${x.note ? `<div class="note-box">📢 ${x.note}</div>` : ''}
+
+                    <div class="btn-group">
+                        <button class="btn-sm btn-copy" onclick="copyToClipboard(getCaption(db.q.find(i=>i.id===${x.id})))">ก๊อปแคปชั่น 📋</button>
+                        ${isAdm ? `
+                            ${x.progress < 100 ? `
+                                <button class="btn-sm" onclick="add10(${x.id})">+ 10% 🪄</button>
+                                <button class="btn-sm" onclick="promptNote(${x.id})">โน้ต</button>
+                                <button class="btn-finish" onclick="setDone(${x.id})">finish</button>
+                            ` : `<button class="btn-sm" style="color:#ff4d4d; background:none" onclick="delQ(${x.id})">ลบคิว</button>`}
+                        ` : ''}
+                    </div>
                 </div>
             `).join('');
         };
 
-        const q = db.q;
-        draw(q.filter(x => x.progress > 0 && x.progress < 100), 'list-progress');
-        draw(q.filter(x => x.progress == 0), 'list-waiting');
-        draw(q.filter(x => x.progress == 100), 'list-done');
+        draw(allQ.filter(x => x.progress > 0 && x.progress < 100), 'list-progress');
+        draw(allQ.filter(x => x.progress == 0), 'list-waiting');
+        draw(allQ.filter(x => x.progress == 100), 'list-done');
 
-        if (authed) {
+        if (authed && document.getElementById('admin-content')) {
             document.getElementById('admin-content').innerHTML = `
-                <div class="admin-box">
-                    <h4 style="margin-bottom:15px; color:var(--pink-accent);">🎀 เพิ่มลูกค้าใหม่</h4>
-                    <input type="text" id="in-name" style="width:100%; padding:12px; border-radius:12px; border:1px solid #eee; margin-bottom:10px; outline:none;" placeholder="ชื่อลูกค้า">
-                    <input type="text" id="in-svc" style="width:100%; padding:12px; border-radius:12px; border:1px solid #eee; margin-bottom:15px; outline:none;" placeholder="รายละเอียดงาน">
-                    <button class="btn-add" onclick="addNewOrder()">บันทึกคิวงาน 🪄</button>
+                <div class="q-card">
+                    <div class="section-label" style="margin-top:0;">🎀 เพิ่มคิวใหม่</div>
+                    <input type="text" id="in-name" class="modal-input" placeholder="ชื่อลูกค้า" style="margin-bottom:10px;">
+                    <input type="text" id="in-svc" class="modal-input" placeholder="รายละเอียดงาน" style="margin-bottom:15px;">
+                    <button class="btn-finish" style="width:100%; padding:12px; font-size:0.85rem;" onclick="addNewOrder()">บันทึกคิวงาน 🪄</button>
                 </div>
                 <div id="adm-list"></div>
             `;
@@ -177,8 +189,20 @@
         const name = document.getElementById('in-name').value;
         const svc = document.getElementById('in-svc').value;
         if (!name) return;
-        db.q.push({ id: Date.now(), no: "PJ-" + db.nextNo.toString().padStart(3, '0'), name, svc, progress: 0 });
+        db.q.push({ id: Date.now(), no: "PJ-" + db.nextNo.toString().padStart(3, '0'), name, svc, progress: 0, note: '' });
         db.nextNo++; save();
+    }
+
+    function add10(id) {
+        const item = db.q.find(x => x.id === id);
+        if (item && item.progress < 100) { item.progress = Math.min(item.progress + 10, 100); save(); }
+    }
+
+    function promptNote(id) {
+        openModal("เขียนข้อความอัปเดตงาน:", (val) => {
+            const item = db.q.find(x => x.id === id);
+            if (item) { item.note = val; save(); }
+        });
     }
 
     function setDone(id) {
@@ -186,6 +210,16 @@
         if (item) { item.progress = 100; save(); }
     }
 
+    function openModal(title, callback) {
+        const m = document.getElementById('goyUp');
+        const input = document.getElementById('modalInput');
+        document.getElementById('modalTitle').innerText = title;
+        input.value = "";
+        m.style.display = 'flex';
+        document.getElementById('modalConfirmBtn').onclick = () => { callback(input.value); closeModal(); };
+    }
+
+    function closeModal() { document.getElementById('goyUp').style.display = 'none'; }
     function goPage(p) {
         document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
         document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
@@ -195,9 +229,10 @@
     }
 
     function tryAdmin() {
-        const pass = prompt("รหัสผ่านแอดมิน (1234):");
+        const pass = prompt("รหัสแอดมิน (1234):");
         if (pass === '1234') { authed = true; goPage('adm'); }
     }
+    function delQ(id) { if(confirm('ลบคิวนี้ใช่ไหมคะ?')) { db.q = db.q.filter(x => x.id !== id); save(); } }
 
     render();
 </script>

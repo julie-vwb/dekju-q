@@ -3,230 +3,227 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Queue Pro — Soft & Modern</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <title>Queue A0001 Style — Your Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet"/>
     <style>
         :root {
-            --primary: #8e8ffa; --secondary: #c299ff; --accent: #ff99c8;
-            --bg-grad: linear-gradient(135deg, #f5f7ff 0%, #fff0f5 100%);
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --text-main: #2d3436; --text-sub: #636e72;
+            --primary-grad: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            --soft-pink: #fecfef; --text-main: #334e68; --text-sub: #829ab1;
+            --card-shadow: 0 10px 25px rgba(186, 215, 233, 0.25);
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Mitr', sans-serif; }
-        body { background: var(--bg-grad); min-height: 100vh; color: var(--text-main); }
+        body { background: #f8fbff; color: var(--text-main); min-height: 100vh; }
         
-        /* Glass Header */
+        /* Header & Nav */
         header { 
-            position: sticky; top: 0; z-index: 100; padding: 15px 20px;
-            background: rgba(255,255,255,0.4); backdrop-filter: blur(10px);
-            display: flex; justify-content: space-between; align-items: center;
+            background: #fff; padding: 20px; text-align: center;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
-        .nav-pill { 
-            background: #eee; padding: 4px; border-radius: 999px; display: flex; gap: 5px; 
-        }
-        .nav-btn { 
-            padding: 8px 18px; border-radius: 999px; border: none; cursor: pointer;
-            font-size: 0.85rem; transition: 0.3s; background: transparent; color: var(--text-sub);
-        }
-        .nav-btn.active { background: #fff; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .nav-pill { display: inline-flex; background: #f0f4f8; padding: 5px; border-radius: 999px; margin-top: 15px; }
+        .nav-btn { padding: 8px 25px; border-radius: 999px; border: none; cursor: pointer; font-size: 0.9rem; transition: 0.3s; background: transparent; color: var(--text-sub); }
+        .nav-btn.active { background: #fff; color: #486581; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-weight: 500; }
 
-        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 480px; margin: 0 auto; padding: 20px; }
 
-        /* Card Style */
-        .glass-card {
-            background: var(--card-bg); backdrop-filter: blur(15px);
-            border-radius: 28px; border: 1px solid rgba(255,255,255,0.6);
-            padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(142,143,250,0.1);
+        /* Search Box */
+        .search-container { position: relative; margin-bottom: 20px; }
+        .search-input {
+            width: 100%; padding: 14px 20px 14px 45px; border-radius: 20px;
+            border: 2px solid #fff; background: #fff; box-shadow: var(--card-shadow); outline: none; font-size: 0.9rem;
         }
 
-        /* Status & Hero */
-        .hero-title { font-size: 1.4rem; font-weight: 500; margin-bottom: 5px; }
-        .status-badge { 
-            display: inline-block; padding: 6px 16px; border-radius: 999px;
-            background: linear-gradient(90deg, #ff99c8, #ffccf9);
-            color: white; font-size: 0.8rem; margin-top: 10px;
+        /* Queue Card */
+        .q-card {
+            background: #fff; border-radius: 22px; padding: 18px; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid rgba(255,255,255,0.8); transition: 0.3s;
+        }
+        .q-num-box {
+            width: 70px; height: 55px; border-radius: 18px; background: #f0f7ff;
+            color: #5271ff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem;
         }
 
-        /* Queue List Item */
-        .q-item {
-            background: #fff; border-radius: 20px; padding: 18px;
-            display: flex; align-items: center; gap: 15px; margin-bottom: 12px;
-            transition: transform 0.2s; border: 1px solid #f0f0f0;
-        }
-        .q-num {
-            width: 50px; height: 50px; border-radius: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #fff; display: flex; align-items: center; justify-content: center;
-            font-weight: 600; font-size: 1.1rem;
-        }
-        .q-info { flex: 1; }
-        .q-info h4 { font-size: 1rem; color: var(--text-main); }
-        .q-info p { font-size: 0.8rem; color: var(--text-sub); }
-
-        /* Form Controls */
-        input, select {
-            width: 100%; padding: 12px 18px; border-radius: 15px;
-            border: 1px solid #eee; background: #f9f9f9; margin-top: 8px; outline: none;
-        }
-        .btn-main {
-            width: 100%; padding: 14px; border-radius: 18px; border: none;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: #fff; font-size: 1rem; font-weight: 500; cursor: pointer;
-            margin-top: 15px; box-shadow: 0 8px 20px rgba(142,143,250,0.3);
+        /* Admin Form */
+        .admin-box { background: #fff; border-radius: 25px; padding: 20px; margin-bottom: 20px; box-shadow: var(--card-shadow); }
+        .btn-add {
+            width: 100%; padding: 14px; border-radius: 15px; border: none;
+            background: var(--primary-grad); color: #fff; font-weight: 600; cursor: pointer;
+            box-shadow: 0 8px 15px rgba(161, 196, 253, 0.4); margin-top: 10px;
         }
 
-        .section-label { font-size: 0.85rem; color: var(--text-sub); margin: 25px 0 15px 10px; font-weight: 500; }
+        .section-label { font-size: 0.85rem; color: var(--text-sub); margin: 20px 0 10px 5px; font-weight: 500; }
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(51, 78, 104, 0.9); color: #fff; padding: 10px 25px;
+            border-radius: 999px; font-size: 0.85rem; display: none; z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
         .page { display: none; }
-        .page.active { display: block; }
+        .page.on { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <div style="font-size: 1.5rem;">🌊</div>
-        <strong id="shop-name">Your Shop</strong>
-    </div>
+    <div style="font-weight: 600; color: #334e68; font-size: 1.2rem;">Your Shop 🌊</div>
     <div class="nav-pill">
-        <button class="nav-btn active" id="tab-pub" onclick="switchPage('pub')">คิว</button>
-        <button class="nav-btn" id="tab-adm" onclick="openAdmin()">จัดการ</button>
+        <button class="nav-btn active" id="tab-pub" onclick="goPage('pub')">เช็คคิว</button>
+        <button class="nav-btn" id="tab-adm" onclick="tryAdmin()">แอดมิน</button>
     </div>
 </header>
 
 <div class="container">
-    <main id="page-pub" class="page active">
-        <div class="glass-card" style="text-align: center;">
-            <div class="hero-title">ยินดีต้อนรับค่ะ ✨</div>
-            <p style="font-size: 0.85rem; color: var(--text-sub);">พร้อมรับออเดอร์ให้คุณคนพิเศษ</p>
-            <div class="status-badge">Ready for orders 🎀</div>
+    <main id="page-pub" class="page on">
+        <div class="search-container">
+            <span style="position:absolute; left:18px; top:14px;">🔍</span>
+            <input type="text" class="search-input" id="searchQ" placeholder="ค้นหาเลขคิว (A0001) หรือ ชื่อ..." onkeyup="render()">
         </div>
-
-        <div class="section-label">กำลังดำเนินการ</div>
+        
+        <div class="section-label">🔥 กำลังดำเนินการ</div>
         <div id="list-progress"></div>
-
-        <div class="section-label">รอคิวต่อไป</div>
+        <div class="section-label">⏳ รอคิวต่อไป</div>
         <div id="list-waiting"></div>
-
-        <div class="section-label">เสร็จเรียบร้อย (วันนี้)</div>
+        <div class="section-label">✅ เสร็จเรียบร้อยแล้ว</div>
         <div id="list-done"></div>
     </main>
 
     <main id="page-adm" class="page">
-        <div class="glass-card">
-            <h3 style="margin-bottom: 15px;">⚙️ เพิ่มคิวใหม่</h3>
-            <div style="margin-bottom: 10px;">
-                <label style="font-size: 0.75rem;">ชื่อลูกค้า</label>
-                <input type="text" id="in-name" placeholder="ระบุชื่อ...">
-            </div>
-            <div>
-                <label style="font-size: 0.75rem;">บริการ</label>
-                <select id="in-svc">
-                    <option>ออกแบบ Landing Page</option>
-                    <option>รับลงสี (Coloring)</option>
-                    <option>รับทำป้าย (Banner)</option>
-                </select>
-            </div>
-            <button class="btn-main" onclick="addQueue()">เพิ่มคิวใหม่ ✨</button>
+        <div class="admin-box">
+            <h4 style="margin-bottom: 15px;">🎀 สร้างออเดอร์ใหม่</h4>
+            <input type="text" id="in-name" placeholder="ระบุชื่อลูกค้า..." style="margin-bottom: 10px; width:100%; padding:12px; border-radius:12px; border:1px solid #eee; outline:none;">
+            <select id="in-svc" style="width:100%; padding:12px; border-radius:12px; border:1px solid #eee; outline:none; background:#fefefe;">
+                <option>ออกแบบ Landing Page</option>
+                <option>รับลงสี (Coloring)</option>
+                <option>รับทำป้าย (Banner)</option>
+            </select>
+            <button class="btn-add" onclick="addAndCopy()">สร้างคิว + ก๊อปปี้ส่งลูกค้า ✨</button>
         </div>
-
-        <div class="section-label">จัดการรายการทั้งหมด</div>
+        <div class="section-label">จัดการคิวทั้งหมด</div>
         <div id="adm-list"></div>
-        <button onclick="logout()" style="width:100%; background:none; border:none; color:#ff7675; cursor:pointer; margin-top:20px;">🔒 ออกจากระบบแอดมิน</button>
+        <button onclick="logout()" style="width:100%; background:none; border:none; color:#ff9a9e; margin-top:30px; cursor:pointer; font-size:0.85rem;">🔒 ออกจากระบบ</button>
     </main>
 </div>
 
-<div id="modal-pw" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
-    <div class="glass-card" style="width:300px; text-align:center; background:#fff;">
-        <h4>Admin Access</h4>
-        <input type="password" id="pw-input" style="text-align:center; margin:15px 0;">
-        <button class="btn-main" onclick="checkPw()">เข้าสู่ระบบ</button>
-    </div>
-</div>
+<div id="toast" class="toast">คัดลอกข้อความแล้ว ✨</div>
 <script>
-    let db = JSON.parse(localStorage.getItem('myQ')) || { q: [], nextId: 1 };
-    let isAuthed = false;
+    // ดึงข้อมูลจากเครื่อง หรือตั้งค่าเริ่มต้น (รันเลข 1 = A0001)
+    let db = JSON.parse(localStorage.getItem('shopData_v2')) || { q: [], nextNo: 1 };
+    let authed = false;
 
-    function save() { localStorage.setItem('myQ', JSON.stringify(db)); render(); }
-
-    function switchPage(p) {
-        document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById('page-' + p).classList.add('active');
-        document.getElementById('tab-' + p).classList.add('active');
-        render();
+    function save() { 
+        localStorage.setItem('shopData_v2', JSON.stringify(db)); 
+        render(); 
     }
 
-    function openAdmin() {
-        if(isAuthed) switchPage('adm');
-        else document.getElementById('modal-pw').style.display = 'flex';
-    }
-
-    function checkPw() {
-        if(document.getElementById('pw-input').value === '1234') {
-            isAuthed = true;
-            document.getElementById('modal-pw').style.display = 'none';
-            switchPage('adm');
-        } else alert('รหัสผ่านไม่ถูกต้อง');
-    }
-
-    function logout() { isAuthed = false; switchPage('pub'); }
-
-    function addQueue() {
+    // ฟังก์ชันสร้างคิว และคัดลอกข้อความ
+    function addAndCopy() {
         const name = document.getElementById('in-name').value;
         const svc = document.getElementById('in-svc').value;
-        if(!name) return;
+        if(!name) return alert("กรุณาใส่ชื่อลูกค้าด้วยน้า ✨");
+
+        // รันเลขคิวอัตโนมัติแบบ A0001 - A1000
+        const qNum = "A" + db.nextNo.toString().padStart(4, '0');
         
-        db.q.push({
+        const newQ = {
             id: Date.now(),
-            num: '#' + db.nextId++,
+            no: qNum,
             name: name,
             svc: svc,
             status: 'waiting'
+        };
+
+        db.q.push(newQ);
+        db.nextNo = (db.nextNo >= 1000) ? 1 : db.nextNo + 1; // ถ้ารันถึง 1000 จะวนกลับไป 1 ใหม่ (หรือปรับตามใจชอบ)
+        
+        // ข้อความคัดลอกสไตล์ผู้หญิงขาย พร้อมคำเชียร์
+        const shopUrl = window.location.href; 
+        const copyText = `รับออเดอร์เรียบร้อยนะคะคุณ ${name} ✨\n` +
+                         `เลขออเดอร์ของคุณคือ 【 ${qNum} 】 นะคะ 🎀\n` +
+                         `ขอบคุณที่ไว้วางใจให้ Your Shop ดูแลนะคะ รองานสวยๆ ได้เลย แอดมินจะรีบปั่นให้สุดฝีมือเลยค่ะ! 🔥\n\n` +
+                         `🔍 ตรวจสอบสถานะคิวได้ที่นี่น้า:\n${shopUrl}\n` +
+                         `(ใส่หมายเลขออเดอร์ในช่องค้นหาได้เลยค่ะ)`;
+
+        // คัดลอกลง Clipboard
+        navigator.clipboard.writeText(copyText).then(() => {
+            showToast("สร้างคิว " + qNum + " และคัดลอกข้อความแล้วค่ะ 💖");
         });
+
         document.getElementById('in-name').value = '';
         save();
     }
 
-    function updateStatus(id, st) {
+    function render() {
+        const keyword = document.getElementById('searchQ').value.toLowerCase();
+        // ค้นหาได้ทั้งชื่อ และ เลขคิว
+        const activeQ = db.q.filter(x => x.name.toLowerCase().includes(keyword) || x.no.toLowerCase().includes(keyword));
+
+        const draw = (list, id, isAdm = false) => {
+            const container = document.getElementById(id);
+            if(!container) return;
+            container.innerHTML = list.map(x => `
+                <div class="q-card">
+                    <div class="q-num-box">${x.no}</div>
+                    <div style="flex:1">
+                        <h4 style="font-size:0.9rem">${x.name}</h4>
+                        <p style="font-size:0.7rem; color:#888">${x.svc}</p>
+                    </div>
+                    ${isAdm ? `
+                        <div style="display:flex; gap:5px;">
+                            <button onclick="setSt(${x.id},'inprogress')" style="border:none; background:#e1f5fe; color:#03a9f4; padding:6px; border-radius:8px; font-size:0.65rem; cursor:pointer;">เริ่ม</button>
+                            <button onclick="setSt(${x.id},'done')" style="border:none; background:#e8f5e9; color:#4caf50; padding:6px; border-radius:8px; font-size:0.65rem; cursor:pointer;">เสร็จ</button>
+                            <button onclick="delQ(${x.id})" style="border:none; background:#fff0f0; color:#ff7675; padding:6px; border-radius:8px; font-size:0.65rem; cursor:pointer;">ลบ</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('') || '<p style="text-align:center; padding:10px; font-size:0.75rem; color:#ccc;">ไม่มีรายการจ้า ✨</p>';
+        };
+
+        // แสดงผลหน้าลูกค้า (แยกตามสถานะ)
+        draw(activeQ.filter(x => x.status === 'inprogress'), 'list-progress');
+        draw(activeQ.filter(x => x.status === 'waiting'), 'list-waiting');
+        draw(activeQ.filter(x => x.status === 'done'), 'list-done');
+        
+        // แสดงผลหน้าแอดมิน (ทั้งหมด)
+        if(document.getElementById('adm-list')) draw(db.q, 'adm-list', true);
+    }
+
+    function setSt(id, st) {
         const item = db.q.find(x => x.id === id);
         if(item) item.status = st;
         save();
     }
 
-    function removeQ(id) {
-        if(confirm('ลบคิวนี้?')) {
+    function delQ(id) {
+        if(confirm('ลบคิวนี้ใช่ไหมคะ?')) {
             db.q = db.q.filter(x => x.id !== id);
             save();
         }
     }
 
-    function render() {
-        const draw = (list, containerId, isAdm = false) => {
-            const container = document.getElementById(containerId);
-            container.innerHTML = list.map(item => `
-                <div class="q-item">
-                    <div class="q-num">${item.num}</div>
-                    <div class="q-info">
-                        <h4>${item.name}</h4>
-                        <p>${item.svc}</p>
-                    </div>
-                    ${isAdm ? `
-                        <div style="display:flex; gap:5px;">
-                            <button onclick="updateStatus(${item.id}, 'inprogress')" style="padding:5px 10px; border-radius:8px; border:none; background:#e1f5fe; color:#03a9f4; font-size:0.6rem;">เริ่ม</button>
-                            <button onclick="updateStatus(${item.id}, 'done')" style="padding:5px 10px; border-radius:8px; border:none; background:#e8f5e9; color:#4caf50; font-size:0.6rem;">เสร็จ</button>
-                            <button onclick="removeQ(${item.id})" style="padding:5px 10px; border-radius:8px; border:none; background:#ffebee; color:#f44336; font-size:0.6rem;">ลบ</button>
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('') || '<p style="text-align:center; font-size:0.75rem; color:#ccc;">ไม่มีคิวในขณะนี้</p>';
-        };
-
-        draw(db.q.filter(x => x.status === 'inprogress'), 'list-progress');
-        draw(db.q.filter(x => x.status === 'waiting'), 'list-waiting');
-        draw(db.q.filter(x => x.status === 'done'), 'list-done');
-        draw(db.q, 'adm-list', true);
+    function showToast(m) {
+        const t = document.getElementById('toast'); t.textContent = m; t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
     }
 
+    function goPage(p) {
+        document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
+        document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
+        document.getElementById('page-'+p).classList.add('on');
+        document.getElementById('tab-'+p).classList.add('active');
+        render();
+    }
+
+    function tryAdmin() {
+        if(authed) return goPage('adm');
+        const pw = prompt("กรุณาใส่รหัสผ่านแอดมิน (รหัสคือ 1234):");
+        if(pw === "1234") { authed = true; goPage('adm'); }
+        else if(pw !== null) alert("รหัสผ่านไม่ถูกต้องนะคะ ❌");
+    }
+
+    function logout() { authed = false; goPage('pub'); }
+
+    // เริ่มต้นระบบ
     render();
 </script>
 </body>

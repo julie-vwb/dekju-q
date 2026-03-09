@@ -15,6 +15,7 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Mitr', sans-serif; }
         body { background: #f8fbff; color: var(--text-main); min-height: 100vh; }
         
+        /* Header & Nav */
         header { 
             background: #fff; padding: 20px; text-align: center;
             border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
@@ -37,6 +38,7 @@
         .q-card {
             background: #fff; border-radius: 22px; padding: 18px; margin-bottom: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid rgba(255,255,255,0.8);
+            animation: fadeIn 0.4s ease;
         }
         .q-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .q-num-box {
@@ -47,7 +49,7 @@
         .progress-container { background: #eee; border-radius: 10px; height: 10px; margin: 10px 0; overflow: hidden; }
         .progress-bar { background: var(--primary-grad); height: 100%; transition: 0.5s; width: 0%; }
         
-        .status-badge { font-size: 0.7rem; padding: 3px 10px; border-radius: 8px; font-weight: 500; }
+        .status-badge { font-size: 0.7rem; padding: 3px 10px; border-radius: 8px; font-weight: 500; margin-left: 5px; }
         .st-waiting { background: #fff3e0; color: #ff9800; }
         .st-doing { background: #e1f5fe; color: #03a9f4; }
         .st-done { background: #e8f5e9; color: #4caf50; }
@@ -65,6 +67,29 @@
         }
 
         .section-label { font-size: 0.85rem; color: var(--text-sub); margin: 20px 0 10px 5px; font-weight: 500; }
+
+        /* Custom Modal Style */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .modal-content {
+            background: #fff; width: 90%; max-width: 320px; padding: 25px;
+            border-radius: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-title { font-size: 1.1rem; font-weight: 600; color: var(--text-main); margin-bottom: 15px; }
+        .modal-input {
+            width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #eee;
+            outline: none; transition: 0.3s; text-align: center; font-size: 1rem;
+        }
+        .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-m { flex: 1; padding: 10px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 0.9rem; }
+        .btn-m-cancel { background: #f5f5f5; color: #999; }
+        .btn-m-ok { background: var(--primary-grad); color: white; }
+
         .toast {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: rgba(51, 78, 104, 0.9); color: #fff; padding: 10px 25px;
@@ -74,7 +99,6 @@
         .page.on { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Contact Buttons */
         .contact-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn-contact { flex:1; padding: 10px; border-radius: 12px; text-align: center; text-decoration: none; font-size: 0.8rem; font-weight: 500; }
     </style>
@@ -96,8 +120,7 @@
             <input type="text" class="search-input" id="searchQ" placeholder="ค้นหาเลขออเดอร์ / ชื่อ / LINE..." onkeyup="render()">
         </div>
         
-        <div id="queue-summary" style="margin-bottom: 15px; font-size: 0.8rem; color: var(--text-sub); display: flex; justify-content: space-between;">
-            </div>
+        <div id="queue-summary" style="margin-bottom: 15px; font-size: 0.8rem; color: var(--text-sub); display: flex; justify-content: space-between;"></div>
 
         <div class="section-label">🔥 กำลังดำเนินการ</div>
         <div id="list-progress"></div>
@@ -113,13 +136,27 @@
     </main>
 
     <main id="page-adm" class="page">
-        </main>
+        <div id="admin-content"></div>
+    </main>
 </div>
+
+<div id="customModal" class="modal-overlay">
+    <div class="modal-content">
+        <div id="modalTitle" class="modal-title">หัวข้อ</div>
+        <input type="text" id="modalInput" class="modal-input">
+        <div class="modal-btns">
+            <button class="btn-m btn-m-cancel" onclick="closeModal()">ยกเลิก</button>
+            <button class="btn-m btn-m-ok" id="modalConfirmBtn">ตกลง ✨</button>
+        </div>
+    </div>
+</div>
+
 <div id="toast" class="toast">คัดลอกข้อความแล้ว ✨</div>
+
 <script>
-    // ขยายฐานข้อมูลให้รองรับฟีเจอร์ใหม่
     let db = JSON.parse(localStorage.getItem('shopData_v3')) || { q: [], nextNo: 1 };
     let authed = false;
+    let currentModalAction = null;
 
     const statusMap = {
         'waiting': { label: 'รอเริ่มงาน', class: 'st-waiting' },
@@ -134,7 +171,24 @@
         render(); 
     }
 
-    // ฟังก์ชันสร้างข้อความแคปชั่นสุดคิ้วท์
+    /* Modal System */
+    function openModal(title, placeholder, callback, type = "text") {
+        const modal = document.getElementById('customModal');
+        const input = document.getElementById('modalInput');
+        document.getElementById('modalTitle').textContent = title;
+        input.placeholder = placeholder;
+        input.type = type;
+        input.value = "";
+        modal.style.display = 'flex';
+        input.focus();
+        currentModalAction = () => {
+            callback(input.value);
+            closeModal();
+        };
+        document.getElementById('modalConfirmBtn').onclick = currentModalAction;
+    }
+    function closeModal() { document.getElementById('customModal').style.display = 'none'; }
+
     function generateCaption(q) {
         return `🌈 #พร้อมส่ง ความสวยถึงมือแล้วค่าา ✨\n\n` +
                `ขอบคุณคุณ ${q.name} ที่เลือกเรานะคะ 🎀\n` +
@@ -155,12 +209,9 @@
             (x.line && x.line.toLowerCase().includes(keyword))
         );
 
-        // แสดงสรุปคิว
         const currentWork = allQ.find(x => x.status === 'inprogress') || {no: '-'};
-        document.getElementById('queue-summary').innerHTML = `
-            <span>กำลังทำ: <b>${currentWork.no}</b></span>
-            <span>ทั้งหมด: <b>${allQ.length} คิว</b></span>
-        `;
+        const summary = document.getElementById('queue-summary');
+        if(summary) summary.innerHTML = `<span>กำลังทำ: <b>${currentWork.no}</b></span><span>ทั้งหมด: <b>${allQ.length} คิว</b></span>`;
 
         const draw = (list, id, isAdm = false) => {
             const container = document.getElementById(id);
@@ -174,39 +225,36 @@
                             <p style="font-size:0.7rem; color:#888">${x.svc} | ${x.price}.-</p>
                         </div>
                     </div>
-                    
-                    <div style="font-size: 0.75rem; display:flex; justify-content:space-between;">
+                    <div style="font-size: 0.7rem; display:flex; justify-content:space-between; color:#888;">
                         <span>ความคืบหน้า</span>
                         <span>${x.progress}%</span>
                     </div>
                     <div class="progress-container">
                         <div class="progress-bar" style="width: ${x.progress}%"></div>
                     </div>
-
                     ${x.updateMsg ? `<div class="update-msg">📢 ${x.updateMsg}</div>` : ''}
-                    <div style="font-size:0.65rem; color:#ccc; margin-top:8px;">อัปเดตล่าสุด: ${x.lastUpdate}</div>
-
+                    <div style="font-size:0.6rem; color:#ccc; margin-top:8px;">อัปเดต: ${x.lastUpdate}</div>
                     ${isAdm ? `
-                        <div style="margin-top:15px; padding-top:10px; border-top:1px dashed #eee; display:flex; flex-wrap:wrap; gap:5px;">
-                            <input type="number" value="${x.progress}" onchange="updateQ(${x.id}, 'progress', this.value)" style="width:50px; font-size:0.7rem;">
-                            <select onchange="updateQ(${x.id}, 'status', this.value)" style="font-size:0.7rem;">
+                        <div style="margin-top:12px; padding-top:10px; border-top:1px dashed #eee; display:flex; flex-wrap:wrap; gap:5px;">
+                            <input type="number" value="${x.progress}" onchange="updateQ(${x.id}, 'progress', this.value)" style="width:45px; font-size:0.7rem; border:1px solid #eee; border-radius:5px; text-align:center;">
+                            <select onchange="updateQ(${x.id}, 'status', this.value)" style="font-size:0.7rem; border:1px solid #eee; border-radius:5px;">
                                 ${Object.keys(statusMap).map(k => `<option value="${k}" ${x.status===k?'selected':''}>${statusMap[k].label}</option>`).join('')}
                             </select>
-                            <button onclick="promptUpdate(${x.id})" style="font-size:0.7rem; background:#eee; border:none; padding:2px 8px; border-radius:5px;">เขียนโน้ต</button>
-                            <button onclick="delQ(${x.id})" style="font-size:0.7rem; background:#fff0f0; color:red; border:none; padding:2px 8px; border-radius:5px;">ลบ</button>
-                            <button onclick="copyToClipboard('${x.id}')" style="font-size:0.7rem; background:#e3f2fd; color:#1976d2; border:none; padding:2px 8px; border-radius:5px;">ก๊อปแคปชั่น</button>
+                            <button onclick="promptUpdate(${x.id})" style="font-size:0.65rem; background:#f0f4f8; border:none; padding:5px 8px; border-radius:8px; cursor:pointer;">เขียนโน้ต</button>
+                            <button onclick="copyToClipboard('${x.id}')" style="font-size:0.65rem; background:#e3f2fd; color:#1976d2; border:none; padding:5px 8px; border-radius:8px; cursor:pointer;">ก๊อปแคปชั่น</button>
+                            <button onclick="delQ(${x.id})" style="font-size:0.65rem; background:#fff0f0; color:#ff7675; border:none; padding:5px 8px; border-radius:8px; cursor:pointer;">ลบ</button>
                         </div>
                     ` : ''}
                 </div>
-            `).join('') || '<p style="text-align:center; padding:10px; font-size:0.75rem; color:#ccc;">ไม่พบข้อมูลน้า ✨</p>';
+            `).join('') || '<p style="text-align:center; padding:20px; font-size:0.75rem; color:#ccc;">ไม่พบข้อมูลน้าา มาเปิดบิลกันเถอะ ✨</p>';
         };
 
         draw(filtered.filter(x => x.status === 'inprogress' || x.status === 'near-done'), 'list-progress');
         draw(filtered.filter(x => x.status === 'waiting'), 'list-waiting');
         draw(filtered.filter(x => x.status === 'done' || x.status === 'shipped'), 'list-done');
         
-        if(authed) {
-            document.getElementById('page-adm').innerHTML = `
+        if(authed && document.getElementById('admin-content')) {
+            document.getElementById('admin-content').innerHTML = `
                 <div class="admin-box">
                     <h4 style="margin-bottom: 15px;">🎀 สร้างออเดอร์ใหม่</h4>
                     <input type="text" id="in-name" class="admin-input" placeholder="ชื่อลูกค้า">
@@ -228,39 +276,26 @@
         const svc = document.getElementById('in-svc').value;
         const price = document.getElementById('in-price').value || 0;
         const line = document.getElementById('in-line').value;
-        
         if(!name) return alert("งื้อออ ลืมใส่ชื่อลูกค้าคนสวยหรือเปล่าคะ?");
-
         const newQ = {
             id: Date.now(),
             no: "ORD-" + db.nextNo.toString().padStart(3, '0'),
-            name: name,
-            line: line,
-            svc: svc,
-            price: price,
-            status: 'waiting',
-            progress: 0,
-            updateMsg: '',
+            name: name, line: line, svc: svc, price: price,
+            status: 'waiting', progress: 0, updateMsg: '',
             lastUpdate: new Date().toLocaleDateString('th-TH')
         };
-
-        db.q.push(newQ);
-        db.nextNo++;
-        save();
+        db.q.push(newQ); db.nextNo++; save();
     }
 
     function updateQ(id, field, val) {
         const item = db.q.find(x => x.id === id);
-        if(item) {
-            item[field] = val;
-            item.lastUpdate = new Date().toLocaleDateString('th-TH');
-            save();
-        }
+        if(item) { item[field] = val; item.lastUpdate = new Date().toLocaleDateString('th-TH'); save(); }
     }
 
     function promptUpdate(id) {
-        const msg = prompt("เขียนข้อความอัปเดตงาน:");
-        if(msg !== null) updateQ(id, 'updateMsg', msg);
+        openModal("📢 อัปเดตงานให้ลูกค้า", "เช่น กำลังลงสีน้าา...", (val) => {
+            if(val !== null && val !== "") updateQ(id, 'updateMsg', val);
+        });
     }
 
     function copyToClipboard(id) {
@@ -283,7 +318,10 @@
 
     function tryAdmin() {
         if(authed) return goPage('adm');
-        if(prompt("รหัสแอดมิน (1234):") === "1234") { authed = true; goPage('adm'); }
+        openModal("🔒 เข้าสู่ระบบแอดมิน", "ใส่รหัสผ่าน (1234)", (val) => {
+            if(val === "1234") { authed = true; goPage('adm'); }
+            else { alert("รหัสผิดน้าา ❌"); }
+        }, "password");
     }
 
     function logout() { authed = false; goPage('pub'); }

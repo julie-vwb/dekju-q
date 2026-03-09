@@ -1,1202 +1,418 @@
 <!DOCTYPE html>
-
 <html lang="th">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>🌊 Queue System</title>
-<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-/* ═══════════════════════════════════════
-   🎨 TOKENS — แก้สีตรงนี้ที่เดียวเลยค่ะ
-═══════════════════════════════════════ */
-:root {
-  --bg:       #e8f6fd;
-  --bg2:      #ddf0fb;
-  --sky:      #dff1fb;
-  --sky2:     #c8e8f8;
-  --sky3:     #a8d8f0;
-  --blue:     #5ab4e5;
-  --blue2:    #3a9dd4;
-  --blue3:    #1e7fb5;
-  --surf:     rgba(255,255,255,0.92);
-  --bord:     rgba(90,180,229,0.22);
-  --bord2:    rgba(90,180,229,0.48);
-  --text:     #1e4d6b;
-  --text2:    #4a7f9a;
-  --text3:    #90bfd5;
-  --sh:       rgba(58,157,212,0.14);
-  --shM:      rgba(58,157,212,0.26);
-  --shL:      rgba(58,157,212,0.38);
-  --green:    #34d399;
-  --orange:   #fbbf24;
-  --font:     'Mitr', sans-serif;
-  --fontB:    'Sarabun', sans-serif;
-}
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🌊 Queue System — Mitr Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --bg: #e8f6fd;
+            --bg2: #ddf0fb;
+            --sky: #dff1fb;
+            --sky2: #c8e8f8;
+            --sky3: #a8d8f0;
+            --blue: #5ab4e5;
+            --blue2: #3a9dd4;
+            --blue3: #1e7fb5;
+            --surf: rgba(255,255,255,0.92);
+            --bord: rgba(90,180,229,0.22);
+            --bord2: rgba(90,180,229,0.48);
+            --text: #1e4d6b;
+            --text2: #4a7f9a;
+            --text3: #90bfd5;
+            --sh: rgba(58,157,212,0.14);
+            --shM: rgba(58,157,212,0.26);
+            --shL: rgba(58,157,212,0.38);
+            --green: #34d399;
+            --orange: #fbbf24;
+            /* เน้นฟอนต์ Mitr เท่านั้น */
+            --font: 'Mitr', sans-serif;
+        }
 
-/* ── reset ── */
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior: smooth; }
-body {
-font-family: var(–font);
-background: linear-gradient(160deg, var(–bg) 0%, var(–bg2) 55%, #f0f8ff 100%);
-min-height: 100vh;
-color: var(–text);
-overflow-x: hidden;
-}
-body::before {
-content: ‘’;
-position: fixed; inset: 0; z-index: 0; pointer-events: none;
-background:
-radial-gradient(ellipse at 12% 18%, rgba(168,216,240,.32) 0%, transparent 55%),
-radial-gradient(ellipse at 88% 80%, rgba(90,180,229,.18) 0%, transparent 50%);
-}
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(–sky); }
-::-webkit-scrollbar-thumb { background: var(–sky3); border-radius: 4px; }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: var(--font);
+            background: linear-gradient(160deg, var(--bg) 0%, var(--bg2) 55%, #f0f8ff 100%);
+            min-height: 100vh;
+            color: var(--text);
+            overflow-x: hidden;
+        }
 
-/* ── floating deco ── */
-.deco-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-.deco {
-position: absolute; opacity: .42;
-animation: fdeco var(–d,7s) var(–dl,0s) ease-in-out infinite;
-font-size: var(–fs,1rem); user-select: none;
-}
-@keyframes fdeco {
-0%,100% { transform: translateY(0) rotate(var(–r0,0deg)); }
-50%      { transform: translateY(-13px) rotate(var(–r1,4deg)); }
-}
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse at 12% 18%, rgba(168,216,240,.32) 0%, transparent 55%),
+                radial-gradient(ellipse at 88% 80%, rgba(90,180,229,.18) 0%, transparent 50%);
+        }
 
-/* ── app ── */
-.app { position: relative; z-index: 1; }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sky); }
+        ::-webkit-scrollbar-thumb { background: var(--sky3); border-radius: 4px; }
 
-/* ══════════════════════════════════════
-TOPBAR
-══════════════════════════════════════ */
-.topbar {
-position: sticky; top: 0; z-index: 60;
-height: 58px;
-background: linear-gradient(130deg, var(–blue3) 0%, var(–blue2) 55%, var(–blue) 100%);
-display: flex; align-items: center; justify-content: space-between;
-padding: 0 20px;
-box-shadow: 0 4px 20px var(–shM);
-}
-.tb-brand {
-display: flex; align-items: center; gap: 10px;
-color: #fff; font-size: 1rem; font-weight: 600;
-}
-.tb-logo {
-width: 34px; height: 34px; border-radius: 50%;
-background: rgba(255,255,255,.22);
-border: 2px solid rgba(255,255,255,.4);
-display: flex; align-items: center; justify-content: center; font-size: .95rem;
-}
-.tb-nav { display: flex; gap: 8px; }
-.tb-btn {
-padding: 6px 16px; border-radius: 999px;
-border: 1.5px solid rgba(255,255,255,.38);
-background: rgba(255,255,255,.16);
-color: #fff; font-family: var(–font); font-size: .8rem;
-cursor: pointer; transition: all .2s;
-display: inline-flex; align-items: center; gap: 5px;
-}
-.tb-btn:hover { background: rgba(255,255,255,.3); }
-.tb-btn.on    { background: #fff; color: var(–blue3); font-weight: 600; border-color: #fff; }
+        /* Deco */
+        .deco-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .deco {
+            position: absolute; opacity: .42;
+            animation: fdeco var(--d,7s) var(--dl,0s) ease-in-out infinite;
+            font-size: var(--fs,1rem); user-select: none;
+        }
+        @keyframes fdeco {
+            0%,100% { transform: translateY(0) rotate(var(--r0,0deg)); }
+            50%      { transform: translateY(-13px) rotate(var(--r1,4deg)); }
+        }
 
-/* ══════════════════════════════════════
-PAGE SYSTEM
-══════════════════════════════════════ */
-.page      { display: none; }
-.page.on   { display: block; animation: pgIn .35s ease both; }
-@keyframes pgIn {
-from { opacity: 0; transform: translateY(14px); }
-to   { opacity: 1; transform: translateY(0); }
-}
+        .app { position: relative; z-index: 1; }
 
-/* ══════════════════════════════════════
-PUBLIC PAGE
-══════════════════════════════════════ */
-.pub-wrap { max-width: 640px; margin: 0 auto; padding: 26px 16px 80px; }
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 60;
+            height: 58px;
+            background: linear-gradient(130deg, var(--blue3) 0%, var(--blue2) 55%, var(--blue) 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 4px 20px var(--shM);
+        }
+        .tb-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 1rem; font-weight: 600; }
+        .tb-logo { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.22); border: 2px solid rgba(255,255,255,.4); display: flex; align-items: center; justify-content: center; font-size: .95rem; }
+        .tb-nav { display: flex; gap: 8px; }
+        .tb-btn {
+            padding: 6px 16px; border-radius: 999px;
+            border: 1.5px solid rgba(255,255,255,.38);
+            background: rgba(255,255,255,.16);
+            color: #fff; font-family: var(--font); font-size: .8rem;
+            cursor: pointer; transition: all .2s;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .tb-btn:hover { background: rgba(255,255,255,.3); }
+        .tb-btn.on { background: #fff; color: var(--blue3); font-weight: 600; border-color: #fff; }
 
-/* hero card */
-.hero-card {
-background: var(–surf); backdrop-filter: blur(14px);
-border-radius: 24px; border: 1.5px solid var(–bord);
-box-shadow: 0 6px 28px var(–sh);
-padding: 30px 24px 26px; text-align: center;
-position: relative; overflow: hidden;
-margin-bottom: 14px;
-}
-.hero-card::before {
-content: ‘’;
-position: absolute; top: 0; left: 0; right: 0; height: 4px;
-background: linear-gradient(90deg, transparent 0%, var(–sky3) 30%, var(–blue) 50%, var(–sky3) 70%, transparent 100%);
-}
-.hero-av {
-width: 88px; height: 88px; border-radius: 50%;
-margin: 0 auto 14px;
-background: linear-gradient(135deg, var(–sky2), var(–blue));
-border: 4px solid #fff;
-box-shadow: 0 0 0 5px var(–sky2), 0 8px 24px var(–shM);
-display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
-animation: popIn .6s cubic-bezier(.34,1.56,.64,1) both;
-}
-img.hero-av { object-fit: cover; }
-@keyframes popIn { from{opacity:0;transform:scale(.6)} to{opacity:1;transform:scale(1)} }
+        /* Page */
+        .page { display: none; }
+        .page.on { display: block; animation: pgIn .35s ease both; }
+        @keyframes pgIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-.hero-name { font-size: 1.55rem; font-weight: 700; color: var(–blue3); }
-.hero-sub  {
-font-size: .82rem; color: var(–text2);
-font-family: var(–fontB); font-weight: 300; margin-top: 5px;
-}
-.hero-tags {
-display: flex; flex-wrap: wrap; justify-content: center; gap: 7px;
-margin-top: 14px;
-}
-.htag {
-display: inline-flex; align-items: center; gap: 5px;
-padding: 6px 14px; border-radius: 999px;
-background: rgba(255,255,255,.9); border: 1.5px solid var(–bord2);
-font-size: .79rem; color: var(–text2);
-box-shadow: 0 2px 8px var(–sh); cursor: default; transition: all .2s;
-}
-.htag:hover { background: var(–sky2); color: var(–blue3); transform: translateY(-2px); }
+        /* Public Page */
+        .pub-wrap { max-width: 640px; margin: 0 auto; padding: 26px 16px 80px; }
+        .hero-card {
+            background: var(--surf); backdrop-filter: blur(14px);
+            border-radius: 24px; border: 1.5px solid var(--bord);
+            box-shadow: 0 6px 28px var(--sh);
+            padding: 30px 24px 26px; text-align: center;
+            position: relative; overflow: hidden; margin-bottom: 14px;
+        }
+        .hero-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, transparent 0%, var(--sky3) 30%, var(--blue) 50%, var(--sky3) 70%, transparent 100%);
+        }
+        .hero-av {
+            width: 88px; height: 88px; border-radius: 50%; margin: 0 auto 14px;
+            background: linear-gradient(135deg, var(--sky2), var(--blue));
+            border: 4px solid #fff; box-shadow: 0 0 0 5px var(--sky2), 0 8px 24px var(--shM);
+            display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
+        }
+        .hero-name { font-size: 1.55rem; font-weight: 700; color: var(--blue3); }
+        .hero-sub { font-size: .82rem; color: var(--text2); font-weight: 300; margin-top: 5px; }
+        .hero-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-top: 14px; }
+        .htag { padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.9); border: 1.5px solid var(--bord2); font-size: .79rem; color: var(--text2); box-shadow: 0 2px 8px var(--sh); }
 
-.status-pill {
-display: inline-flex; align-items: center; gap: 8px;
-margin-top: 14px; padding: 9px 22px; border-radius: 999px;
-background: rgba(255,255,255,.92); border: 2px dashed var(–blue);
-font-size: .88rem; font-weight: 500; color: var(–blue2);
-cursor: default; transition: transform .2s;
-}
-.status-pill:hover { transform: scale(1.04); }
-.status-pill.closed { border-color: var(–text3); color: var(–text2); }
-.sdot {
-width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
-background: var(–green); animation: lp 2s infinite;
-}
-.sdot.off { background: var(–text3); animation: none; }
-@keyframes lp {
-0%,100% { box-shadow: 0 0 0 0 rgba(52,211,153,.55); }
-50%      { box-shadow: 0 0 0 5px rgba(52,211,153,0); }
-}
+        .status-pill { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 9px 22px; border-radius: 999px; background: rgba(255,255,255,.92); border: 2px dashed var(--blue); font-size: .88rem; font-weight: 500; color: var(--blue2); }
+        .sdot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); animation: lp 2s infinite; }
+        .sdot.off { background: var(--text3); animation: none; }
+        @keyframes lp { 0%,100% { box-shadow: 0 0 0 0 rgba(52,211,153,.55); } 50% { box-shadow: 0 0 0 5px rgba(52,211,153,0); } }
 
-/* ann */
-.ann-bar {
-display: flex; gap: 10px; align-items: flex-start;
-background: var(–surf); border-radius: 16px; padding: 13px 16px;
-border: 1.5px solid var(–bord); box-shadow: 0 2px 10px var(–sh);
-font-family: var(–fontB); font-size: .85rem; font-weight: 300; line-height: 1.65;
-margin-bottom: 14px;
-}
+        .ann-bar { display: flex; gap: 10px; align-items: flex-start; background: var(--surf); border-radius: 16px; padding: 13px 16px; border: 1.5px solid var(--bord); box-shadow: 0 2px 10px var(--sh); font-size: .85rem; line-height: 1.65; margin-bottom: 14px; }
 
-/* now strip */
-.now-strip {
-display: flex; align-items: center; justify-content: space-between;
-background: linear-gradient(130deg, var(–blue3), var(–blue2));
-border-radius: 18px; padding: 14px 20px; margin-bottom: 22px;
-color: #fff; box-shadow: 0 5px 20px var(–shM);
-}
-.now-lbl  { font-size: .72rem; opacity: .75; }
-.now-nm   { font-size: 1rem; font-weight: 600; margin-top: 3px; }
-.now-cnt  { font-size: 1.9rem; font-weight: 700; line-height: 1; }
+        .now-strip { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(130deg, var(--blue3), var(--blue2)); border-radius: 18px; padding: 14px 20px; margin-bottom: 22px; color: #fff; box-shadow: 0 5px 20px var(--shM); }
+        .now-lbl { font-size: .72rem; opacity: .75; }
+        .now-cnt { font-size: 1.9rem; font-weight: 700; }
 
-/* section head */
-.sec-h {
-display: flex; align-items: center; gap: 8px;
-font-size: .75rem; font-weight: 500; color: var(–text3);
-letter-spacing: 1px; text-transform: uppercase; margin: 22px 0 10px;
-}
-.sec-h::after { content: ‘’; flex: 1; height: 1px; background: var(–bord2); }
-.sec-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.dot-prog { background: var(–blue); }
-.dot-wait { background: var(–orange); }
-.dot-done { background: var(–green); }
+        .sec-h { display: flex; align-items: center; gap: 8px; font-size: .75rem; font-weight: 500; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin: 22px 0 10px; }
+        .sec-h::after { content: ''; flex: 1; height: 1px; background: var(--bord2); }
+        .sec-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-prog { background: var(--blue); }
+        .dot-wait { background: var(--orange); }
+        .dot-done { background: var(--green); }
 
-/* ══════════════════════════════════════
-QUEUE CARDS — แนวนอน เรียงซ้ายไปขวา
-══════════════════════════════════════ */
-.q-list {
-display: flex;
-flex-direction: column;
-gap: 10px;
-margin-bottom: 6px;
-}
+        /* Queue Cards */
+        .q-list { display: flex; flex-direction: column; gap: 10px; }
+        .qcard { background: var(--surf); border-radius: 16px; border: 1.5px solid var(--bord); box-shadow: 0 3px 14px var(--sh); display: flex; align-items: stretch; overflow: hidden; transition: all .22s; min-height: 76px; }
+        .qcard:hover { transform: translateY(-2px); box-shadow: 0 7px 22px var(--shM); }
+        .qcard-bar { width: 6px; flex-shrink: 0; }
+        .qcard.sw .qcard-bar { background: var(--orange); }
+        .qcard.sp .qcard-bar { background: var(--blue); }
+        .qcard.sd .qcard-bar { background: var(--green); }
+        .qcard-num { width: 62px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; color: var(--blue2); border-right: 1px dashed var(--bord2); }
+        .qcard-body { flex: 1; padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; gap: 3px; }
+        .qcard-name { font-size: .92rem; font-weight: 600; }
+        .qcard-svc { font-size: .78rem; color: var(--text2); }
+        .qcard-right { padding: 12px 14px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 6px; }
+        .qbadge { padding: 4px 12px; border-radius: 999px; font-size: .7rem; font-weight: 600; }
+        .bw { background: #fff7ed; color: #c2410c; }
+        .bp { background: var(--sky2); color: var(--blue3); }
+        .bd { background: #f0fdf4; color: #15803d; }
 
-.qcard {
-background: var(–surf);
-border-radius: 16px;
-border: 1.5px solid var(–bord);
-box-shadow: 0 3px 14px var(–sh);
-padding: 0;
-display: flex;
-align-items: stretch;
-overflow: hidden;
-transition: transform .22s, box-shadow .22s;
-min-height: 76px;
-}
-.qcard:hover { transform: translateY(-2px); box-shadow: 0 7px 22px var(–shM); }
+        /* Admin Panels */
+        .adm-wrap { max-width: 1000px; margin: 0 auto; padding: 26px 16px 80px; }
+        .panel { background: var(--surf); border-radius: 20px; border: 1.5px solid var(--bord); padding: 20px 18px; margin-bottom: 14px; }
+        .fg { margin-bottom: 12px; }
+        .fg label { display: block; font-size: .77rem; font-weight: 500; color: var(--text2); margin-bottom: 5px; }
+        .fg input, .fg select, .fg textarea { width: 100%; padding: 10px; border-radius: 12px; border: 1.5px solid var(--bord2); font-family: var(--font); outline: none; background: var(--sky); }
+        
+        .btn { padding: 8px 16px; border-radius: 999px; border: none; font-family: var(--font); cursor: pointer; transition: .2s; font-size: 0.8rem; }
+        .btn-blue { background: var(--blue); color: #fff; }
+        .btn-full { width: 100%; margin-top: 10px; }
 
-/* เส้นสีซ้าย */
-.qcard-bar {
-width: 6px; flex-shrink: 0;
-}
-.qcard.sw .qcard-bar { background: linear-gradient(180deg, var(–orange), #fde68a); }
-.qcard.sp .qcard-bar { background: linear-gradient(180deg, var(–blue3), var(–blue)); }
-.qcard.sd .qcard-bar { background: linear-gradient(180deg, var(–green), #6ee7b7); }
-.qcard.ss .qcard-bar { background: linear-gradient(180deg, #9ca3af, #d1d5db); }
+        /* Toast & Overlay */
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--blue3); color: #fff; padding: 10px 24px; border-radius: 999px; transition: .3s; z-index: 1000; }
+        .toast.on { transform: translateX(-50%) translateY(0); }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 200; }
+        .login-box { background: #fff; padding: 30px; border-radius: 20px; width: 320px; text-align: center; }
 
-/* เลขคิว */
-.qcard-num {
-width: 62px; flex-shrink: 0;
-display: flex; align-items: center; justify-content: center;
-font-size: 1.6rem; font-weight: 700; color: var(–blue2);
-border-right: 1px dashed var(–bord2);
-}
-
-/* ข้อมูลกลาง */
-.qcard-body {
-flex: 1; padding: 12px 14px;
-display: flex; flex-direction: column; justify-content: center; gap: 3px;
-min-width: 0;
-}
-.qcard-name { font-size: .92rem; font-weight: 600; color: var(–text); }
-.qcard-svc  {
-font-size: .78rem; color: var(–text2);
-font-family: var(–fontB); font-weight: 300;
-}
-.qcard-note {
-font-size: .72rem; color: var(–text3);
-font-family: var(–fontB); font-weight: 300;
-white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-/* badge + time ขวา */
-.qcard-right {
-padding: 12px 14px;
-display: flex; flex-direction: column;
-align-items: flex-end; justify-content: center; gap: 6px;
-flex-shrink: 0;
-}
-.qbadge {
-display: inline-block; padding: 4px 12px; border-radius: 999px;
-font-size: .7rem; font-weight: 600; white-space: nowrap;
-}
-.bw { background: #fff7ed; color: #c2410c; }
-.bp { background: var(–sky2); color: var(–blue3); }
-.bd { background: #f0fdf4; color: #15803d; }
-.bs { background: #f9fafb; color: #9ca3af; }
-.qcard-time { font-size: .68rem; color: var(–text3); font-family: var(–fontB); }
-
-.empty-row {
-display: flex; align-items: center; justify-content: center; gap: 8px;
-padding: 24px; border-radius: 16px;
-background: rgba(255,255,255,.5); border: 1.5px dashed var(–bord2);
-color: var(–text3); font-family: var(–fontB); font-size: .84rem; font-weight: 300;
-}
-
-/* ══════════════════════════════════════
-LOGIN OVERLAY
-══════════════════════════════════════ */
-.overlay {
-position: fixed; inset: 0; z-index: 200;
-background: rgba(10,30,55,.52);
-backdrop-filter: blur(12px);
-display: flex; align-items: center; justify-content: center;
-padding: 20px;
-}
-.login-box {
-background: rgba(255,255,255,.97);
-border-radius: 28px;
-border: 1.5px solid var(–bord2);
-box-shadow: 0 24px 64px var(–shL);
-padding: 44px 34px 38px;
-width: min(400px,100%);
-text-align: center;
-animation: popIn .45s cubic-bezier(.34,1.56,.64,1) both;
-}
-.lbox-logo {
-width: 74px; height: 74px; border-radius: 50%;
-margin: 0 auto 18px;
-background: linear-gradient(135deg, var(–sky2), var(–blue));
-border: 4px solid #fff;
-box-shadow: 0 0 0 5px var(–sky2), 0 8px 24px var(–shM);
-display: flex; align-items: center; justify-content: center; font-size: 2.1rem;
-}
-.lbox-title { font-size: 1.35rem; font-weight: 700; color: var(–blue3); }
-.lbox-sub   {
-font-size: .82rem; color: var(–text2);
-font-family: var(–fontB); font-weight: 300; margin: 5px 0 26px;
-}
-.lbox-err {
-background: #fff1f2; color: #be123c;
-border-radius: 12px; padding: 10px 14px; margin-bottom: 14px;
-font-size: .8rem; border: 1px solid #fecdd3;
-display: none; text-align: left;
-align-items: center; gap: 8px;
-animation: shake .4s ease;
-}
-.lbox-err.on { display: flex; }
-@keyframes shake {
-0%,100%{transform:translateX(0)}
-20%,60%{transform:translateX(-7px)}
-40%,80%{transform:translateX(7px)}
-}
-
-/* pw input */
-.pw-wrap { position: relative; margin-bottom: 16px; text-align: left; }
-.pw-wrap label {
-display: block; font-size: .77rem; font-weight: 500;
-color: var(–text2); margin-bottom: 6px;
-}
-.pw-wrap input {
-width: 100%; padding: 12px 44px 12px 14px;
-border: 1.5px solid var(–bord2); border-radius: 14px;
-font-family: var(–font); font-size: .9rem; color: var(–text);
-background: var(–sky); outline: none;
-transition: border-color .2s, background .2s, box-shadow .2s;
-}
-.pw-wrap input:focus {
-border-color: var(–blue); background: #fff;
-box-shadow: 0 0 0 3px rgba(90,180,229,.22);
-}
-.eye-btn {
-position: absolute; right: 12px; bottom: 12px;
-background: none; border: none; cursor: pointer;
-font-size: 1rem; opacity: .5; transition: opacity .2s;
-}
-.eye-btn:hover { opacity: .9; }
-
-.btn-login {
-width: 100%; padding: 13px; border-radius: 999px; border: none;
-background: linear-gradient(135deg, var(–blue3), var(–blue));
-color: #fff; font-family: var(–font); font-size: .92rem; font-weight: 600;
-cursor: pointer; box-shadow: 0 4px 16px var(–shM);
-transition: all .2s; margin-top: 2px;
-}
-.btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 22px var(–shL); }
-
-/* ══════════════════════════════════════
-ADMIN PAGE
-══════════════════════════════════════ */
-.adm-wrap { max-width: 1000px; margin: 0 auto; padding: 26px 16px 80px; }
-
-.adm-toprow {
-display: flex; align-items: center; justify-content: space-between;
-margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
-}
-.adm-title { font-size: 1.15rem; font-weight: 700; color: var(–blue3); }
-
-/* stats */
-.stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 11px; margin-bottom: 20px; }
-@media(max-width:480px){ .stat-row { grid-template-columns: repeat(2,1fr); } }
-.stat-card {
-background: var(–surf); border-radius: 18px; padding: 15px 12px;
-text-align: center; box-shadow: 0 3px 12px var(–sh);
-border-top: 3px solid var(–bord); transition: transform .2s;
-}
-.stat-card:hover { transform: translateY(-2px); }
-.sc-w { border-top-color: var(–orange); }
-.sc-p { border-top-color: var(–blue); }
-.sc-d { border-top-color: var(–green); }
-.sc-a { border-top-color: var(–sky3); }
-.stat-n { font-size: 1.8rem; font-weight: 700; color: var(–text); }
-.stat-l { font-size: .72rem; color: var(–text2); margin-top: 2px; }
-
-/* tabs */
-.tabs  { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
-.tab {
-padding: 8px 18px; border-radius: 999px;
-border: 1.5px solid var(–bord2); background: var(–surf); color: var(–text2);
-font-family: var(–font); font-size: .82rem; cursor: pointer; transition: all .2s;
-}
-.tab:hover { border-color: var(–blue); color: var(–blue2); }
-.tab.on { background: linear-gradient(135deg,var(–blue3),var(–blue)); color:#fff; border-color: transparent; font-weight:500; }
-.tp     { display: none; }
-.tp.on  { display: block; animation: pgIn .25s ease; }
-
-/* panel */
-.panel {
-background: var(–surf); border-radius: 20px;
-border: 1.5px solid var(–bord); box-shadow: 0 4px 18px var(–sh);
-padding: 20px 18px; position: relative; overflow: hidden;
-}
-.panel::before {
-content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-background: linear-gradient(90deg,transparent,var(–sky3),var(–blue),var(–sky3),transparent);
-opacity: .55;
-}
-.panel-sm { max-width: 500px; }
-.mt14     { margin-top: 14px; }
-.ph {
-font-size: .95rem; font-weight: 600; color: var(–text);
-margin-bottom: 14px; display: flex; align-items: center; gap: 7px;
-}
-
-/* 2-col */
-.tcol    { display: grid; grid-template-columns: 1fr 1.5fr; gap: 14px; }
-.tcol-sm { grid-template-columns: 1fr 1fr; max-width: 740px; }
-@media(max-width:640px){ .tcol,.tcol-sm { grid-template-columns: 1fr; } }
-
-/* admin queue rows */
-.adm-qlist { display: flex; flex-direction: column; gap: 8px; max-height: 450px; overflow-y: auto; padding-right: 2px; }
-.adm-qlist::-webkit-scrollbar { width: 4px; }
-.adm-qlist::-webkit-scrollbar-thumb { background: var(–sky3); border-radius: 2px; }
-
-.adm-qrow {
-display: flex; align-items: center; gap: 10px;
-padding: 11px 13px; border-radius: 14px;
-background: var(–sky); border: 1px solid rgba(90,180,229,.2);
-transition: all .2s;
-}
-.adm-qrow:hover { background: var(–sky2); border-color: var(–bord2); }
-.aqnum {
-width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
-background: linear-gradient(135deg, var(–blue2), var(–blue));
-color: #fff; font-size: .8rem; font-weight: 700;
-display: flex; align-items: center; justify-content: center;
-box-shadow: 0 2px 6px var(–sh);
-}
-.aqinfo { flex: 1; min-width: 0; }
-.aqname { font-size: .87rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.aqsub  { font-size: .72rem; color: var(–text2); font-family: var(–fontB); font-weight: 300; margin-top: 1px; }
-.aqacts { display: flex; gap: 5px; flex-wrap: wrap; flex-shrink: 0; }
-
-/* form */
-.fg { margin-bottom: 12px; }
-.fg label {
-display: block; font-size: .77rem; font-weight: 500;
-color: var(–text2); margin-bottom: 5px;
-}
-.fg input, .fg select, .fg textarea {
-width: 100%; padding: 9px 13px;
-border: 1.5px solid var(–bord2); border-radius: 12px;
-font-family: var(–font); font-size: .85rem; color: var(–text);
-background: var(–sky); outline: none;
-transition: border-color .2s, background .2s;
-}
-.fg input:focus, .fg select:focus, .fg textarea:focus {
-border-color: var(–blue); background: #fff;
-}
-.fg textarea { resize: vertical; min-height: 68px; }
-.set-prev {
-background: var(–sky); border-radius: 10px; padding: 10px 13px; margin-top: 7px;
-font-size: .82rem; color: var(–text); border: 1.5px dashed var(–bord2);
-font-family: var(–fontB); font-weight: 300; line-height: 1.65; min-height: 40px;
-}
-
-/* svc item */
-.svi {
-display: flex; align-items: center; justify-content: space-between;
-padding: 9px 12px; border-radius: 12px;
-border: 1.5px solid var(–bord2); background: var(–sky); margin-bottom: 8px;
-}
-.svi-cat { font-size: .68rem; color: var(–text3); margin-bottom: 1px; }
-.svi-nm  { font-size: .87rem; font-weight: 500; }
-.svi-pr  { font-size: .82rem; color: var(–blue2); font-weight: 600; }
-
-/* pw section divider */
-.pw-divider {
-border: none; border-top: 1.5px dashed var(–bord2);
-margin: 18px 0 16px;
-}
-
-/* ── BUTTONS ── */
-.btn {
-display: inline-flex; align-items: center; gap: 5px;
-padding: 7px 14px; border-radius: 999px; border: none;
-font-family: var(–font); font-size: .78rem; font-weight: 500;
-cursor: pointer; transition: all .2s; white-space: nowrap;
-}
-.btn:hover  { transform: translateY(-1px); }
-.btn:active { transform: translateY(0); }
-
-.btn-blue { background: linear-gradient(135deg,var(–blue3),var(–blue)); color:#fff; box-shadow:0 3px 10px var(–sh); }
-.btn-blue:hover { box-shadow: 0 5px 16px var(–shM); }
-.btn-prog { background: var(–sky2); color:var(–blue3); border:1px solid var(–bord2); }
-.btn-prog:hover { background: var(–sky3); }
-.btn-done { background: #f0fdf4; color:#15803d; border:1px solid #bbf7d0; }
-.btn-done:hover { background: #dcfce7; }
-.btn-skip { background: #fff7ed; color:#c2410c; border:1px solid #fed7aa; }
-.btn-skip:hover { background: #ffedd5; }
-.btn-back { background: #f9fafb; color:#6b7280; border:1px solid #e5e7eb; }
-.btn-back:hover { background: #f3f4f6; }
-.btn-del  { background: #fff1f2; color:#be123c; border:1px solid #fecdd3; }
-.btn-del:hover  { background: #ffe4e6; }
-.btn-ghost {
-background: transparent; border: 1.5px solid var(–bord2); color: var(–text2);
-}
-.btn-ghost:hover { background: var(–sky2); color: var(–blue3); }
-.btn-warn { background: rgba(248,113,113,.28); color:#fff; border:1px solid rgba(248,113,113,.5); }
-.btn-warn:hover { background: rgba(248,113,113,.45); }
-
-.btn-sm   { padding: 5px 11px; font-size: .72rem; }
-.btn-full { width: 100%; justify-content: center; padding: 11px 16px; font-size: .88rem; margin-bottom: 8px; }
-
-.empty-adm {
-text-align: center; padding: 22px 0;
-color: var(–text3); font-family: var(–fontB); font-size: .84rem;
-}
-
-/* ── TOAST ── */
-.toast {
-position: fixed; bottom: 26px; left: 50%; z-index: 300;
-transform: translateX(-50%) translateY(80px);
-background: var(–blue3); color: #fff;
-padding: 11px 24px; border-radius: 999px;
-font-size: .85rem; box-shadow: 0 6px 22px var(–shL);
-transition: transform .32s cubic-bezier(.34,1.56,.64,1);
-pointer-events: none; white-space: nowrap;
-}
-.toast.on { transform: translateX(-50%) translateY(0); }
-
-@media(max-width:420px) {
-.qcard-num     { width: 50px; font-size: 1.3rem; }
-.aqacts .btn-sm { padding: 4px 7px; font-size: .68rem; }
-.tb-btn        { padding: 5px 10px; font-size: .76rem; }
-}
-</style>
-
+        @media(max-width:480px){
+            .qcard-num { width: 50px; font-size: 1.2rem; }
+        }
+    </style>
 </head>
 <body>
 
-<!-- deco -->
-
 <div class="deco-wrap">
-  <div class="deco" style="top:5%;left:3%;--d:7s;--dl:0s;--fs:1.2rem;--r0:-8deg;--r1:5deg">💎</div>
-  <div class="deco" style="top:11%;right:5%;--d:5s;--dl:1s;--fs:.88rem">✦</div>
-  <div class="deco" style="top:32%;left:2%;--d:8s;--dl:2s;--fs:.8rem">🌧️</div>
-  <div class="deco" style="top:52%;right:3%;--d:6s;--dl:3s;--fs:.95rem">💧</div>
-  <div class="deco" style="bottom:28%;left:4%;--d:7s;--dl:1.5s;--fs:.72rem">⭐</div>
-  <div class="deco" style="bottom:12%;right:5%;--d:5s;--dl:2.5s;--fs:.85rem">🎀</div>
-  <div class="deco" style="top:72%;left:2%;--d:9s;--dl:.5s;--fs:.65rem">✧</div>
+    <div class="deco" style="top:5%;left:3%;--d:7s;--dl:0s;--fs:1.2rem;">💎</div>
+    <div class="deco" style="top:15%;right:5%;--d:5s;--dl:1s;--fs:1rem;">✦</div>
+    <div class="deco" style="bottom:10%;left:5%;--d:8s;--dl:2s;--fs:1.1rem;">🎀</div>
 </div>
 
 <div class="app">
+    <header class="topbar">
+        <div class="tb-brand">
+            <div class="tb-logo">🌊</div>
+            <span id="nav-name">Your Shop</span>
+        </div>
+        <nav class="tb-nav">
+            <button class="tb-btn on" id="btn-pub" onclick="goPage('pub')">🌊 เช็คคิว</button>
+            <button class="tb-btn" id="btn-adm" onclick="tryAdmin()">⚙ แอดมิน</button>
+        </nav>
+    </header>
 
-  <!-- TOPBAR -->
+    <main class="page on" id="page-pub">
+        <div class="pub-wrap">
+            <div class="hero-card">
+                <div class="hero-av" id="pub-av">🌊</div>
+                <div class="hero-name" id="pub-name">Your Shop</div>
+                <p class="hero-sub" id="pub-tag">รับออกแบบเว็บ · รับลงสี · รับทำป้าย</p>
+                <div class="status-pill" id="spill">
+                    <span class="sdot" id="sdot"></span>
+                    <span id="stext">Ready for orders 🎀</span>
+                </div>
+            </div>
 
-  <header class="topbar">
-    <div class="tb-brand">
-      <div class="tb-logo" id="nav-logo">🌊</div>
-      <span id="nav-name">Your Shop</span>
-    </div>
-    <nav class="tb-nav">
-      <button class="tb-btn on"  id="btn-pub" onclick="goPage('pub')">🌊 เช็คคิว</button>
-      <button class="tb-btn"     id="btn-adm" onclick="tryAdmin()">⚙ แอดมิน</button>
-    </nav>
-  </header>
+            <div class="ann-bar">
+                <span>📢</span>
+                <span id="pub-ann">ยินดีต้อนรับ! ทักมาสอบถามได้เลยนะคะ ✨</span>
+            </div>
 
-  <!-- ════════════════════════
-       PUBLIC PAGE
-  ════════════════════════ -->
+            <div class="now-strip">
+                <div>
+                    <div class="now-lbl">🎨 กำลังทำอยู่</div>
+                    <div class="now-nm" id="pub-now">–</div>
+                </div>
+                <div style="text-align:right">
+                    <div class="now-lbl">รอในคิว</div>
+                    <div class="now-cnt" id="pub-wn">0</div>
+                </div>
+            </div>
 
-  <main class="page on" id="page-pub">
-    <div class="pub-wrap">
+            <div class="sec-h"><span class="sec-dot dot-prog"></span>กำลังทำอยู่</div>
+            <div class="q-list" id="pg-prog"></div>
 
-```
-  <!-- hero -->
-  <div class="hero-card">
-    <!-- ✏️ ใส่รูปจริง: เปลี่ยน <div class="hero-av"> เป็น <img class="hero-av" src="pic.png"> -->
-    <div class="hero-av" id="pub-av">🌊</div>
-    <div class="hero-name" id="pub-name">Your Shop</div>
-    <p   class="hero-sub"  id="pub-tag">รับออกแบบเว็บ · รับลงสี · รับทำป้าย</p>
-    <div class="hero-tags">
-      <span class="htag">🖥️ รับออกแบบเว็บ</span>
-      <span class="htag">🎨 รับลงสี</span>
-      <span class="htag">🪧 รับทำป้าย</span>
-    </div>
-    <div class="status-pill" id="spill">
-      <span class="sdot" id="sdot"></span>
-      <span id="stext">Ready for orders 🎀</span>
-    </div>
-  </div>
+            <div class="sec-h"><span class="sec-dot dot-wait"></span>คิวรอ</div>
+            <div class="q-list" id="pg-wait"></div>
 
-  <!-- ann -->
-  <div class="ann-bar">
-    <span style="flex-shrink:0;margin-top:1px">📢</span>
-    <span id="pub-ann">ยินดีต้อนรับ! ทักมาสอบถามได้เลยนะคะ ✨</span>
-  </div>
+            <div class="sec-h"><span class="sec-dot dot-done"></span>เสร็จแล้ววันนี้</div>
+            <div class="q-list" id="pg-done"></div>
+        </div>
+    </main>
 
-  <!-- now -->
-  <div class="now-strip">
-    <div>
-      <div class="now-lbl">🎨 กำลังทำอยู่</div>
-      <div class="now-nm" id="pub-now">–</div>
-    </div>
-    <div style="text-align:right">
-      <div class="now-lbl">รอในคิว</div>
-      <div class="now-cnt" id="pub-wn">0</div>
-    </div>
-  </div>
-
-  <!-- queue sections -->
-  <div class="sec-h"><span class="sec-dot dot-prog"></span>กำลังทำอยู่</div>
-  <div class="q-list" id="pg-prog"></div>
-
-  <div class="sec-h"><span class="sec-dot dot-wait"></span>คิวรอ</div>
-  <div class="q-list" id="pg-wait"></div>
-
-  <div class="sec-h"><span class="sec-dot dot-done"></span>เสร็จแล้ววันนี้</div>
-  <div class="q-list" id="pg-done"></div>
-
-  <p style="text-align:center;font-size:.72rem;color:var(--text3);font-family:var(--fontB);margin-top:24px;opacity:.7">
-    🔄 อัปเดตอัตโนมัติทุก 20 วินาที
-  </p>
+    <main class="page" id="page-adm">
+        <div class="adm-wrap">
+            <div class="panel">
+                <h3>⚙ แผงควบคุม</h3>
+                <div class="fg">
+                    <label>ชื่อลูกค้า</label>
+                    <input type="text" id="fn" placeholder="ชื่อลูกค้า">
+                </div>
+                <div class="fg">
+                    <label>บริการ</label>
+                    <select id="fs"></select>
+                </div>
+                <button class="btn btn-blue btn-full" onclick="addQ()">เพิ่มคิวใหม่</button>
+            </div>
+            <div id="adm-lists">
+                <div class="panel">
+                    <h4>รายการคิวปัจจุบัน</h4>
+                    <div id="adm-all-q"></div>
+                </div>
+            </div>
+            <button class="btn btn-full" style="background:#ff4757; color:#fff;" onclick="logout()">ออกจากระบบ</button>
+        </div>
+    </main>
 </div>
-```
-
-  </main>
-
-  <!-- ════════════════════════
-       ADMIN PAGE
-  ════════════════════════ -->
-
-  <main class="page" id="page-adm">
-    <div class="adm-wrap">
-
-```
-  <div class="adm-toprow">
-    <h2 class="adm-title">⚙ Admin Panel</h2>
-    <button class="btn btn-warn btn-sm" onclick="logout()">🚪 ออกจากระบบ</button>
-  </div>
-
-  <!-- stats -->
-  <div class="stat-row" id="stat-row"></div>
-
-  <!-- tabs -->
-  <div class="tabs">
-    <button class="tab on" onclick="swTab('t-q',  this)">📋 คิวทั้งหมด</button>
-    <button class="tab"    onclick="swTab('t-add', this)">➕ เพิ่มคิว</button>
-    <button class="tab"    onclick="swTab('t-svc', this)">💅 บริการ</button>
-    <button class="tab"    onclick="swTab('t-set', this)">🔧 ตั้งค่า</button>
-  </div>
-
-  <!-- TAB: queue -->
-  <div class="tp on" id="t-q">
-    <div class="tcol">
-      <div class="panel">
-        <div class="ph">🎨 กำลังทำอยู่</div>
-        <div class="adm-qlist" id="adm-prog"></div>
-      </div>
-      <div class="panel">
-        <div class="ph">⏳ คิวรอ</div>
-        <div class="adm-qlist" id="adm-wait"></div>
-      </div>
-    </div>
-    <div class="panel mt14">
-      <div class="ph">✦ เสร็จแล้ว / ข้ามคิว</div>
-      <div class="adm-qlist" id="adm-done"></div>
-    </div>
-  </div>
-
-  <!-- TAB: add -->
-  <div class="tp" id="t-add">
-    <div class="panel panel-sm">
-      <div class="ph">➕ เพิ่มคิวใหม่</div>
-      <div class="fg"><label>ชื่อลูกค้า *</label><input id="fn" placeholder="เช่น คุณมิน"/></div>
-      <div class="fg"><label>เบอร์โทร</label><input id="fp" placeholder="0xx-xxx-xxxx"/></div>
-      <div class="fg"><label>บริการ *</label><select id="fs"></select></div>
-      <div class="fg"><label>หมายเหตุ</label><textarea id="fnote" placeholder="รายละเอียดเพิ่มเติม..."></textarea></div>
-      <button class="btn btn-blue btn-full" onclick="addQ()">💙 เพิ่มคิว</button>
-    </div>
-  </div>
-
-  <!-- TAB: services -->
-  <div class="tp" id="t-svc">
-    <div class="tcol tcol-sm">
-      <div class="panel">
-        <div class="ph">🛠️ รายการบริการ</div>
-        <div id="svc-list"></div>
-      </div>
-      <div class="panel">
-        <div class="ph">➕ เพิ่มบริการ</div>
-        <div class="fg"><label>ชื่อบริการ</label><input id="ns-n" placeholder="เช่น ออกแบบ Banner"/></div>
-        <div class="fg"><label>หมวดหมู่</label><input id="ns-c" placeholder="เช่น 🖥️ เว็บ"/></div>
-        <div class="fg"><label>ราคาเริ่มต้น (฿)</label><input id="ns-p" type="number" placeholder="500"/></div>
-        <button class="btn btn-blue btn-full" onclick="addSvc()">เพิ่มบริการ</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB: settings -->
-  <div class="tp" id="t-set">
-    <div class="panel panel-sm">
-      <div class="ph">🔧 ตั้งค่าทั่วไป</div>
-      <div class="fg"><label>ชื่อร้าน</label><input id="st-nm"/></div>
-      <div class="fg"><label>Tagline</label><input id="st-tg"/></div>
-      <div class="fg">
-        <label>ข้อความประกาศ</label>
-        <textarea id="st-an" rows="3"
-          oninput="document.getElementById('ann-prev').textContent=this.value"></textarea>
-        <div class="set-prev" id="ann-prev"></div>
-      </div>
-      <div class="fg">
-        <label>สถานะร้าน</label>
-        <select id="st-st">
-          <option value="open">🟢 เปิดรับงาน</option>
-          <option value="closed">🔴 ปิดรับงาน</option>
-        </select>
-      </div>
-
-      <hr class="pw-divider"/>
-      <div class="ph" style="margin-bottom:12px">🔑 เปลี่ยนรหัสผ่าน</div>
-      <div class="fg"><label>รหัสผ่านเดิม</label><input id="pw-old" type="password" placeholder="••••••••"/></div>
-      <div class="fg"><label>รหัสผ่านใหม่ (อย่างน้อย 6 ตัว)</label><input id="pw-new" type="password" placeholder="••••••••"/></div>
-      <div class="fg"><label>ยืนยันรหัสผ่านใหม่</label><input id="pw-con" type="password" placeholder="••••••••"/></div>
-
-      <button class="btn btn-blue btn-full" onclick="saveAll()">💾 บันทึกทุกอย่าง</button>
-      <button class="btn btn-del  btn-full" onclick="clearDone()">🗑️ ล้างคิวที่เสร็จแล้ว</button>
-    </div>
-  </div>
-
-</div>
-```
-
-  </main>
-
-</div><!-- /app -->
-
-<!-- LOGIN OVERLAY -->
 
 <div class="overlay" id="overlay" style="display:none">
-  <div class="login-box">
-    <div class="lbox-logo">⚙</div>
-    <div class="lbox-title">Admin Panel</div>
-    <p class="lbox-sub">กรุณาใส่รหัสผ่านเพื่อจัดการคิว</p>
-
-```
-<div class="lbox-err" id="lerr">
-  <span>🔒</span>
-  <span id="lerr-msg">รหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง</span>
+    <div class="login-box">
+        <h3>Admin Access</h3>
+        <p style="font-size: 0.8rem; color: #666; margin-bottom: 15px;">กรุณากรอกรหัสผ่าน</p>
+        <input type="password" id="lpw" style="width:100%; padding:10px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px;">
+        <button class="btn btn-blue btn-full" onclick="doLogin()">เข้าสู่ระบบ</button>
+        <button class="btn btn-full" onclick="el('overlay').style.display='none'">ยกเลิก</button>
+    </div>
 </div>
-
-<div class="pw-wrap">
-  <label>รหัสผ่าน</label>
-  <input type="password" id="lpw" placeholder="••••••••"
-    onkeydown="if(event.key==='Enter') doLogin()"/>
-  <button class="eye-btn" id="eye-btn" onclick="toggleEye()" type="button">👁</button>
-</div>
-
-<button class="btn-login" onclick="doLogin()">🔐 เข้าสู่ระบบ</button>
-```
-
-  </div>
-</div>
-
-<!-- TOAST -->
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* ──────────────────────────────
-   STORE
-────────────────────────────── */
-const S = {
-  g(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-  s(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
-};
-const el = id => document.getElementById(id);
+    const S = {
+        g(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+        s(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+    };
+    const el = id => document.getElementById(id);
 
-/* ──────────────────────────────
-   DEFAULT DATA
-   ✏️ แก้ค่าเริ่มต้นได้ตรงนี้
-────────────────────────────── */
-function initData() {
-  if (!S.g('q')) S.s('q', []);
+    function initData() {
+        if (!S.g('q')) S.s('q', []);
+        if (!S.g('svcs')) S.s('svcs', [
+            { id:1, cat:'Web', name:'Landing Page', price:800 },
+            { id:2, cat:'Art', name:'Character Color', price:500 }
+        ]);
+        if (!S.g('cfg')) S.s('cfg', {
+            name: 'Your Shop',
+            tagline: 'รับออกแบบเว็บ · รับลงสี · รับทำป้าย',
+            ann: 'ยินดีต้อนรับ! ทักมาสอบถามได้เลยนะคะ ✨',
+            open: true,
+            pw: 'admin1234',
+            nxt: 1
+        });
+    }
 
-  if (!S.g('svcs')) S.s('svcs', [
-    { id:1, cat:'🖥️ เว็บ',  name:'ออกแบบ Landing Page',   price:800  },
-    { id:2, cat:'🖥️ เว็บ',  name:'ออกแบบ Portfolio',       price:600  },
-    { id:3, cat:'🖥️ เว็บ',  name:'Banner / Header',         price:300  },
-    { id:4, cat:'🎨 ลงสี',  name:'ลงสีตัวละคร (ฟูล)',       price:500  },
-    { id:5, cat:'🎨 ลงสี',  name:'ลงสีตัวละคร (ครึ่งตัว)',   price:350  },
-    { id:6, cat:'🎨 ลงสี',  name:'ลงสี Chibi',               price:300  },
-    { id:7, cat:'🪧 ป้าย',  name:'ป้ายแนวสว่าง',            price:69   },
-    { id:8, cat:'🪧 ป้าย',  name:'ป้ายแนวมืด',              price:79   },
-    { id:9, cat:'🪧 ป้าย',  name:'ป้ายรายละเอียด',          price:99   },
-  ]);
+    let authed = false;
+    function tryAdmin() {
+        if (authed) { goPage('adm'); return; }
+        el('overlay').style.display = 'flex';
+    }
 
-  if (!S.g('cfg')) S.s('cfg', {
-    name:    'Your Shop',                           // ✏️ ชื่อร้าน
-    tagline: 'รับออกแบบเว็บ · รับลงสี · รับทำป้าย',
-    ann:     'ยินดีต้อนรับ! ทักมาสอบถามได้เลยนะคะ ✨',
-    open:    true,
-    pw:      'admin1234',                           // ✏️ รหัสผ่านเริ่มต้น
-    nxt:     1,
-  });
-}
+    function doLogin() {
+        if (el('lpw').value === S.g('cfg').pw) {
+            authed = true;
+            el('overlay').style.display = 'none';
+            goPage('adm');
+            toast('ยินดีต้อนรับ แอดมิน 🎀');
+        } else {
+            toast('รหัสผ่านไม่ถูกต้อง!');
+        }
+    }
 
-/* ──────────────────────────────
-   AUTH
-────────────────────────────── */
-let authed = false;
+    function logout() { authed = false; goPage('pub'); }
 
-function tryAdmin() {
-  if (authed) { goPage('adm'); return; }
-  el('overlay').style.display = 'flex';
-  el('lpw').value = '';
-  el('lerr').classList.remove('on');
-  setTimeout(() => el('lpw').focus(), 80);
-}
+    function goPage(p) {
+        document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
+        document.querySelectorAll('.tb-btn').forEach(x => x.classList.remove('on'));
+        el('page-' + p).classList.add('on');
+        el('btn-' + p).classList.add('on');
+        if (p === 'pub') renderPub();
+        if (p === 'adm') { renderAdm(); fillSel(); }
+    }
 
-function doLogin() {
-  const pw = el('lpw').value;
-  const cfg = S.g('cfg');
-  if (!pw) { showErr('กรุณากรอกรหัสผ่าน'); return; }
-  if (pw === cfg.pw) {
-    authed = true;
-    el('overlay').style.display = 'none';
-    goPage('adm');
-  } else {
-    showErr('รหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง');
-    el('lpw').value = '';
-    el('lpw').focus();
-  }
-}
+    function addQ() {
+        const name = el('fn').value;
+        if(!name) return toast('กรุณาใส่ชื่อ!');
+        const q = S.g('q');
+        const cfg = S.g('cfg');
+        q.push({
+            id: Date.now(),
+            num: cfg.nxt++,
+            name: name,
+            svc: el('fs').value,
+            status: 'waiting',
+            time: new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})
+        });
+        S.s('q', q); S.s('cfg', cfg);
+        el('fn').value = '';
+        renderAdm(); toast('เพิ่มคิวสำเร็จ!');
+    }
 
-function showErr(msg) {
-  const e = el('lerr');
-  el('lerr-msg').textContent = msg;
-  e.classList.remove('on');
-  void e.offsetWidth; // reflow เพื่อ reset animation
-  e.classList.add('on');
-  setTimeout(() => e.classList.remove('on'), 3500);
-}
+    function fillSel() {
+        const svcs = S.g('svcs');
+        el('fs').innerHTML = svcs.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+    }
 
-function logout() {
-  authed = false;
-  toast('🚪 ออกจากระบบแล้ว');
-  goPage('pub');
-}
+    function renderPub() {
+        const q = S.g('q');
+        const cfg = S.g('cfg');
+        el('pub-name').textContent = cfg.name;
+        el('nav-name').textContent = cfg.name;
+        el('pub-tag').textContent = cfg.tagline;
 
-function toggleEye() {
-  const i = el('lpw'), b = el('eye-btn');
-  i.type = i.type === 'password' ? 'text' : 'password';
-  b.textContent = i.type === 'password' ? '👁' : '🙈';
-}
+        const prog = q.filter(x => x.status === 'inprogress');
+        el('pub-now').textContent = prog.length ? prog[0].name : '-';
+        el('pub-wn').textContent = q.filter(x => x.status === 'waiting').length;
 
-/* ──────────────────────────────
-   NAVIGATION
-────────────────────────────── */
-function goPage(p) {
-  document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
-  document.querySelectorAll('.tb-btn').forEach(x => x.classList.remove('on'));
-  el('page-' + p).classList.add('on');
-  el('btn-' + p).classList.add('on');
-  if (p === 'pub') renderPub();
-  if (p === 'adm') renderAdm();
-}
+        drawList('pg-prog', q.filter(x => x.status === 'inprogress'), 'sp');
+        drawList('pg-wait', q.filter(x => x.status === 'waiting'), 'sw');
+        drawList('pg-done', q.filter(x => x.status === 'done'), 'sd');
+    }
 
-function swTab(id, btn) {
-  document.querySelectorAll('.tp').forEach(x => x.classList.remove('on'));
-  document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
-  el(id).classList.add('on');
-  btn.classList.add('on');
-  if (id === 't-add') fillSel();
-  if (id === 't-svc') renderSvcs();
-  if (id === 't-set') loadSt();
-}
+    function drawList(id, items, cls) {
+        el(id).innerHTML = items.map(x => `
+            <div class="qcard ${cls}">
+                <div class="qcard-bar"></div>
+                <div class="qcard-num">#${x.num}</div>
+                <div class="qcard-body">
+                    <div class="qcard-name">${x.name}</div>
+                    <div class="qcard-svc">${x.svc}</div>
+                </div>
+                <div class="qcard-right">
+                    <div class="qcard-time">${x.time}</div>
+                </div>
+            </div>
+        `).join('') || '<p style="text-align:center; font-size:0.8rem; color:#aaa; padding:10px;">ไม่มีคิว</p>';
+    }
 
-/* ──────────────────────────────
-   QUEUE CRUD
-────────────────────────────── */
-const gq  = () => S.g('q') || [];
-const sq  = q  => S.s('q', q);
-const now = () => new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
+    function renderAdm() {
+        const q = S.g('q');
+        el('adm-all-q').innerHTML = q.map(x => `
+            <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee; align-items:center;">
+                <span>#${x.num} ${x.name} (${x.status})</span>
+                <div>
+                    <button class="btn" onclick="setSt(${x.id},'inprogress')">เริ่ม</button>
+                    <button class="btn" onclick="setSt(${x.id},'done')">เสร็จ</button>
+                    <button class="btn" style="color:red" onclick="delQ(${x.id})">ลบ</button>
+                </div>
+            </div>
+        `).join('');
+    }
 
-function addQ() {
-  const name  = el('fn').value.trim();
-  const phone = el('fp').value.trim();
-  const sid   = parseInt(el('fs').value);
-  const note  = el('fnote').value.trim();
-  if (!name) { toast('⚠️ กรุณากรอกชื่อลูกค้า'); return; }
+    function setSt(id, st) {
+        const q = S.g('q');
+        const i = q.find(x => x.id === id);
+        if(i) i.status = st;
+        S.s('q', q); renderAdm();
+    }
 
-  const svcs = S.g('svcs') || [];
-  const svc  = svcs.find(s => s.id === sid);
-  const cfg  = S.g('cfg');
-  const num  = cfg.nxt;
-  cfg.nxt++;
-  S.s('cfg', cfg);
+    function delQ(id) {
+        S.s('q', S.g('q').filter(x => x.id !== id));
+        renderAdm();
+    }
 
-  const q = gq();
-  q.push({
-    id: Date.now(), num, name, phone,
-    svc:   svc ? svc.name  : '–',
-    cat:   svc ? svc.cat   : '',
-    price: svc ? svc.price : 0,
-    note, status: 'waiting', time: now()
-  });
-  sq(q);
-  ['fn','fp','fnote'].forEach(i => el(i).value = '');
-  toast(`✅ เพิ่มคิว #${num} — ${name}`);
-  renderAdm();
-}
+    function toast(m) {
+        const t = el('toast'); t.textContent = m; t.classList.add('on');
+        setTimeout(() => t.classList.remove('on'), 2000);
+    }
 
-function setSt(id, st) {
-  const q = gq(), item = q.find(x => x.id === id);
-  if (item) item.status = st;
-  sq(q);
-  renderAdm();
-  renderPub();
-  const lb = { waiting:'⏳ ย้ายกลับรอ', inprogress:'🎨 เริ่มทำแล้ว', done:'✅ เสร็จแล้ว', skip:'⏭ ข้ามคิว' };
-  toast(lb[st] || 'อัปเดตแล้ว');
-}
-
-function delQ(id) {
-  if (!confirm('ลบคิวนี้?')) return;
-  sq(gq().filter(x => x.id !== id));
-  renderAdm(); renderPub(); toast('🗑️ ลบแล้ว');
-}
-
-function clearDone() {
-  if (!confirm('ล้างคิวเสร็จ/ข้ามทั้งหมด?')) return;
-  sq(gq().filter(x => x.status === 'waiting' || x.status === 'inprogress'));
-  renderAdm(); renderPub(); toast('✦ ล้างแล้ว');
-}
-
-/* ──────────────────────────────
-   RENDER PUBLIC
-────────────────────────────── */
-function renderPub() {
-  const q   = gq();
-  const cfg = S.g('cfg');
-  const prog = q.filter(x => x.status === 'inprogress');
-  const wait = q.filter(x => x.status === 'waiting');
-  const done = q.filter(x => x.status === 'done' || x.status === 'skip');
-
-  el('pub-name').textContent = el('nav-name').textContent = cfg.name;
-  el('pub-tag').textContent  = cfg.tagline;
-  el('pub-ann').textContent  = cfg.ann;
-
-  const pill = el('spill'), dot = el('sdot'), stxt = el('stext');
-  if (cfg.open) {
-    pill.classList.remove('closed'); dot.classList.remove('off');
-    stxt.textContent = 'Ready for orders 🎀';
-  } else {
-    pill.classList.add('closed'); dot.classList.add('off');
-    stxt.textContent = 'ปิดรับงานชั่วคราว 🌙';
-  }
-
-  el('pub-now').textContent = prog.length ? prog.map(x => x.name).join(', ') : '–';
-  el('pub-wn').textContent  = wait.length;
-
-  renderQList('pg-prog', prog);
-  renderQList('pg-wait', wait);
-  renderQList('pg-done', done);
-}
-
-/* การ์ดสี่เหลี่ยมผืนผ้าแนวนอน */
-function renderQList(cid, items) {
-  const container = el(cid);
-  if (!items.length) {
-    container.innerHTML = `
-      <div class="empty-row">
-        <span>💧</span> ไม่มีคิวในขณะนี้
-      </div>`;
-    return;
-  }
-  const bm = {
-    waiting:    ['bw','⏳ รอ'],
-    inprogress: ['bp','🎨 กำลังทำ'],
-    done:       ['bd','✅ เสร็จ'],
-    skip:       ['bs','⏭ ข้าม'],
-  };
-  const cm = { waiting:'sw', inprogress:'sp', done:'sd', skip:'ss' };
-
-  container.innerHTML = items.map(x => {
-    const [bc, bl] = bm[x.status] || ['',''];
-    return `
-    <div class="qcard ${cm[x.status]||''}">
-      <div class="qcard-bar"></div>
-      <div class="qcard-num">#${x.num}</div>
-      <div class="qcard-body">
-        <div class="qcard-name">${x.name}</div>
-        <div class="qcard-svc">${x.cat || ''} ${x.svc}</div>
-        ${x.note ? `<div class="qcard-note">📝 ${x.note}</div>` : ''}
-      </div>
-      <div class="qcard-right">
-        <span class="qbadge ${bc}">${bl}</span>
-        <div class="qcard-time">⏰ ${x.time}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-/* ──────────────────────────────
-   RENDER ADMIN
-────────────────────────────── */
-function renderAdm() {
-  const q    = gq();
-  const prog = q.filter(x => x.status === 'inprogress');
-  const wait = q.filter(x => x.status === 'waiting');
-  const done = q.filter(x => x.status === 'done');
-  const skip = q.filter(x => x.status === 'skip');
-
-  el('stat-row').innerHTML = `
-    <div class="stat-card sc-w"><div class="stat-n">${wait.length}</div><div class="stat-l">⏳ รอ</div></div>
-    <div class="stat-card sc-p"><div class="stat-n">${prog.length}</div><div class="stat-l">🎨 กำลังทำ</div></div>
-    <div class="stat-card sc-d"><div class="stat-n">${done.length}</div><div class="stat-l">✅ เสร็จ</div></div>
-    <div class="stat-card sc-a"><div class="stat-n">${q.length}</div><div class="stat-l">✦ ทั้งหมด</div></div>`;
-
-  renderAdmList('adm-prog', prog, [
-    { st:'done',    cls:'btn-done', lb:'✅ เสร็จแล้ว' },
-    { st:'skip',    cls:'btn-skip', lb:'⏭ ข้ามคิว'   },
-    { st:'waiting', cls:'btn-back', lb:'↩ ย้ายรอ'    },
-  ]);
-  renderAdmList('adm-wait', wait, [
-    { st:'inprogress', cls:'btn-prog', lb:'🎨 เริ่มทำ'  },
-    { st:'done',       cls:'btn-done', lb:'✅ เสร็จ'    },
-    { st:'skip',       cls:'btn-skip', lb:'⏭ ข้าม'     },
-  ]);
-  renderAdmList('adm-done', [...done, ...skip], [
-    { st:'waiting', cls:'btn-back', lb:'↩ ย้ายรอ' },
-  ]);
-}
-
-function renderAdmList(cid, items, acts) {
-  const container = el(cid);
-  if (!items.length) {
-    container.innerHTML = '<div class="empty-adm">💧 ไม่มีคิว</div>';
-    return;
-  }
-  container.innerHTML = items.map(x => {
-    const bs  = acts.map(a =>
-      `<button class="btn btn-sm ${a.cls}" onclick="setSt(${x.id},'${a.st}')">${a.lb}</button>`
-    ).join('');
-    const pr  = x.price ? ` · ฿${x.price.toLocaleString()}` : '';
-    const nt  = x.note  ? ` · 📝 ${x.note}` : '';
-    const ph  = x.phone
-      ? ` <span style="font-weight:300;font-size:.7rem;color:var(--text3)">📞 ${x.phone}</span>`
-      : '';
-    return `
-    <div class="adm-qrow">
-      <div class="aqnum">#${x.num}</div>
-      <div class="aqinfo">
-        <div class="aqname">${x.name}${ph}</div>
-        <div class="aqsub">${x.cat || '💅'} ${x.svc}${pr}${nt} · ⏰ ${x.time}</div>
-      </div>
-      <div class="aqacts">
-        ${bs}
-        <button class="btn btn-sm btn-del" onclick="delQ(${x.id})">🗑</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-/* ──────────────────────────────
-   SERVICES
-────────────────────────────── */
-function fillSel() {
-  const svcs = S.g('svcs') || [];
-  const cats = {};
-  svcs.forEach(s => { if (!cats[s.cat]) cats[s.cat] = []; cats[s.cat].push(s); });
-  el('fs').innerHTML = Object.entries(cats).map(([cat, ss]) =>
-    `<optgroup label="${cat}">${
-      ss.map(s => `<option value="${s.id}">${s.name} – ฿${s.price}</option>`).join('')
-    }</optgroup>`
-  ).join('');
-}
-
-function renderSvcs() {
-  const svcs = S.g('svcs') || [];
-  const cats = {};
-  svcs.forEach(s => { if (!cats[s.cat]) cats[s.cat] = []; cats[s.cat].push(s); });
-  el('svc-list').innerHTML = Object.entries(cats).map(([cat, ss]) => `
-    <div style="font-size:.72rem;font-weight:600;color:var(--text3);margin:8px 0 6px;letter-spacing:.5px">${cat}</div>
-    ${ss.map(s => `
-    <div class="svi">
-      <div>
-        <div class="svi-nm">${s.name}</div>
-        <div class="svi-pr">฿${s.price.toLocaleString()}</div>
-      </div>
-      <button class="btn btn-sm btn-del" onclick="delSvc(${s.id})">🗑</button>
-    </div>`).join('')}
-  `).join('');
-}
-
-function addSvc() {
-  const name  = el('ns-n').value.trim();
-  const cat   = el('ns-c').value.trim() || '✦ อื่นๆ';
-  const price = parseInt(el('ns-p').value) || 0;
-  if (!name) { toast('⚠️ กรอกชื่อบริการด้วยค่ะ'); return; }
-  const svcs = S.g('svcs') || [];
-  svcs.push({ id: Date.now(), cat, name, price });
-  S.s('svcs', svcs);
-  el('ns-n').value = el('ns-c').value = el('ns-p').value = '';
-  renderSvcs();
-  toast(`✅ เพิ่มบริการ "${name}"`);
-}
-
-function delSvc(id) {
-  if (!confirm('ลบบริการนี้?')) return;
-  S.s('svcs', (S.g('svcs') || []).filter(s => s.id !== id));
-  renderSvcs();
-  toast('🗑️ ลบแล้ว');
-}
-
-/* ──────────────────────────────
-   SETTINGS + CHANGE PASSWORD
-────────────────────────────── */
-function loadSt() {
-  const c = S.g('cfg');
-  el('st-nm').value = c.name;
-  el('st-tg').value = c.tagline;
-  el('st-an').value = c.ann;
-  el('st-st').value = c.open ? 'open' : 'closed';
-  el('ann-prev').textContent = c.ann;
-  ['pw-old','pw-new','pw-con'].forEach(i => el(i).value = '');
-}
-
-function saveAll() {
-  const c = S.g('cfg');
-
-  // general settings
-  c.name    = el('st-nm').value.trim() || c.name;
-  c.tagline = el('st-tg').value.trim();
-  c.ann     = el('st-an').value.trim();
-  c.open    = el('st-st').value === 'open';
-
-  // password
-  const oldPw = el('pw-old').value;
-  const newPw = el('pw-new').value;
-  const conPw = el('pw-con').value;
-
-  if (oldPw || newPw || conPw) {
-    if (oldPw !== c.pw)    { toast('❌ รหัสผ่านเดิมไม่ถูกต้อง');      return; }
-    if (newPw.length < 6)  { toast('❌ รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัว'); return; }
-    if (newPw !== conPw)   { toast('❌ รหัสผ่านใหม่ไม่ตรงกัน');        return; }
-    c.pw = newPw;
-    toast('🔑 เปลี่ยนรหัสผ่านสำเร็จ + บันทึกตั้งค่า ✅');
-  } else {
-    toast('💾 บันทึกตั้งค่าแล้ว ✅');
-  }
-
-  S.s('cfg', c);
-  ['pw-old','pw-new','pw-con'].forEach(i => el(i).value = '');
-  renderPub();
-}
-
-/* ──────────────────────────────
-   TOAST
-────────────────────────────── */
-function toast(msg) {
-  const t = el('toast');
-  t.textContent = msg;
-  t.classList.add('on');
-  clearTimeout(t._t);
-  t._t = setTimeout(() => t.classList.remove('on'), 2700);
-}
-
-/* ──────────────────────────────
-   BOOT
-────────────────────────────── */
-initData();
-renderPub();
-setInterval(() => {
-  if (el('page-pub').classList.contains('on')) renderPub();
-}, 20000);
+    initData();
+    renderPub();
 </script>
-
 </body>
 </html>

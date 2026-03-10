@@ -14,36 +14,31 @@
             --white: rgba(255, 255, 255, 1);
             --shadow: 0 10px 25px rgba(255, 133, 192, 0.15);
             --gradient-btn: linear-gradient(90deg, #ff9a9e 0%, #fecfef 100%);
-            --gradient-copy: linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mitr', sans-serif; }
+        body { background: linear-gradient(180deg, #fff0f6, #f3e8ff, #e0f2fe); min-height: 100vh; color: #5d5d5d; overflow-x: hidden; padding-bottom: 100px; }
 
-        body {
-            background: linear-gradient(180deg, #fff0f6, #f3e8ff, #e0f2fe);
-            background-attachment: fixed;
-            min-height: 100vh;
-            color: #5d5d5d;
-            overflow-x: hidden;
-            padding-bottom: 100px;
-        }
-
-        /* --- Global UI --- */
         .container { max-width: 450px; margin: 0 auto; padding: 20px; }
         header { text-align: center; padding: 30px 0; }
         .profile-img { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; box-shadow: var(--shadow); margin-bottom: 10px; }
         header h1 { font-size: 1.5rem; color: var(--pink-main); letter-spacing: 2px; }
 
-        /* --- Tab Switcher --- */
+        /* --- Tab Switcher (ตามรูป) --- */
         .tab-switcher { background: white; padding: 5px; border-radius: 50px; display: flex; width: fit-content; margin: 20px auto; box-shadow: var(--shadow); }
         .tab-btn { padding: 8px 25px; border-radius: 50px; border: none; cursor: pointer; font-size: 0.9rem; transition: 0.3s; background: transparent; color: #aaa; }
         .tab-btn.active { background: var(--gradient-btn); color: white; box-shadow: 0 4px 10px rgba(255, 154, 158, 0.4); }
 
         /* --- Card & Form --- */
         .card { background: var(--white); border-radius: 30px; padding: 25px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid rgba(255, 255, 255, 0.8); }
-        input, select { width: 100%; padding: 12px 20px; border-radius: 20px; border: 1px solid #ffe4f1; outline: none; margin-bottom: 12px; background: #fffbff; font-size: 0.9rem; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s; color: white; background: var(--gradient-btn); display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-copy { background: var(--gradient-copy); margin-top: 10px; font-size: 0.8rem; padding: 8px; }
+        input { width: 100%; padding: 12px 20px; border-radius: 20px; border: 1px solid #ffe4f1; outline: none; margin-bottom: 12px; background: #fffbff; }
+
+        /* --- Pill Status (ปุ่มกดสถานะ) --- */
+        .pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+        .pill { padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; background: #f8f8f8; color: #999; border: 1px solid #eee; }
+        .pill.active { background: var(--gradient-btn); color: white; border: none; }
+
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s; color: white; background: var(--gradient-btn); }
 
         /* --- Progress Bar --- */
         .progress-outer { background: #fdf2f8; border-radius: 20px; height: 22px; width: 100%; margin: 10px 0; overflow: hidden; border: 1px solid #fce7f3; }
@@ -54,7 +49,7 @@
         .login-card { background: white; width: 90%; max-width: 320px; padding: 40px 30px; border-radius: 35px; text-align: center; box-shadow: 0 20px 50px rgba(255, 133, 192, 0.2); }
 
         .hidden { display: none !important; }
-        .floating-chat { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--gradient-btn); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(255, 133, 192, 0.4); cursor: pointer; z-index: 999; }
+        .floating-chat { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--gradient-btn); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 10px 20px rgba(255, 133, 192, 0.4); cursor: pointer; z-index: 999; }
     </style>
 </head>
 <body>
@@ -71,27 +66,30 @@
 
         <div id="view-customer">
             <div class="card">
-                <input type="text" id="search-input" placeholder="พิมพ์ชื่อหรือรหัสออเดอร์..." onkeyup="searchFilter()">
+                <input type="text" id="search-input" placeholder="ค้นหาออเดอร์..." onkeyup="searchFilter()">
                 <div id="customer-list"></div>
             </div>
         </div>
 
         <div id="view-admin" class="hidden">
             <div class="card">
-                <h3>🎀 เพิ่มคิวงานพร้อมส่ง</h3>
+                <h3>🎀 เพิ่มคิวใหม่</h3>
                 <input type="text" id="adm-name" placeholder="ชื่อลูกค้า">
-                <input type="text" id="adm-product" placeholder="ชื่อสินค้า">
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="adm-color" placeholder="สี">
-                    <input type="text" id="adm-size" placeholder="ไซส์">
+                <input type="text" id="adm-job" placeholder="รายละเอียดงาน">
+                
+                <label style="font-size:0.8rem; color:var(--pink-main);">สถานะงาน:</label>
+                <div class="pill-group" id="adm-status-group">
+                    <div class="pill active" onclick="setAdmStatus('รอเริ่มงาน', this)">รอเริ่มงาน</div>
+                    <div class="pill" onclick="setAdmStatus('กำลังทำ', this)">กำลังทำ</div>
+                    <div class="pill" onclick="setAdmStatus('ใกล้เสร็จ', this)">ใกล้เสร็จ</div>
+                    <div class="pill" onclick="setAdmStatus('เสร็จแล้ว', this)">เสร็จแล้ว</div>
                 </div>
-                <input type="number" id="adm-price" placeholder="ราคา (บาท)">
-                <select id="adm-status">
-                    <option value="รอเริ่มงาน">รอเริ่มงาน</option>
-                    <option value="กำลังทำ">กำลังทำ</option>
-                    <option value="เสร็จแล้ว">เสร็จแล้ว</option>
-                </select>
-                <button class="btn" onclick="saveOrder()">บันทึกคิวงาน 💗</button>
+
+                <div style="margin-top:10px;">
+                    <label style="font-size:0.8rem;">ความคืบหน้า: <span id="pct-label">0</span>%</label>
+                    <input type="range" id="adm-pct" min="0" max="100" value="0" oninput="document.getElementById('pct-label').innerText=this.value" style="width:100%;">
+                </div>
+                <button class="btn" onclick="saveOrder()" style="margin-top:15px;">บันทึกข้อมูล 💗</button>
             </div>
             <div id="admin-list-display"></div>
         </div>
@@ -106,13 +104,23 @@
         </div>
     </div>
 
-    <div class="floating-chat" onclick="alert('แอดมินกำลังรีบตอบแชทนะคะ ✨')">
+    <div class="floating-chat" onclick="alert('แอดมินกำลังรีบปั่นงานให้นะคะ ✨')">
         <i class="fas fa-comment-dots"></i>
     </div>
 
     <script>
         let orders = JSON.parse(localStorage.getItem('pj_queues')) || [];
         let isLoggedIn = false;
+        let currentStatus = "รอเริ่มงาน";
+
+        function switchTab(mode) {
+            if (mode === 'customer') {
+                document.getElementById('tab-cust').classList.add('active');
+                document.getElementById('tab-adm').classList.remove('active');
+                document.getElementById('view-customer').classList.remove('hidden');
+                document.getElementById('view-admin').classList.add('hidden');
+            }
+        }
 
         function triggerAdminLogin() {
             if (isLoggedIn) { showAdminView(); } 
@@ -126,16 +134,7 @@
                 isLoggedIn = true;
                 document.getElementById('login-overlay').style.display = 'none';
                 showAdminView();
-            } else { alert('รหัสผิดน้า 🥺'); }
-        }
-
-        function switchTab(mode) {
-            if (mode === 'customer') {
-                document.getElementById('tab-cust').classList.add('active');
-                document.getElementById('tab-adm').classList.remove('active');
-                document.getElementById('view-customer').classList.remove('hidden');
-                document.getElementById('view-admin').classList.add('hidden');
-            }
+            } else { alert('รหัสผิดค่ะ 🥺'); }
         }
 
         function showAdminView() {
@@ -146,31 +145,31 @@
             renderAdmin();
         }
 
+        function setAdmStatus(val, el) {
+            currentStatus = val;
+            document.querySelectorAll('#adm-status-group .pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+        }
+
         function saveOrder() {
             const newOrder = {
                 id: "PJ-" + Math.floor(1000 + Math.random() * 9000),
                 name: document.getElementById('adm-name').value,
-                product: document.getElementById('adm-product').value,
-                color: document.getElementById('adm-color').value,
-                size: document.getElementById('adm-size').value,
-                price: document.getElementById('adm-price').value,
-                status: document.getElementById('adm-status').value,
-                pct: document.getElementById('adm-status').value === 'เสร็จแล้ว' ? 100 : 30
+                job: document.getElementById('adm-job').value,
+                status: currentStatus,
+                pct: document.getElementById('adm-pct').value
             };
             orders.push(newOrder);
             localStorage.setItem('pj_queues', JSON.stringify(orders));
             renderAdmin();
-            alert('ลงคิวสำเร็จ! อย่าลืมกดคัดลอกข้อความส่งให้ลูกค้านะคะ ✨');
+            alert('ลงคิวเรียบร้อยค่ะ! ✨');
         }
 
         // --- ระบบคัดลอกข้อความ ---
-        function copyToClip(index) {
+        function copyOrderInfo(index) {
             const o = orders[index];
-            const text = `#พร้อมส่ง ✨\nสินค้า: ${o.product}\nสี: ${o.color}\nไซส์: ${o.size}\nราคา: ${o.price} บาท\n\nรับออเดอร์เรียบร้อยนะคะคุณ ${o.name} 🎀\nเลขออเดอร์ของคุณคือ 【 ${o.id} 】 นะคะ\nขอบคุณที่ไว้วางใจให้ PINK — JULIE ดูแลนะคะ รองานสวยๆ ได้เลย แอดมินจะรีบปั่นให้สุดฝีมือ ใจละลายแน่นอนค่ะ! 🔥`;
-            
-            navigator.clipboard.writeText(text).then(() => {
-                alert('คัดลอกข้อความลงคิวเรียบร้อย! ส่งต่อได้เลยค่ะ 📋💗');
-            });
+            const text = `รับออเดอร์เรียบร้อยนะคะคุณ ${o.name} 🎀\nเลขออเดอร์ของคุณคือ 【 ${o.id} 】 นะคะ\nงาน: ${o.job}\nขอบคุณที่ไว้วางใจให้ PINK — JULIE ดูแลนะคะ รองานสวยๆ ได้เลย แอดมินจะรีบปั่นให้สุดฝีมือ ใจละลายแน่นอนค่ะ! 🔥`;
+            navigator.clipboard.writeText(text).then(() => alert('คัดลอกข้อความแล้วค่ะ 📋💗'));
         }
 
         function renderAdmin() {
@@ -179,11 +178,11 @@
             orders.forEach((o, i) => {
                 list.innerHTML += `
                     <div class="card">
-                        <b>${o.id} | คุณ ${o.name}</b>
-                        <p style="font-size:0.8rem; color:#888;">${o.product} (${o.size}/${o.color})</p>
-                        <button class="btn btn-copy" onclick="copyToClip(${i})">
-                            <i class="far fa-copy"></i> คัดลอกข้อความลงคิว
-                        </button>
+                        <div style="display:flex; justify-content:space-between;">
+                            <b>${o.id} | คุณ ${o.name}</b>
+                            <span style="font-size:0.7rem; color:var(--pink-main);">${o.status}</span>
+                        </div>
+                        <button class="btn" style="margin-top:10px; font-size:0.8rem; background:#a18cd1;" onclick="copyOrderInfo(${i})">คัดลอกลงคิว 📋</button>
                     </div>`;
             });
         }
@@ -195,12 +194,9 @@
             filtered.forEach(o => {
                 list.innerHTML += `
                     <div class="card">
-                        <div style="display:flex; justify-content:space-between;">
-                            <span style="color:var(--pink-main); font-weight:bold;">Order ${o.id}</span>
-                            <span style="font-size:0.7rem;">คุณ ${o.name}</span>
-                        </div>
+                        <div style="display:flex; justify-content:space-between;"><b>Order ${o.id}</b><span>คุณ ${o.name}</span></div>
                         <div class="progress-outer"><div class="progress-inner" style="width:${o.pct}%"></div></div>
-                        <p style="font-size:0.8rem; text-align:right;">สถานะ: ${o.status}</p>
+                        <p style="font-size:0.8rem; text-align:right;">สถานะ: ${o.status} (${o.pct}%)</p>
                     </div>`;
             });
         }

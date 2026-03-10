@@ -1,462 +1,677 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Queue Check System ✨🌸</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500&family=Prompt:wght@300;400;600&family=Nunito:wght@700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-pink: #ffafcc;
+            --secondary-pink: #ffc2d1;
+            --soft-purple: #cdb4db;
+            --sky-blue: #a2d2ff;
+            --white: #ffffff;
+            --text-color: #5c5470;
+            --glass: rgba(255, 255, 255, 0.7);
+        }
 
-<title>Queue System</title>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', 'Mitr', sans-serif;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500&display=swap" rel="stylesheet">
+        body {
+            background: linear-gradient(180deg, #ffd6ec 0%, #e8dfff 50%, #dff1ff 100%);
+            min-height: 100vh;
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+        }
 
-<style>
+        /* --- Animations --- */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
 
-body{
-font-family:'Mitr',sans-serif;
-background:linear-gradient(180deg,#ffd6ec,#e8dfff,#dff1ff);
-margin:0;
-padding:20px;
-}
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-.container{
-max-width:900px;
-margin:auto;
-}
+        @keyframes shine {
+            from { left: -100%; }
+            to { left: 100%; }
+        }
 
-h1{
-text-align:center;
-}
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
 
-.card{
-background:white;
-border-radius:25px;
-padding:20px;
-margin-bottom:20px;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
-}
+        /* --- Floating Elements --- */
+        .floating-emoji {
+            position: fixed;
+            bottom: -50px;
+            font-size: 24px;
+            z-index: -1;
+            animation: float 15s linear infinite;
+        }
 
-input,textarea{
-width:100%;
-padding:10px;
-border:none;
-border-radius:12px;
-background:#f3f3f3;
-margin-top:6px;
-margin-bottom:10px;
-font-family:'Mitr';
-}
+        /* --- Layout --- */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
 
-button{
-border:none;
-padding:10px 20px;
-border-radius:30px;
-background:linear-gradient(45deg,#ff9bd5,#bda6ff);
-color:white;
-cursor:pointer;
-}
+        header {
+            text-align: center;
+            padding: 40px 0;
+            animation: fadeUp 0.8s ease-out;
+        }
 
-.progress{
-height:16px;
-background:#eee;
-border-radius:20px;
-overflow:hidden;
-margin-top:8px;
-}
+        h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2.5rem;
+            color: #ff85a1;
+            text-shadow: 2px 2px 0px #fff;
+            margin-bottom: 10px;
+        }
 
-.progress-bar{
-height:100%;
-background:linear-gradient(90deg,#ff8ed6,#ffd6f3,#ff8ed6);
-background-size:200%;
-animation:shine 2s linear infinite;
-}
+        /* --- Card Styles --- */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            margin-bottom: 25px;
+            animation: fadeUp 1s ease-out;
+        }
 
-@keyframes shine{
-0%{background-position:200%}
-100%{background-position:-200%}
-}
+        /* --- Search System --- */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
 
-.status{
-display:inline-block;
-background:#ffd6f3;
-padding:4px 12px;
-border-radius:20px;
-margin-top:5px;
-}
+        input[type="text"], input[type="password"], textarea, select {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 30px;
+            border: 2px solid #f0e6ff;
+            outline: none;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
 
-.adminBtn{
-text-align:center;
-margin-top:40px;
-cursor:pointer;
-font-size:18px;
-}
+        input:focus {
+            border-color: var(--primary-pink);
+            box-shadow: 0 0 10px rgba(255, 175, 204, 0.3);
+        }
 
-.popup{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.4);
-display:none;
-align-items:center;
-justify-content:center;
-}
+        .btn {
+            background: linear-gradient(45deg, #ffafcc, #ffc2d1);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 175, 204, 0.4);
+        }
 
-.popupBox{
-background:white;
-padding:30px;
-border-radius:25px;
-width:300px;
-}
+        .btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.05);
+        }
 
-</style>
+        /* --- Queue Display --- */
+        .queue-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
+        .summary-item {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .summary-item label { font-size: 0.8rem; color: #888; }
+        .summary-item div { font-weight: 600; color: var(--text-color); }
+
+        /* --- Order Card Details --- */
+        .order-item {
+            border-bottom: 2px dashed #ffe5ec;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .order-id-badge {
+            background: #ffe5ec;
+            color: #ff4d6d;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .status-pill {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-waiting { background: #eee; color: #777; }
+        .status-doing { background: #dff1ff; color: #0077cc; }
+        .status-almost { background: #fff0d4; color: #cc8800; }
+        .status-done { background: #d4ffd4; color: #008800; }
+        .status-sent { background: #f8d7ff; color: #a300cc; }
+
+        /* --- Progress Bar with Shine --- */
+        .progress-container {
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ffafcc, #cdb4db);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s ease-in-out;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 2s infinite;
+        }
+
+        /* --- Chat System --- */
+        .chat-section { margin-top: 30px; }
+        .chat-box {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+        .msg { margin-bottom: 10px; padding: 10px; border-radius: 15px; max-width: 80%; font-size: 0.9rem; }
+        .msg-admin { background: #f0e6ff; align-self: flex-start; }
+        .msg-user { background: #ffe5ec; margin-left: auto; }
+
+        /* --- Contact Buttons --- */
+        .contact-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .btn-line { background: #00c300; }
+        .btn-fb { background: #1877f2; }
+
+        /* --- Admin Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            animation: fadeUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* --- Admin Panel --- */
+        #admin-panel { display: none; }
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .footer-admin {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--secondary-pink); border-radius: 10px; }
+
+        @media (max-width: 600px) {
+            .search-box { flex-direction: column; }
+            .queue-summary { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
-
-<h1>📋 ตรวจสอบคิวงาน</h1>
-
-<div class="card">
-
-<h3>ค้นหา Order</h3>
-
-<input id="searchInput" placeholder="Order ID หรือ ชื่อลูกค้า">
-
-<button onclick="searchOrder()">ค้นหา</button>
-
-</div>
-
-<div id="orderList"></div>
-
-<div class="card">
-
-<h3>💬 ติดต่อแอดมิน</h3>
-
-<p>กรุณายืนยัน Order ID ก่อน</p>
-
-<input id="verifyOrderInput" placeholder="Order ID">
-
-<button onclick="verifyOrder()">ตรวจสอบ</button>
-
-<div id="verifyResult"></div>
-
-<div id="chatArea" style="display:none">
-
-<textarea id="chatMessage" placeholder="พิมพ์ข้อความ"></textarea>
-
-<button onclick="sendMessage()">ส่งข้อความ</button>
-
-<p id="chatStatus"></p>
-
-</div>
-
-</div>
-
-<div class="adminBtn" onclick="openLogin()">
-
-⚙️ Admin
-
-</div>
-
-</div>
-
-<div class="popup" id="loginPopup">
-
-<div class="popupBox">
-
-<h3>Admin Login</h3>
-
-<input id="adminPassword" placeholder="Password">
-
-<button onclick="login()">Login</button>
-
-</div>
-
-</div>
-
-<div class="container" id="adminPanel" style="display:none">
-
-<h1>Admin Panel</h1>
-
-<div class="card">
-
-<h3>➕ เพิ่ม Order</h3>
-
-<input id="customerName" placeholder="ชื่อลูกค้า">
-
-<textarea id="jobDetail" placeholder="รายละเอียดงาน"></textarea>
-
-<button onclick="addOrder()">เพิ่ม Order</button>
-
-</div>
-
-<div id="adminOrders"></div>
-
-</div>
-
-<script>
-
-let orders=JSON.parse(localStorage.getItem("orders"))||[]
-
-let messages=JSON.parse(localStorage.getItem("messages"))||[]
-
-let verifiedOrder=null
-
-function save(){
-
-localStorage.setItem("orders",JSON.stringify(orders))
-
-renderOrders()
-
-renderAdmin()
-
-}
-
-function generateID(){
-
-return "A"+String(orders.length+1).padStart(3,"0")
-
-}
-
-function addOrder(){
-
-let order={
-
-id:generateID(),
-
-name:customerName.value,
-
-detail:jobDetail.value,
-
-status:"กำลังทำ",
-
-progress:0
-
-}
-
-orders.push(order)
-
-save()
-
-customerName.value=""
-jobDetail.value=""
-
-}
-
-function renderOrders(){
-
-let box=document.getElementById("orderList")
-
-box.innerHTML=""
-
-orders.forEach(o=>{
-
-box.innerHTML+=`
-
-<div class="card">
-
-<h3>${o.id}</h3>
-
-<p><b>${o.name}</b></p>
-
-<p>${o.detail}</p>
-
-<div class="status">${o.status}</div>
-
-<div class="progress">
-
-<div class="progress-bar" style="width:${o.progress}%"></div>
-
-</div>
-
-${o.progress}%
-
-</div>
-
-`
-
-})
-
-}
-
-function searchOrder(){
-
-let q=searchInput.value.toLowerCase()
-
-let result=orders.filter(o=>
-
-o.id.toLowerCase().includes(q) ||
-
-o.name.toLowerCase().includes(q)
-
-)
-
-let box=document.getElementById("orderList")
-
-box.innerHTML=""
-
-result.forEach(o=>{
-
-box.innerHTML+=`
-
-<div class="card">
-
-<h3>${o.id}</h3>
-
-<p>${o.name}</p>
-
-<div class="progress">
-
-<div class="progress-bar" style="width:${o.progress}%"></div>
-
-</div>
-
-${o.progress}%
-
-</div>
-
-`
-
-})
-
-}
-
-function verifyOrder(){
-
-let id=verifyOrderInput.value.trim()
-
-let order=orders.find(o=>o.id===id)
-
-if(!order){
-
-verifyResult.innerHTML="<p style='color:red'>ไม่พบ Order</p>"
-
-chatArea.style.display="none"
-
-return
-
-}
-
-verifiedOrder=order
-
-verifyResult.innerHTML="<p style='color:green'>ยืนยันสำเร็จ</p>"
-
-chatArea.style.display="block"
-
-}
-
-function sendMessage(){
-
-if(!verifiedOrder){
-
-alert("ต้องยืนยัน Order ก่อน")
-
-return
-
-}
-
-let text=chatMessage.value
-
-messages.push({
-
-order:verifiedOrder.id,
-
-message:text,
-
-time:new Date().toLocaleString()
-
-})
-
-localStorage.setItem("messages",JSON.stringify(messages))
-
-chatStatus.innerText="ส่งข้อความแล้ว"
-
-chatMessage.value=""
-
-}
-
-function openLogin(){
-
-loginPopup.style.display="flex"
-
-}
-
-function login(){
-
-if(adminPassword.value==="admin123"){
-
-loginPopup.style.display="none"
-
-adminPanel.style.display="block"
-
-renderAdmin()
-
-}else{
-
-alert("รหัสผิด")
-
-}
-
-}
-
-function renderAdmin(){
-
-let box=document.getElementById("adminOrders")
-
-box.innerHTML=""
-
-orders.forEach((o,i)=>{
-
-box.innerHTML+=`
-
-<div class="card">
-
-<h3>${o.id}</h3>
-
-<p>${o.name}</p>
-
-<input type="range"
-
-min="0"
-
-max="100"
-
-value="${o.progress}"
-
-onchange="updateProgress(${i},this.value)">
-
-<button onclick="deleteOrder(${i})">ลบ</button>
-
-</div>
-
-`
-
-})
-
-}
-
-function updateProgress(i,val){
-
-orders[i].progress=val
-
-save()
-
-}
-
-function deleteOrder(i){
-
-orders.splice(i,1)
-
-save()
-
-}
-
-renderOrders()
-
-</script>
-
+    <div id="particles"></div>
+
+    <div class="container">
+        <div id="client-view">
+            <header>
+                <h1>🌸 Order Queue ✨</h1>
+                <p>ตรวจสอบคิวงานของคุณได้ที่นี่ค่ะ</p>
+            </header>
+
+            <div class="card search-section">
+                <h3>🔍 ตรวจสอบคิวงานของคุณ</h3>
+                <div class="search-box" style="margin-top: 15px;">
+                    <input type="text" id="searchInput" placeholder="พิมพ์เลขออเดอร์ / ชื่อ / ID...">
+                    <button class="btn" onclick="searchOrder()">ค้นหาเลย ✨</button>
+                </div>
+                <div class="queue-summary">
+                    <div class="summary-item">
+                        <label>คิวที่กำลังทำ ⚡</label>
+                        <div id="current-doing">-</div>
+                    </div>
+                    <div class="summary-item">
+                        <label>คิวถัดไป ⏭️</label>
+                        <div id="next-queue">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="search-result">
+                </div>
+
+            <div class="card">
+                <h3>📋 รายการคิวทั้งหมด</h3>
+                <div id="all-orders-list">
+                    </div>
+            </div>
+
+            <div class="card chat-section">
+                <h3>💬 สอบถามแอดมิน</h3>
+                <div class="chat-box" id="chatBox">
+                    <div class="msg msg-admin">สวัสดีค่ะ! ต้องการสอบถามคิวงานไหน แจ้ง Order ID ไว้ได้เลยนะคะ ✨</div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="text" id="chatOrderId" placeholder="ระบุ Order ID (เช่น A102)">
+                    <textarea id="chatMsg" placeholder="พิมพ์ข้อความที่ต้องการสอบถาม..." rows="2"></textarea>
+                    <button class="btn" onclick="sendMessage()">ส่งข้อความ 🕊️</button>
+                </div>
+                <div class="contact-group">
+                    <button class="btn btn-line"><i data-lucide="message-circle"></i> LINE</button>
+                    <button class="btn btn-fb"><i data-lucide="facebook"></i> Facebook</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="admin-panel">
+            <header>
+                <h1>🎀 Admin Dashboard</h1>
+                <button class="btn" onclick="logout()" style="margin: 0 auto; background: #999;">ออกจากระบบ</button>
+            </header>
+
+            <div class="queue-summary">
+                <div class="summary-item">
+                    <label>งานทั้งหมด</label>
+                    <div id="stat-total">0</div>
+                </div>
+                <div class="summary-item">
+                    <label>กำลังทำ</label>
+                    <div id="stat-doing">0</div>
+                </div>
+                <div class="summary-item">
+                    <label>เสร็จแล้ว</label>
+                    <div id="stat-done">0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>➕ เพิ่มออเดอร์ใหม่</h3>
+                <div class="admin-grid" id="order-form">
+                    <input type="text" id="adm-name" placeholder="ชื่อลูกค้า">
+                    <input type="text" id="adm-line" placeholder="LINE ID">
+                    <input type="text" id="adm-fb" placeholder="Facebook">
+                    <input type="text" id="adm-job" placeholder="รายละเอียดงาน">
+                    <select id="adm-status">
+                        <option value="waiting">รอเริ่มงาน</option>
+                        <option value="doing">กำลังทำ</option>
+                        <option value="almost">ใกล้เสร็จ</option>
+                        <option value="done">เสร็จแล้ว</option>
+                        <option value="sent">ส่งงานแล้ว</option>
+                    </select>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="range" id="adm-progress" min="0" max="100" value="0">
+                        <span id="prog-val">0%</span>
+                    </div>
+                    <textarea id="adm-update" placeholder="ข้อความอัปเดตจากแอดมิน"></textarea>
+                    <button class="btn" onclick="saveOrder()">💗 บันทึกข้อมูล</button>
+                </div>
+            </div>
+
+            <div id="admin-order-list"></div>
+        </div>
+
+        <div class="footer-admin" onclick="showLogin()">
+            ⚙️ Admin Login
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-content">
+            <h2 style="color: var(--soft-purple); margin-bottom: 20px;">🔒 เข้าสู่ระบบแอดมิน</h2>
+            <input type="password" id="adminPass" placeholder="ใส่รหัสผ่าน..." style="margin-bottom: 20px; text-align: center;">
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" style="flex: 1;" onclick="login()">💗 เข้าสู่ระบบ</button>
+                <button class="btn" style="flex: 1; background: #ccc;" onclick="closeLogin()">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Core Data & Initializer ---
+        let orders = JSON.parse(localStorage.getItem('queues')) || [];
+        let chats = JSON.parse(localStorage.getItem('chats')) || [];
+
+        // ฟังก์ชันสร้าง Mock Data ครั้งแรก
+        function initMockData() {
+            if (orders.length === 0) {
+                const mock = [
+                    { id: 'A001', queueNo: 1, name: 'คุณแนน', job: 'เว็บไซต์ร้านค้า Pastel', line: 'nan_cute', fb: 'Nan FB', status: 'doing', progress: 60, update: 'กำลังลงสีส่วน UI ค่ะ', lastUpdate: new Date().toLocaleDateString() },
+                    { id: 'A002', queueNo: 2, name: 'คุณบี', job: 'ออกแบบโลโก้', line: 'bee_design', fb: 'Bee Logo', status: 'waiting', progress: 0, update: 'รอคิวนิดนึงนะค้า', lastUpdate: new Date().toLocaleDateString() }
+                ];
+                orders = mock;
+                saveToLocal();
+            }
+        }
+
+        function saveToLocal() {
+            localStorage.setItem('queues', JSON.stringify(orders));
+            localStorage.setItem('chats', JSON.stringify(chats));
+            renderClientOrders();
+            renderAdminOrders();
+            updateStats();
+        }
+
+        // --- UI Effects ---
+        function createParticles() {
+            const emojis = ['🌸', '✨', '💗', '⭐', '🎀', '🫧', '💫'];
+            setInterval(() => {
+                const el = document.createElement('div');
+                el.className = 'floating-emoji';
+                el.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 15000);
+            }, 2000);
+        }
+
+        // --- System Functions ---
+        function getStatusLabel(status) {
+            const map = {
+                waiting: 'รอเริ่มงาน',
+                doing: 'กำลังดำเนินการ',
+                almost: 'ใกล้เสร็จแล้ว',
+                done: 'เสร็จเรียบร้อย',
+                sent: 'ส่งมอบงานแล้ว'
+            };
+            return map[status] || status;
+        }
+
+        function renderClientOrders(filter = "") {
+            const list = document.getElementById('all-orders-list');
+            const searchResult = document.getElementById('search-result');
+            list.innerHTML = "";
+            
+            const filtered = orders.filter(o => 
+                o.id.toLowerCase().includes(filter.toLowerCase()) || 
+                o.name.toLowerCase().includes(filter.toLowerCase()) ||
+                o.line.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            if(filter && filtered.length > 0) {
+                const o = filtered[0];
+                searchResult.innerHTML = `
+                    <div class="card" style="border: 2px solid var(--primary-pink);">
+                        <div class="order-header">
+                            <span class="order-id-badge">Order #${o.id}</span>
+                            <span class="status-pill status-${o.status}">${getStatusLabel(o.status)}</span>
+                        </div>
+                        <p><b>คิวที่:</b> ${o.queueNo}</p>
+                        <p><b>ชื่อลูกค้า:</b> ${o.name}</p>
+                        <p><b>งาน:</b> ${o.job}</p>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: ${o.progress}%"></div>
+                        </div>
+                        <p style="text-align: right; font-size: 0.8rem; font-weight: bold;">${o.progress}%</p>
+                        <div style="background: white; padding: 10px; border-radius: 15px; margin-top: 10px; font-size: 0.9rem;">
+                            📢 <b>อัปเดต:</b> ${o.update || '-'}
+                            <div style="font-size: 0.7rem; color: #aaa;">เมื่อ: ${o.lastUpdate}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (filter) {
+                searchResult.innerHTML = `<p style="text-align:center; padding: 20px;">❌ ไม่พบข้อมูลออเดอร์ที่ค้นหาค่ะ</p>`;
+            } else {
+                searchResult.innerHTML = "";
+            }
+
+            orders.forEach(o => {
+                list.innerHTML += `
+                    <div class="order-item">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span><b>#${o.id}</b> ${o.name}</span>
+                            <span class="status-pill status-${o.status}">${o.progress}%</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function searchOrder() {
+            const val = document.getElementById('searchInput').value;
+            renderClientOrders(val);
+        }
+
+        function sendMessage() {
+            const oid = document.getElementById('chatOrderId').value;
+            const msg = document.getElementById('chatMsg').value;
+
+            if(!oid) {
+                alert("กรุณาใส่รหัสออเดอร์ก่อนติดต่อแอดมินนะคะ 🎀");
+                return;
+            }
+
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML += `<div class="msg msg-user"><b>[Order ${oid}]:</b> ${msg}</div>`;
+            
+            setTimeout(() => {
+                chatBox.innerHTML += `<div class="msg msg-admin">ข้อความของคุณถูกส่งแล้ว ✨ <br>กรุณารอแอดมินตอบกลับภายใน 1-5 นาทีค่ะ</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);
+
+            document.getElementById('chatMsg').value = "";
+        }
+
+        // --- Admin Functions ---
+        function showLogin() { document.getElementById('loginModal').style.display = 'flex'; }
+        function closeLogin() { document.getElementById('loginModal').style.display = 'none'; }
+        
+        function login() {
+            const pass = document.getElementById('adminPass').value;
+            if(pass === 'admin123') {
+                document.getElementById('client-view').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                closeLogin();
+                renderAdminOrders();
+            } else {
+                alert("รหัสผ่านไม่ถูกต้องนะคะคนสวย 🥺");
+            }
+        }
+
+        function logout() {
+            document.getElementById('client-view').style.display = 'block';
+            document.getElementById('admin-panel').style.display = 'none';
+        }
+
+        function saveOrder() {
+            const name = document.getElementById('adm-name').value;
+            const job = document.getElementById('adm-job').value;
+            if(!name || !job) return alert("กรอกข้อมูลให้ครบก่อนน้า");
+
+            const newId = 'A' + String(orders.length + 1).padStart(3, '0');
+            const newOrder = {
+                id: newId,
+                queueNo: orders.length + 1,
+                name: name,
+                job: job,
+                line: document.getElementById('adm-line').value,
+                fb: document.getElementById('adm-fb').value,
+                status: document.getElementById('adm-status').value,
+                progress: document.getElementById('adm-progress').value,
+                update: document.getElementById('adm-update').value,
+                lastUpdate: new Date().toLocaleDateString()
+            };
+
+            orders.push(newOrder);
+            saveToLocal();
+            // Clear Form
+            document.querySelectorAll('#order-form input, #order-form textarea').forEach(i => i.value = "");
+        }
+
+        function deleteOrder(id) {
+            if(confirm('ลบออเดอร์นี้ใช่ไหมคะ?')) {
+                orders = orders.filter(o => o.id !== id);
+                saveToLocal();
+            }
+        }
+
+        function updateProgress(id, val) {
+            const idx = orders.findIndex(o => o.id === id);
+            orders[idx].progress = val;
+            orders[idx].lastUpdate = new Date().toLocaleDateString();
+            saveToLocal();
+        }
+
+        function renderAdminOrders() {
+            const list = document.getElementById('admin-order-list');
+            list.innerHTML = "<h3>🛠️ จัดการออเดอร์</h3>";
+            
+            orders.forEach(o => {
+                list.innerHTML += `
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between;">
+                            <b>#${o.id} - ${o.name}</b>
+                            <button onclick="deleteOrder('${o.id}')" style="background:none; border:none; color:red; cursor:pointer;">🗑️</button>
+                        </div>
+                        <p>${o.job}</p>
+                        <div style="margin: 10px 0;">
+                            สถานะ: 
+                            <select onchange="updateStatus('${o.id}', this.value)" style="width: auto; padding: 5px;">
+                                <option value="waiting" ${o.status==='waiting'?'selected':''}>รอเริ่มงาน</option>
+                                <option value="doing" ${o.status==='doing'?'selected':''}>กำลังทำ</option>
+                                <option value="almost" ${o.status==='almost'?'selected':''}>ใกล้เสร็จ</option>
+                                <option value="done" ${o.status==='done'?'selected':''}>เสร็จแล้ว</option>
+                                <option value="sent" ${o.status==='sent'?'selected':''}>ส่งงานแล้ว</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <input type="range" value="${o.progress}" onchange="updateProgress('${o.id}', this.value)">
+                            <span>${o.progress}%</span>
+                        </div>
+                        <textarea style="margin-top:10px;" onchange="updateMsg('${o.id}', this.value)" placeholder="อัปเดตข้อความ...">${o.update}</textarea>
+                    </div>
+                `;
+            });
+        }
+
+        function updateStatus(id, val) {
+            const idx = orders.findIndex(o => o.id === id);
+            orders[idx].status = val;
+            saveToLocal();
+        }
+
+        function updateMsg(id, val) {
+            const idx = orders.findIndex(o => o.id === id);
+            orders[idx].update = val;
+            saveToLocal();
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').innerText = orders.length;
+            document.getElementById('stat-doing').innerText = orders.filter(o => o.status === 'doing').length;
+            document.getElementById('stat-done').innerText = orders.filter(o => o.status === 'done' || o.status === 'sent').length;
+
+            const doing = orders.find(o => o.status === 'doing');
+            const next = orders.find(o => o.status === 'waiting');
+            document.getElementById('current-doing').innerText = doing ? `${doing.id} (${doing.name})` : '-';
+            document.getElementById('next-queue').innerText = next ? `${next.id} (${next.name})` : '-';
+        }
+
+        // --- Init ---
+        window.onload = () => {
+            initMockData();
+            createParticles();
+            renderClientOrders();
+            updateStats();
+            lucide.createIcons();
+
+            document.getElementById('adm-progress').oninput = function() {
+                document.getElementById('prog-val').innerText = this.value + '%';
+            };
+        };
+    </script>
 </body>
 </html>

@@ -11,11 +11,10 @@
     <style>
         :root {
             --pink-main: #ff85c0;
-            --pink-bg: #ffd6ec;
-            --purple-bg: #e8dfff;
             --white: rgba(255, 255, 255, 1);
             --shadow: 0 10px 25px rgba(255, 133, 192, 0.15);
             --gradient-btn: linear-gradient(90deg, #ff9a9e 0%, #fecfef 100%);
+            --gradient-copy: linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mitr', sans-serif; }
@@ -29,354 +28,184 @@
             padding-bottom: 100px;
         }
 
-        /* --- Animations --- */
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes floating { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
-        @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
-
-        .particle { position: fixed; bottom: -10%; z-index: -1; animation: floating_up 10s linear infinite; pointer-events: none; }
-        @keyframes floating_up { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
-
+        /* --- Global UI --- */
         .container { max-width: 450px; margin: 0 auto; padding: 20px; }
-
-        /* --- Header & Tab Switcher (ตามรูป) --- */
-        header { text-align: center; padding: 30px 0; animation: fadeUp 0.8s ease; }
+        header { text-align: center; padding: 30px 0; }
         .profile-img { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; box-shadow: var(--shadow); margin-bottom: 10px; }
-        header h1 { font-size: 1.5rem; color: var(--pink-main); letter-spacing: 2px; text-transform: uppercase; }
+        header h1 { font-size: 1.5rem; color: var(--pink-main); letter-spacing: 2px; }
 
-        .tab-switcher {
-            background: white;
-            padding: 5px;
-            border-radius: 50px;
-            display: flex;
-            width: fit-content;
-            margin: 20px auto;
-            box-shadow: var(--shadow);
-        }
-        .tab-btn {
-            padding: 8px 25px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: 0.3s;
-            background: transparent;
-            color: #aaa;
-        }
-        .tab-btn.active {
-            background: var(--gradient-btn);
-            color: white;
-            box-shadow: 0 4px 10px rgba(255, 154, 158, 0.4);
-        }
+        /* --- Tab Switcher --- */
+        .tab-switcher { background: white; padding: 5px; border-radius: 50px; display: flex; width: fit-content; margin: 20px auto; box-shadow: var(--shadow); }
+        .tab-btn { padding: 8px 25px; border-radius: 50px; border: none; cursor: pointer; font-size: 0.9rem; transition: 0.3s; background: transparent; color: #aaa; }
+        .tab-btn.active { background: var(--gradient-btn); color: white; box-shadow: 0 4px 10px rgba(255, 154, 158, 0.4); }
 
-        /* --- Card UI --- */
-        .card {
-            background: var(--white);
-            border-radius: 30px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            animation: fadeUp 1s ease;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-        .card h3 { color: var(--pink-main); font-size: 1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        /* --- Card & Form --- */
+        .card { background: var(--white); border-radius: 30px; padding: 25px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid rgba(255, 255, 255, 0.8); }
+        input, select { width: 100%; padding: 12px 20px; border-radius: 20px; border: 1px solid #ffe4f1; outline: none; margin-bottom: 12px; background: #fffbff; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s; color: white; background: var(--gradient-btn); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-copy { background: var(--gradient-copy); margin-top: 10px; font-size: 0.8rem; padding: 8px; }
 
         /* --- Progress Bar --- */
-        .progress-outer { background: #fdf2f8; border-radius: 20px; height: 25px; width: 100%; margin: 15px 0; overflow: hidden; position: relative; border: 1px solid #fce7f3; }
-        .progress-inner { height: 100%; background: var(--gradient-btn); border-radius: 20px; transition: width 1s ease; position: relative; }
-        .progress-inner::after { content: ''; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shine 2s infinite; }
+        .progress-outer { background: #fdf2f8; border-radius: 20px; height: 22px; width: 100%; margin: 10px 0; overflow: hidden; border: 1px solid #fce7f3; }
+        .progress-inner { height: 100%; background: var(--gradient-btn); transition: width 1s ease; }
 
-        /* --- Pill Status & Buttons --- */
-        .pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .pill { padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; background: #f8f8f8; color: #999; border: 1px solid #eee; }
-        .pill.active { background: var(--gradient-btn); color: white; border: none; }
+        /* --- Login Overlay --- */
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 240, 246, 0.8); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; }
+        .login-card { background: white; width: 90%; max-width: 320px; padding: 40px 30px; border-radius: 35px; text-align: center; box-shadow: 0 20px 50px rgba(255, 133, 192, 0.2); }
 
-        input, textarea {
-            width: 100%; padding: 12px 20px; border-radius: 20px;
-            border: 1px solid #ffe4f1; outline: none; transition: 0.3s;
-            font-size: 0.9rem; margin-bottom: 12px; background: #fffbff;
-        }
-        input::placeholder { color: #d1d1d1; }
-        input:focus { border-color: var(--pink-main); box-shadow: 0 0 8px rgba(255, 133, 192, 0.2); }
-
-        .btn {
-            width: 100%; padding: 14px; border: none; border-radius: 50px;
-            font-weight: 600; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            color: white; background: var(--gradient-btn);
-        }
-        .btn:hover { transform: scale(1.02); filter: brightness(1.05); }
-
-        /* --- Admin Chat Box (ตามรูปที่ 2) --- */
-        .chat-box-admin {
-            background: #fffbff;
-            border: 1px solid #ffe4f1;
-            border-radius: 20px;
-            padding: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
-        }
-        .chat-line { margin-bottom: 8px; }
-        .chat-user { color: var(--pink-main); font-weight: bold; }
-
-        /* --- Floating Chat Button --- */
-        .floating-chat {
-            position: fixed; bottom: 30px; right: 30px;
-            width: 60px; height: 60px; background: var(--gradient-btn);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(255, 133, 192, 0.4);
-            cursor: pointer; z-index: 999; animation: floating 3s ease-in-out infinite;
-        }
-
-        /* --- Badge Styles --- */
-        .badge-id { background: #ffebf3; color: var(--pink-main); padding: 4px 12px; border-radius: 10px; font-size: 0.7rem; font-weight: bold; }
-
-        .hidden { display: none; }
+        .hidden { display: none !important; }
+        .floating-chat { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--gradient-btn); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(255, 133, 192, 0.4); cursor: pointer; z-index: 999; }
     </style>
 </head>
 <body>
 
-    <div id="particle-container"></div>
-
     <div class="container">
-        
         <header>
-            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Julie" class="profile-img" alt="Profile">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Julie" class="profile-img">
             <h1>PINK — JULIE</h1>
-            
             <div class="tab-switcher">
-                <button class="tab-btn active" id="btn-customer" onclick="switchMode('customer')">คิวงานลูกค้า</button>
-                <button class="tab-btn" id="btn-admin" onclick="showLogin()">แอดมิน</button>
+                <button class="tab-btn active" id="tab-cust" onclick="switchTab('customer')">คิวงานลูกค้า</button>
+                <button class="tab-btn" id="tab-adm" onclick="triggerAdminLogin()">แอดมิน</button>
             </div>
         </header>
 
-        <div id="customer-view">
+        <div id="view-customer">
             <div class="card">
-                <h3>🔍 ตรวจสอบคิวของคุณ</h3>
-                <input type="text" id="search-input" placeholder="พิมพ์เลขออเดอร์ / ชื่อ / LINE / Facebook" onkeyup="searchFilter()">
-                <button class="btn" onclick="searchFilter()">ตรวจสอบสถานะ ✨</button>
+                <input type="text" id="search-input" placeholder="พิมพ์ชื่อหรือรหัสออเดอร์..." onkeyup="searchFilter()">
+                <div id="customer-list"></div>
             </div>
-
-            <div id="queue-list-display">
-                </div>
         </div>
 
-        <div id="admin-view" class="hidden">
+        <div id="view-admin" class="hidden">
             <div class="card">
-                <h3>🎀 เพิ่มคิวใหม่</h3>
+                <h3>🎀 เพิ่มคิวงานพร้อมส่ง</h3>
                 <input type="text" id="adm-name" placeholder="ชื่อลูกค้า">
-                <input type="text" id="adm-job" placeholder="รายละเอียดงาน">
+                <input type="text" id="adm-product" placeholder="ชื่อสินค้า">
                 <div style="display:flex; gap:10px;">
-                    <input type="text" id="adm-id" placeholder="รหัสออเดอร์" readonly style="flex:1;">
-                    <input type="text" id="adm-q" placeholder="เลขคิว" style="flex:1;">
+                    <input type="text" id="adm-color" placeholder="สี">
+                    <input type="text" id="adm-size" placeholder="ไซส์">
                 </div>
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="adm-line" placeholder="LINE ID" style="flex:1;">
-                    <input type="text" id="adm-fb" placeholder="Facebook" style="flex:1;">
-                </div>
-
-                <label style="font-size:0.8rem; color:#ff85c0;">สถานะงาน:</label>
-                <div class="pill-group" id="adm-status-group">
-                    <div class="pill active" onclick="setAdmStatus('รอเริ่มงาน', this)">รอเริ่มงาน</div>
-                    <div class="pill" onclick="setAdmStatus('กำลังทำ', this)">กำลังทำ</div>
-                    <div class="pill" onclick="setAdmStatus('ใกล้เสร็จ', this)">ใกล้เสร็จ</div>
-                    <div class="pill" onclick="setAdmStatus('เสร็จแล้ว', this)">เสร็จแล้ว</div>
-                    <div class="pill" onclick="setAdmStatus('ส่งงานแล้ว', this)">ส่งงานแล้ว</div>
-                </div>
-
-                <div style="margin-top:15px;">
-                    <label style="font-size:0.8rem;">เปอร์เซ็นต์: <span id="pct-label">0</span>%</label>
-                    <input type="range" id="adm-pct" min="0" max="100" value="0" oninput="document.getElementById('pct-label').innerText=this.value">
-                </div>
-                <input type="text" id="adm-note" placeholder="ข้อความอัปเดต">
-                <button class="btn" onclick="saveOrder()">บันทึกคิว ✨</button>
+                <input type="number" id="adm-price" placeholder="ราคา (บาท)">
+                <select id="adm-status">
+                    <option value="รอเริ่มงาน">รอเริ่มงาน</option>
+                    <option value="กำลังทำ">กำลังทำ</option>
+                    <option value="เสร็จแล้ว">เสร็จแล้ว</option>
+                </select>
+                <button class="btn" onclick="saveOrder()">บันทึกคิวงาน 💗</button>
             </div>
-
-            <div class="card">
-                <h3>💬 ตอบแชทลูกค้า</h3>
-                <div class="chat-box-admin" id="admin-chat-history">
-                    <div class="chat-line"><span class="chat-user">[Admin]</span> สวัสดีค่ะ มีอะไรให้ช่วยไหมคะ?</div>
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="admin-reply-input" placeholder="ตอบกลับ..." style="margin-bottom:0;">
-                    <button class="btn" style="width:60px; padding:0;" onclick="adminReply()"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-
-            <div id="admin-list"></div>
+            <div id="admin-list-display"></div>
         </div>
     </div>
 
-    <div class="floating-chat" onclick="toggleCustomerChat()">
+    <div id="login-overlay">
+        <div class="login-card">
+            <h3 style="margin-bottom:20px; color: var(--pink-main);">🔒 แอดมินล็อกอิน</h3>
+            <input type="password" id="admin-password" placeholder="ใส่รหัสผ่าน">
+            <button class="btn" onclick="checkLogin()">เข้าสู่ระบบ 💗</button>
+            <p onclick="closeLogin()" style="margin-top:15px; font-size:0.8rem; color:#ccc; cursor:pointer;">ยกเลิก</p>
+        </div>
+    </div>
+
+    <div class="floating-chat" onclick="alert('แอดมินกำลังรีบตอบแชทนะคะ ✨')">
         <i class="fas fa-comment-dots"></i>
-    </div>
-
-    <div id="login-overlay" class="overlay hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); backdrop-filter:blur(5px); z-index:2000; display:flex; align-items:center; justify-content:center;">
-        <div class="popup card" style="width:300px; text-align:center;">
-            <h3 style="justify-content:center;">🔒 แอดมินล็อกอิน</h3>
-            <input type="password" id="admin-pass" placeholder="รหัสผ่าน">
-            <button class="btn" onclick="login()">เข้าสู่ระบบ 💗</button>
-            <p onclick="hideLogin()" style="font-size:0.8rem; margin-top:10px; cursor:pointer; color:#ccc;">ยกเลิก</p>
-        </div>
     </div>
 
     <script>
         let orders = JSON.parse(localStorage.getItem('pj_queues')) || [];
-        let currentAdmStatus = "รอเริ่มงาน";
-        let chatHistory = JSON.parse(localStorage.getItem('pj_chats')) || [];
+        let isLoggedIn = false;
 
-        // --- Core Functions ---
-        function switchMode(mode) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            if(mode === 'customer') {
-                document.getElementById('btn-customer').classList.add('active');
-                document.getElementById('customer-view').classList.remove('hidden');
-                document.getElementById('admin-view').classList.add('hidden');
-            } else {
-                document.getElementById('btn-admin').classList.add('active');
-                document.getElementById('admin-view').classList.remove('hidden');
-                document.getElementById('customer-view').classList.add('hidden');
+        function triggerAdminLogin() {
+            if (isLoggedIn) { showAdminView(); } 
+            else { document.getElementById('login-overlay').style.display = 'flex'; }
+        }
+
+        function closeLogin() { document.getElementById('login-overlay').style.display = 'none'; switchTab('customer'); }
+
+        function checkLogin() {
+            if (document.getElementById('admin-password').value === 'admin123') {
+                isLoggedIn = true;
+                document.getElementById('login-overlay').style.display = 'none';
+                showAdminView();
+            } else { alert('รหัสผิดน้า 🥺'); }
+        }
+
+        function switchTab(mode) {
+            if (mode === 'customer') {
+                document.getElementById('tab-cust').classList.add('active');
+                document.getElementById('tab-adm').classList.remove('active');
+                document.getElementById('view-customer').classList.remove('hidden');
+                document.getElementById('view-admin').classList.add('hidden');
             }
         }
 
-        function showLogin() { document.getElementById('login-overlay').classList.remove('hidden'); }
-        function hideLogin() { document.getElementById('login-overlay').classList.add('hidden'); }
-
-        function login() {
-            if(document.getElementById('admin-pass').value === 'admin123') {
-                hideLogin();
-                switchMode('admin');
-                renderAdmin();
-                document.getElementById('adm-id').value = "PJ-" + (orders.length + 1).toString().padStart(3, '0');
-            } else { alert('รหัสผิดค่ะ!'); }
-        }
-
-        function setAdmStatus(val, el) {
-            currentAdmStatus = val;
-            document.querySelectorAll('#adm-status-group .pill').forEach(p => p.classList.remove('active'));
-            el.classList.add('active');
+        function showAdminView() {
+            document.getElementById('tab-adm').classList.add('active');
+            document.getElementById('tab-cust').classList.remove('active');
+            document.getElementById('view-admin').classList.remove('hidden');
+            document.getElementById('view-customer').classList.add('hidden');
+            renderAdmin();
         }
 
         function saveOrder() {
             const newOrder = {
-                id: document.getElementById('adm-id').value,
-                q: document.getElementById('adm-q').value,
+                id: "PJ-" + Math.floor(1000 + Math.random() * 9000),
                 name: document.getElementById('adm-name').value,
-                job: document.getElementById('adm-job').value,
-                line: document.getElementById('adm-line').value,
-                fb: document.getElementById('adm-fb').value,
-                status: currentAdmStatus,
-                pct: document.getElementById('adm-pct').value,
-                note: document.getElementById('adm-note').value,
-                updated: new Date().toLocaleString()
+                product: document.getElementById('adm-product').value,
+                color: document.getElementById('adm-color').value,
+                size: document.getElementById('adm-size').value,
+                price: document.getElementById('adm-price').value,
+                status: document.getElementById('adm-status').value,
+                pct: document.getElementById('adm-status').value === 'เสร็จแล้ว' ? 100 : 30
             };
             orders.push(newOrder);
             localStorage.setItem('pj_queues', JSON.stringify(orders));
-            alert('บันทึกคิวแล้ว! ✨');
             renderAdmin();
-            renderCustomer();
+            alert('ลงคิวสำเร็จ! อย่าลืมกดคัดลอกข้อความส่งให้ลูกค้านะคะ ✨');
         }
 
-        function renderCustomer(filter = "") {
-            const container = document.getElementById('queue-list-display');
-            container.innerHTML = "";
-            const filtered = orders.filter(o => o.id.includes(filter) || o.name.includes(filter));
+        // --- ระบบคัดลอกข้อความ ---
+        function copyToClip(index) {
+            const o = orders[index];
+            const text = `#พร้อมส่ง ✨\nสินค้า: ${o.product}\nสี: ${o.color}\nไซส์: ${o.size}\nราคา: ${o.price} บาท\n\nรับออเดอร์เรียบร้อยนะคะคุณ ${o.name} 🎀\nเลขออเดอร์ของคุณคือ 【 ${o.id} 】 นะคะ\nขอบคุณที่ไว้วางใจให้ PINK — JULIE ดูแลนะคะ รองานสวยๆ ได้เลย แอดมินจะรีบปั่นให้สุดฝีมือ ใจละลายแน่นอนค่ะ! 🔥`;
             
-            filtered.forEach(o => {
-                container.innerHTML += `
-                    <div class="card">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-weight:bold; color:var(--pink-main);">คุณ ${o.name}</span>
-                            <span class="badge-id">${o.id}</span>
-                        </div>
-                        <p style="font-size:0.8rem; color:#888; margin-top:5px;">${o.job}</p>
-                        <div class="progress-outer">
-                            <div class="progress-inner" style="width:${o.pct}%"></div>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
-                            <span>สถานะ: ${o.status}</span>
-                            <span>${o.pct}%</span>
-                        </div>
-                        <div style="background:#fff9fc; padding:10px; border-radius:15px; margin-top:10px; font-size:0.8rem; border:1px dashed #ffd6ec;">
-                            📢 ${o.note || 'กำลังปั่นงานให้นะคะ'}
-                        </div>
-                    </div>
-                `;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('คัดลอกข้อความลงคิวเรียบร้อย! ส่งต่อได้เลยค่ะ 📋💗');
             });
         }
 
         function renderAdmin() {
-            const container = document.getElementById('admin-list');
-            container.innerHTML = "<h3>รายการคิวทั้งหมด</h3>";
+            const list = document.getElementById('admin-list-display');
+            list.innerHTML = "";
             orders.forEach((o, i) => {
-                container.innerHTML += `
-                    <div class="card" style="border-left: 5px solid #ff85c0;">
+                list.innerHTML += `
+                    <div class="card">
+                        <b>${o.id} | คุณ ${o.name}</b>
+                        <p style="font-size:0.8rem; color:#888;">${o.product} (${o.size}/${o.color})</p>
+                        <button class="btn btn-copy" onclick="copyToClip(${i})">
+                            <i class="far fa-copy"></i> คัดลอกข้อความลงคิว
+                        </button>
+                    </div>`;
+            });
+        }
+
+        function renderCustomer(filter = "") {
+            const list = document.getElementById('customer-list');
+            list.innerHTML = "";
+            const filtered = orders.filter(o => o.id.includes(filter) || o.name.includes(filter));
+            filtered.forEach(o => {
+                list.innerHTML += `
+                    <div class="card">
                         <div style="display:flex; justify-content:space-between;">
-                            <b>${o.id} - คุณ ${o.name}</b>
-                            <button onclick="deleteOrder(${i})" style="border:none; background:#ff7675; color:white; padding:2px 10px; border-radius:10px; font-size:0.7rem;">ลบ</button>
+                            <span style="color:var(--pink-main); font-weight:bold;">Order ${o.id}</span>
+                            <span style="font-size:0.7rem;">คุณ ${o.name}</span>
                         </div>
-                        <p style="font-size:0.8rem;">สถานะ: ${o.status} (${o.pct}%)</p>
-                    </div>
-                `;
+                        <div class="progress-outer"><div class="progress-inner" style="width:${o.pct}%"></div></div>
+                        <p style="font-size:0.8rem; text-align:right;">สถานะ: ${o.status}</p>
+                    </div>`;
             });
-            renderChats();
         }
 
-        function deleteOrder(i) {
-            orders.splice(i, 1);
-            localStorage.setItem('pj_queues', JSON.stringify(orders));
-            renderAdmin();
-        }
-
-        function searchFilter() {
-            renderCustomer(document.getElementById('search-input').value);
-        }
-
-        // --- Chat Functions ---
-        function adminReply() {
-            const msg = document.getElementById('admin-reply-input').value;
-            if(!msg) return;
-            chatHistory.push({user: 'Admin', text: msg});
-            localStorage.setItem('pj_chats', JSON.stringify(chatHistory));
-            document.getElementById('admin-reply-input').value = "";
-            renderChats();
-        }
-
-        function renderChats() {
-            const box = document.getElementById('admin-chat-history');
-            box.innerHTML = "";
-            chatHistory.forEach(c => {
-                box.innerHTML += `<div class="chat-line"><span class="chat-user">[${c.user}]</span> ${c.text}</div>`;
-            });
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function toggleCustomerChat() {
-            const msg = prompt("พิมพ์ข้อความถึงแอดมิน:");
-            if(msg) {
-                chatHistory.push({user: 'Customer', text: msg});
-                localStorage.setItem('pj_chats', JSON.stringify(chatHistory));
-                alert("ส่งข้อความแล้ว! แอดมินจะตอบกลับเร็วๆ นี้ค่ะ ✨");
-                renderChats();
-            }
-        }
-
-        // Particles
-        function initParticles() {
-            const container = document.getElementById('particle-container');
-            for(let i=0; i<10; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.innerHTML = ['🌸','💗','✨','🫧'][Math.floor(Math.random()*4)];
-                p.style.left = Math.random() * 100 + 'vw';
-                p.style.animationDuration = (Math.random()*5 + 5) + 's';
-                container.appendChild(p);
-            }
-        }
-
-        initParticles();
+        function searchFilter() { renderCustomer(document.getElementById('search-input').value); }
         renderCustomer();
     </script>
 </body>

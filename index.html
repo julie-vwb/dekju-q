@@ -3,153 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌸 Order Queue System - Kawaii Edition 🌸</title>
+    <title>🌸 PINK — JULIE Queue System 🌸</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500&family=Nunito:wght@400;700&family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --pink-light: #ffd6ec;
-            --purple-light: #e8dfff;
-            --blue-light: #dff1ff;
-            --accent-pink: #ff85c0;
-            --accent-purple: #b794f4;
-            --white: rgba(255, 255, 255, 0.9);
-            --shadow: 0 10px 25px rgba(0,0,0,0.08);
+            --pink-main: #ff85c0;
+            --pink-bg: #ffd6ec;
+            --purple-bg: #e8dfff;
+            --white: rgba(255, 255, 255, 1);
+            --shadow: 0 10px 25px rgba(255, 133, 192, 0.15);
+            --gradient-btn: linear-gradient(90deg, #ff9a9e 0%, #fecfef 100%);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mitr', 'Prompt', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mitr', sans-serif; }
 
         body {
-            background: linear-gradient(180deg, var(--pink-light), var(--purple-light), var(--blue-light));
+            background: linear-gradient(180deg, #fff0f6, #f3e8ff, #e0f2fe);
             background-attachment: fixed;
             min-height: 100vh;
             color: #5d5d5d;
             overflow-x: hidden;
-            padding-bottom: 50px;
+            padding-bottom: 100px;
         }
 
         /* --- Animations --- */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes floating { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
+        @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
+
+        .particle { position: fixed; bottom: -10%; z-index: -1; animation: floating_up 10s linear infinite; pointer-events: none; }
+        @keyframes floating_up { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
+
+        .container { max-width: 450px; margin: 0 auto; padding: 20px; }
+
+        /* --- Header & Tab Switcher (ตามรูป) --- */
+        header { text-align: center; padding: 30px 0; animation: fadeUp 0.8s ease; }
+        .profile-img { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; box-shadow: var(--shadow); margin-bottom: 10px; }
+        header h1 { font-size: 1.5rem; color: var(--pink-main); letter-spacing: 2px; text-transform: uppercase; }
+
+        .tab-switcher {
+            background: white;
+            padding: 5px;
+            border-radius: 50px;
+            display: flex;
+            width: fit-content;
+            margin: 20px auto;
+            box-shadow: var(--shadow);
         }
-        @keyframes floating {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        .tab-btn {
+            padding: 8px 25px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            background: transparent;
+            color: #aaa;
         }
-        @keyframes shine {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        @keyframes sparkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
+        .tab-btn.active {
+            background: var(--gradient-btn);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 154, 158, 0.4);
         }
 
-        /* --- Particle System --- */
-        .particle {
-            position: fixed; bottom: -10%; z-index: -1;
-            animation: floating 10s linear infinite; pointer-events: none;
-        }
-
-        /* --- Global UI --- */
-        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
-        header { text-align: center; padding: 40px 0 20px; animation: fadeUp 0.8s ease-out; }
-        header h1 { font-size: 1.8rem; color: var(--accent-pink); text-shadow: 2px 2px #fff; }
-
+        /* --- Card UI --- */
         .card {
             background: var(--white);
-            border-radius: 25px;
+            border-radius: 30px;
             padding: 25px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             box-shadow: var(--shadow);
-            animation: fadeUp 1s ease-out;
-            border: 2px solid rgba(255,255,255,0.5);
-            position: relative;
-            overflow: hidden;
+            animation: fadeUp 1s ease;
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
+        .card h3 { color: var(--pink-main); font-size: 1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
         /* --- Progress Bar --- */
-        .progress-outer {
-            background: #eee; border-radius: 20px; height: 22px;
-            width: 100%; margin: 15px 0; overflow: hidden; position: relative;
-        }
-        .progress-inner {
-            height: 100%; background: linear-gradient(90deg, #ff85c0, #b794f4);
-            border-radius: 20px; transition: width 1s ease-in-out; position: relative;
-        }
-        .progress-inner::after {
-            content: ''; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: shine 2s infinite;
-        }
+        .progress-outer { background: #fdf2f8; border-radius: 20px; height: 25px; width: 100%; margin: 15px 0; overflow: hidden; position: relative; border: 1px solid #fce7f3; }
+        .progress-inner { height: 100%; background: var(--gradient-btn); border-radius: 20px; transition: width 1s ease; position: relative; }
+        .progress-inner::after { content: ''; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shine 2s infinite; }
 
-        /* --- Status Pills --- */
+        /* --- Pill Status & Buttons --- */
         .pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .pill {
-            padding: 6px 15px; border-radius: 20px; font-size: 0.85rem;
-            cursor: pointer; border: 2px solid transparent; transition: 0.3s;
-            background: #f0f0f0; color: #888;
-        }
-        .pill.active.st-รอเริ่มงาน { background: #ffeaa7; color: #d6a317; border-color: #f1c40f; }
-        .pill.active.st-กำลังทำ { background: #81ecec; color: #00b894; border-color: #00cec9; }
-        .pill.active.st-ใกล้เสร็จ { background: #a29bfe; color: #6c5ce7; border-color: #6c5ce7; }
-        .pill.active.st-เสร็จแล้ว { background: #55efc4; color: #00b894; border-color: #00b894; }
-        .pill.active.st-ส่งงานแล้ว { background: #fab1a0; color: #e17055; border-color: #e17055; }
+        .pill { padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; background: #f8f8f8; color: #999; border: 1px solid #eee; }
+        .pill.active { background: var(--gradient-btn); color: white; border: none; }
 
-        .badge-status {
-            padding: 4px 12px; border-radius: 15px; font-size: 0.75rem; color: white;
-            font-weight: bold; display: inline-block;
+        input, textarea {
+            width: 100%; padding: 12px 20px; border-radius: 20px;
+            border: 1px solid #ffe4f1; outline: none; transition: 0.3s;
+            font-size: 0.9rem; margin-bottom: 12px; background: #fffbff;
         }
-
-        /* --- Forms & Buttons --- */
-        input, textarea, select {
-            width: 100%; padding: 12px 20px; border-radius: 30px;
-            border: 2px solid var(--purple-light); outline: none; transition: 0.3s;
-            font-size: 1rem; margin-bottom: 10px;
-        }
-        input:focus { border-color: var(--accent-pink); }
+        input::placeholder { color: #d1d1d1; }
+        input:focus { border-color: var(--pink-main); box-shadow: 0 0 8px rgba(255, 133, 192, 0.2); }
 
         .btn {
-            width: 100%; padding: 15px; border: none; border-radius: 30px;
+            width: 100%; padding: 14px; border: none; border-radius: 50px;
             font-weight: 600; cursor: pointer; transition: 0.3s;
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            color: white; text-decoration: none;
+            color: white; background: var(--gradient-btn);
         }
-        .btn-search { background: linear-gradient(45deg, #ff9a9e, #fad0c4); }
-        .btn-purple { background: linear-gradient(45deg, #a18cd1, #fbc2eb); }
-        .btn:hover { transform: scale(1.05); }
+        .btn:hover { transform: scale(1.02); filter: brightness(1.05); }
 
-        /* --- Admin Dashboard --- */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-card { background: white; padding: 15px; border-radius: 20px; text-align: center; font-size: 0.8rem; }
-        .stat-card b { display: block; font-size: 1.4rem; color: var(--accent-pink); }
+        /* --- Admin Chat Box (ตามรูปที่ 2) --- */
+        .chat-box-admin {
+            background: #fffbff;
+            border: 1px solid #ffe4f1;
+            border-radius: 20px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+        .chat-line { margin-bottom: 8px; }
+        .chat-user { color: var(--pink-main); font-weight: bold; }
 
-        /* --- Overlay/Popup --- */
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(5px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
-        .popup {
-            background: white; width: 90%; max-width: 380px; padding: 30px;
-            border-radius: 30px; text-align: center; box-shadow: var(--shadow);
-            animation: fadeUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* --- Floating Chat Button --- */
+        .floating-chat {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 60px; height: 60px; background: var(--gradient-btn);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(255, 133, 192, 0.4);
+            cursor: pointer; z-index: 999; animation: floating 3s ease-in-out infinite;
         }
 
-        /* --- Chat UI --- */
-        .chat-response {
-            background: #f0f0f0; padding: 10px 15px; border-radius: 15px;
-            margin-top: 10px; font-size: 0.85rem; display: none;
-            border-left: 4px solid var(--accent-pink);
-        }
+        /* --- Badge Styles --- */
+        .badge-id { background: #ffebf3; color: var(--pink-main); padding: 4px 12px; border-radius: 10px; font-size: 0.7rem; font-weight: bold; }
 
         .hidden { display: none; }
-        .mt-2 { margin-top: 10px; }
-        footer { text-align: center; padding: 20px; cursor: pointer; opacity: 0.6; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -158,340 +142,241 @@
 
     <div class="container">
         
-        <div id="customer-view">
-            <header>
-                <h1>🌸 ตรวจสอบคิวงานของคุณ ✨</h1>
-                <p>ค้นหาสถานะงานได้ง่ายๆ เลยนะคะ</p>
-            </header>
+        <header>
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Julie" class="profile-img" alt="Profile">
+            <h1>PINK — JULIE</h1>
+            
+            <div class="tab-switcher">
+                <button class="tab-btn active" id="btn-customer" onclick="switchMode('customer')">คิวงานลูกค้า</button>
+                <button class="tab-btn" id="btn-admin" onclick="showLogin()">แอดมิน</button>
+            </div>
+        </header>
 
+        <div id="customer-view">
             <div class="card">
+                <h3>🔍 ตรวจสอบคิวของคุณ</h3>
                 <input type="text" id="search-input" placeholder="พิมพ์เลขออเดอร์ / ชื่อ / LINE / Facebook" onkeyup="searchFilter()">
-                <button class="btn btn-search" onclick="searchFilter()">
-                    <i class="fas fa-search"></i> ค้นหาข้อมูล
-                </button>
+                <button class="btn" onclick="searchFilter()">ตรวจสอบสถานะ ✨</button>
             </div>
 
             <div id="queue-list-display">
                 </div>
-
-            <div class="card">
-                <h3>💬 สอบถามแอดมิน</h3>
-                <div class="mt-2">
-                    <input type="text" id="chat-order-id" placeholder="ระบุ Order ID ก่อนนะคะ *">
-                    <textarea id="chat-text" placeholder="พิมพ์ข้อความของคุณ..."></textarea>
-                    <button class="btn btn-purple" onclick="sendChatMessage()">
-                        <i class="fas fa-paper-plane"></i> ส่งข้อความ
-                    </button>
-                    <div id="auto-reply" class="chat-response">
-                        <b>แอดมิน:</b> ข้อความของคุณถูกส่งแล้ว<br>กรุณารอแอดมินตอบกลับภายใน 1-5 นาทีค่ะ ✨
-                    </div>
-                </div>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <a href="#" class="btn" style="background:#06c755"><i class="fab fa-line"></i> LINE</a>
-                    <a href="#" class="btn" style="background:#1877f2"><i class="fab fa-facebook"></i> Facebook</a>
-                </div>
-            </div>
         </div>
 
         <div id="admin-view" class="hidden">
-            <header>
-                <h1>🎀 Admin Dashboard 🎀</h1>
-                <button class="btn" style="background:#ccc; width:auto; margin:0 auto;" onclick="logout()">ออกจากระบบ</button>
-            </header>
+            <div class="card">
+                <h3>🎀 เพิ่มคิวใหม่</h3>
+                <input type="text" id="adm-name" placeholder="ชื่อลูกค้า">
+                <input type="text" id="adm-job" placeholder="รายละเอียดงาน">
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="adm-id" placeholder="รหัสออเดอร์" readonly style="flex:1;">
+                    <input type="text" id="adm-q" placeholder="เลขคิว" style="flex:1;">
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="adm-line" placeholder="LINE ID" style="flex:1;">
+                    <input type="text" id="adm-fb" placeholder="Facebook" style="flex:1;">
+                </div>
 
-            <div class="dashboard-grid">
-                <div class="stat-card">ทั้งหมด<b id="stat-total">0</b></div>
-                <div class="stat-card">กำลังทำ<b id="stat-doing">0</b></div>
-                <div class="stat-card">เสร็จแล้ว<b id="stat-done">0</b></div>
+                <label style="font-size:0.8rem; color:#ff85c0;">สถานะงาน:</label>
+                <div class="pill-group" id="adm-status-group">
+                    <div class="pill active" onclick="setAdmStatus('รอเริ่มงาน', this)">รอเริ่มงาน</div>
+                    <div class="pill" onclick="setAdmStatus('กำลังทำ', this)">กำลังทำ</div>
+                    <div class="pill" onclick="setAdmStatus('ใกล้เสร็จ', this)">ใกล้เสร็จ</div>
+                    <div class="pill" onclick="setAdmStatus('เสร็จแล้ว', this)">เสร็จแล้ว</div>
+                    <div class="pill" onclick="setAdmStatus('ส่งงานแล้ว', this)">ส่งงานแล้ว</div>
+                </div>
+
+                <div style="margin-top:15px;">
+                    <label style="font-size:0.8rem;">เปอร์เซ็นต์: <span id="pct-label">0</span>%</label>
+                    <input type="range" id="adm-pct" min="0" max="100" value="0" oninput="document.getElementById('pct-label').innerText=this.value">
+                </div>
+                <input type="text" id="adm-note" placeholder="ข้อความอัปเดต">
+                <button class="btn" onclick="saveOrder()">บันทึกคิว ✨</button>
             </div>
 
             <div class="card">
-                <h3>➕ เพิ่ม/แก้ไขออเดอร์</h3>
-                <div class="mt-2">
-                    <div style="display:flex; gap:5px;">
-                        <input type="text" id="adm-id" placeholder="Auto ID" readonly style="background:#f9f9f9; flex:1;">
-                        <input type="text" id="adm-q" placeholder="เลขคิว" style="flex:1;">
-                    </div>
-                    <input type="text" id="adm-name" placeholder="ชื่อลูกค้า">
-                    <div style="display:flex; gap:5px;">
-                        <input type="text" id="adm-line" placeholder="LINE ID">
-                        <input type="text" id="adm-fb" placeholder="Facebook Name">
-                    </div>
-                    <input type="text" id="adm-job" placeholder="รายละเอียดงาน">
-                    
-                    <label style="font-size:0.8rem;">สถานะงาน:</label>
-                    <div class="pill-group" id="adm-status-group">
-                        <div class="pill st-รอเริ่มงาน" onclick="setStatus('รอเริ่มงาน')">รอเริ่มงาน</div>
-                        <div class="pill st-กำลังทำ" onclick="setStatus('กำลังทำ')">กำลังทำ</div>
-                        <div class="pill st-ใกล้เสร็จ" onclick="setStatus('ใกล้เสร็จ')">ใกล้เสร็จ</div>
-                        <div class="pill st-เสร็จแล้ว" onclick="setStatus('เสร็จแล้ว')">เสร็จแล้ว</div>
-                        <div class="pill st-ส่งงานแล้ว" onclick="setStatus('ส่งงานแล้ว')">ส่งงานแล้ว</div>
-                    </div>
-                    
-                    <div class="mt-2">
-                        <label style="font-size:0.8rem;">ความคืบหน้า: <span id="pct-label">0</span>%</label>
-                        <input type="range" id="adm-pct" min="0" max="100" value="0" oninput="document.getElementById('pct-label').innerText=this.value">
-                    </div>
-                    
-                    <input type="text" id="adm-note" placeholder="ข้อความอัปเดตจากแอดมิน">
-                    <button class="btn btn-purple" id="save-btn" onclick="saveOrder()">บันทึกข้อมูลออเดอร์ 💗</button>
-                    <button class="btn hidden" id="cancel-edit-btn" style="background:#ccc; margin-top:5px;" onclick="resetAdminForm()">ยกเลิกการแก้ไข</button>
+                <h3>💬 ตอบแชทลูกค้า</h3>
+                <div class="chat-box-admin" id="admin-chat-history">
+                    <div class="chat-line"><span class="chat-user">[Admin]</span> สวัสดีค่ะ มีอะไรให้ช่วยไหมคะ?</div>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="admin-reply-input" placeholder="ตอบกลับ..." style="margin-bottom:0;">
+                    <button class="btn" style="width:60px; padding:0;" onclick="adminReply()"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <div id="admin-list"></div>
         </div>
-
-        <footer onclick="showLogin()">⚙️ Admin Login</footer>
     </div>
 
-    <div id="login-overlay" class="overlay">
-        <div class="popup">
-            <h2 style="margin-bottom:20px;">🔒 เข้าสู่ระบบแอดมิน</h2>
-            <input type="password" id="admin-password" placeholder="ใส่รหัสผ่าน">
-            <button class="btn btn-purple" onclick="login()">💗 เข้าสู่ระบบ</button>
-            <p style="margin-top:15px; cursor:pointer; color:#aaa;" onclick="hideLogin()">ยกเลิก</p>
+    <div class="floating-chat" onclick="toggleCustomerChat()">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+
+    <div id="login-overlay" class="overlay hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); backdrop-filter:blur(5px); z-index:2000; display:flex; align-items:center; justify-content:center;">
+        <div class="popup card" style="width:300px; text-align:center;">
+            <h3 style="justify-content:center;">🔒 แอดมินล็อกอิน</h3>
+            <input type="password" id="admin-pass" placeholder="รหัสผ่าน">
+            <button class="btn" onclick="login()">เข้าสู่ระบบ 💗</button>
+            <p onclick="hideLogin()" style="font-size:0.8rem; margin-top:10px; cursor:pointer; color:#ccc;">ยกเลิก</p>
         </div>
     </div>
 
     <script>
-        /* --- Core Logic --- */
-        let orders = JSON.parse(localStorage.getItem('my_queues')) || [];
-        let currentStatus = "รอเริ่มงาน";
-        let editIndex = -1;
+        let orders = JSON.parse(localStorage.getItem('pj_queues')) || [];
+        let currentAdmStatus = "รอเริ่มงาน";
+        let chatHistory = JSON.parse(localStorage.getItem('pj_chats')) || [];
 
-        // Init Particles
-        function createParticles() {
-            const container = document.getElementById('particle-container');
-            const emojis = ['🌸', '✨', '💗', '⭐', '🎀', '🫧', '💫'];
-            for(let i=0; i<15; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.innerText = emojis[Math.floor(Math.random()*emojis.length)];
-                p.style.left = Math.random() * 100 + 'vw';
-                p.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                p.style.animationDelay = (Math.random() * 5) + 's';
-                container.appendChild(p);
+        // --- Core Functions ---
+        function switchMode(mode) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if(mode === 'customer') {
+                document.getElementById('btn-customer').classList.add('active');
+                document.getElementById('customer-view').classList.remove('hidden');
+                document.getElementById('admin-view').classList.add('hidden');
+            } else {
+                document.getElementById('btn-admin').classList.add('active');
+                document.getElementById('admin-view').classList.remove('hidden');
+                document.getElementById('customer-view').classList.add('hidden');
             }
         }
-        createParticles();
 
-        /* --- Admin Functions --- */
-        function showLogin() { document.getElementById('login-overlay').style.display = 'flex'; }
-        function hideLogin() { document.getElementById('login-overlay').style.display = 'none'; }
+        function showLogin() { document.getElementById('login-overlay').classList.remove('hidden'); }
+        function hideLogin() { document.getElementById('login-overlay').classList.add('hidden'); }
 
         function login() {
-            if(document.getElementById('admin-password').value === 'admin123') {
-                document.getElementById('customer-view').classList.add('hidden');
-                document.getElementById('admin-view').classList.remove('hidden');
+            if(document.getElementById('admin-pass').value === 'admin123') {
                 hideLogin();
+                switchMode('admin');
                 renderAdmin();
-                resetAdminForm();
-            } else { alert('รหัสผ่านไม่ถูกต้องค่ะ ❌'); }
+                document.getElementById('adm-id').value = "PJ-" + (orders.length + 1).toString().padStart(3, '0');
+            } else { alert('รหัสผิดค่ะ!'); }
         }
 
-        function logout() { location.reload(); }
-
-        function generateAutoID() {
-            const num = orders.length + 0;
-            return "A" + num.toString().padStart(4, '0');
-        }
-
-        function setStatus(val) {
-            currentStatus = val;
-            const pills = document.querySelectorAll('.pill');
-            pills.forEach(p => {
-                p.classList.remove('active');
-                if(p.innerText === val) p.classList.add('active');
-            });
+        function setAdmStatus(val, el) {
+            currentAdmStatus = val;
+            document.querySelectorAll('#adm-status-group .pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
         }
 
         function saveOrder() {
-            const name = document.getElementById('adm-name').value;
-            if(!name) return alert('กรุณากรอกชื่อลูกค้าค่ะ');
-
-            const orderData = {
-                oid: document.getElementById('adm-id').value,
+            const newOrder = {
+                id: document.getElementById('adm-id').value,
                 q: document.getElementById('adm-q').value,
-                name: name,
+                name: document.getElementById('adm-name').value,
+                job: document.getElementById('adm-job').value,
                 line: document.getElementById('adm-line').value,
                 fb: document.getElementById('adm-fb').value,
-                job: document.getElementById('adm-job').value,
-                status: currentStatus,
+                status: currentAdmStatus,
                 pct: document.getElementById('adm-pct').value,
                 note: document.getElementById('adm-note').value,
-                created: new Date().toLocaleString('th-TH'),
-                updated: new Date().toLocaleString('th-TH')
+                updated: new Date().toLocaleString()
             };
-
-            if(editIndex === -1) {
-                orders.push(orderData);
-            } else {
-                orders[editIndex] = orderData;
-                orders[editIndex].updated = new Date().toLocaleString('th-TH');
-            }
-
-            localStorage.setItem('my_queues', JSON.stringify(orders));
-            alert('บันทึกสำเร็จ! ✨');
-            resetAdminForm();
+            orders.push(newOrder);
+            localStorage.setItem('pj_queues', JSON.stringify(orders));
+            alert('บันทึกคิวแล้ว! ✨');
             renderAdmin();
             renderCustomer();
         }
 
-        function resetAdminForm() {
-            editIndex = -1;
-            document.getElementById('adm-id').value = generateAutoID();
-            document.getElementById('adm-q').value = orders.length + 1;
-            document.getElementById('adm-name').value = "";
-            document.getElementById('adm-line').value = "";
-            document.getElementById('adm-fb').value = "";
-            document.getElementById('adm-job').value = "";
-            document.getElementById('adm-pct').value = 0;
-            document.getElementById('pct-label').innerText = 0;
-            document.getElementById('adm-note').value = "";
-            setStatus('รอเริ่มงาน');
-            document.getElementById('save-btn').innerText = "บันทึกข้อมูลออเดอร์ 💗";
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
-        }
-
-        function deleteOrder(index) {
-            if(confirm('ยืนยันการลบออเดอร์นี้ไหมคะ?')) {
-                orders.splice(index, 1);
-                localStorage.setItem('my_queues', JSON.stringify(orders));
-                renderAdmin();
-                renderCustomer();
-            }
-        }
-
-        function editOrder(index) {
-            editIndex = index;
-            const o = orders[index];
-            document.getElementById('adm-id').value = o.oid;
-            document.getElementById('adm-q').value = o.q;
-            document.getElementById('adm-name').value = o.name;
-            document.getElementById('adm-line').value = o.line;
-            document.getElementById('adm-fb').value = o.fb;
-            document.getElementById('adm-job').value = o.job;
-            document.getElementById('adm-pct').value = o.pct;
-            document.getElementById('pct-label').innerText = o.pct;
-            document.getElementById('adm-note').value = o.note;
-            setStatus(o.status);
-            document.getElementById('save-btn').innerText = "อัปเดตข้อมูลออเดอร์ ✨";
-            document.getElementById('cancel-edit-btn').classList.remove('hidden');
-            window.scrollTo(0, 0);
-        }
-
-        function copyTemplate(index) {
-            const o = orders[index];
-            const text = `รับออเดอร์เรียบร้อยนะคะคุณ ${o.name} ✨\nเลขออเดอร์ของคุณคือ 【 ${o.oid} 】 นะคะ 🎀\nขอบคุณที่ไว้วางใจให้ Your Shop ดูแลนะคะ รองานสวยๆ ได้เลย แอดมินจะรีบปั่นให้สุดฝีมือเลยค่ะ! 🔥\n\n🔍 ตรวจสอบสถานะคิวได้ที่นี่น้า:\nhttps://${location.hostname}${location.pathname}\n(ใส่หมายเลขออเดอร์ในช่องค้นหาได้เลยค่ะ)`;
-            navigator.clipboard.writeText(text);
-            alert('คัดลอกข้อความลงคิวแล้วค่ะ 📋');
-        }
-
-        function renderAdmin() {
-            const list = document.getElementById('admin-list');
-            list.innerHTML = "<h3>รายการออเดอร์ทั้งหมด</h3>";
-            
-            let doing = 0, done = 0;
-
-            orders.forEach((o, i) => {
-                if(o.status === 'กำลังทำ') doing++;
-                if(o.status === 'ส่งงานแล้ว' || o.status === 'เสร็จแล้ว') done++;
-
-                list.innerHTML += `
-                    <div class="card mt-2" style="border-left:5px solid var(--accent-purple)">
-                        <div style="display:flex; justify-content:space-between;">
-                            <b>#${o.oid} (คิว ${o.q})</b>
-                            <span class="badge-status st-${o.status}" style="background:var(--accent-purple)">${o.status}</span>
-                        </div>
-                        <p style="font-size:0.9rem;">คุณ ${o.name} | ${o.job}</p>
-                        <div style="display:flex; gap:5px; margin-top:10px;">
-                            <button class="pill active st-ใกล้เสร็จ" onclick="editOrder(${i})">แก้ไข</button>
-                            <button class="pill active st-ส่งงานแล้ว" onclick="copyTemplate(${i})">คัดลอกลงคิว</button>
-                            <button class="pill active st-รอเริ่มงาน" style="background:#ff7675; border-color:#d63031; color:white;" onclick="deleteOrder(${i})">ลบ</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('stat-total').innerText = orders.length;
-            document.getElementById('stat-doing').innerText = doing;
-            document.getElementById('stat-done').innerText = done;
-        }
-
-        /* --- Customer Functions --- */
         function renderCustomer(filter = "") {
-            const list = document.getElementById('queue-list-display');
-            list.innerHTML = "";
+            const container = document.getElementById('queue-list-display');
+            container.innerHTML = "";
+            const filtered = orders.filter(o => o.id.includes(filter) || o.name.includes(filter));
             
-            const currentDoing = orders.find(o => o.status === 'กำลังทำ') || {q: '-'};
-            const nextQueue = orders.find(o => o.status === 'รอเริ่มงาน') || {q: '-'};
-
-            const filtered = orders.filter(o => 
-                o.oid.toLowerCase().includes(filter.toLowerCase()) ||
-                o.name.toLowerCase().includes(filter.toLowerCase()) ||
-                o.line.toLowerCase().includes(filter.toLowerCase()) ||
-                o.fb.toLowerCase().includes(filter.toLowerCase()) ||
-                o.q.toString() === filter
-            );
-
-            // Show Queue Summary first
-            list.innerHTML = `
-                <div class="card" style="display:flex; justify-content:space-around; text-align:center; padding:15px;">
-                    <div><small>กำลังทำ</small><br><b>คิว ${currentDoing.q}</b></div>
-                    <div><small>คิวถัดไป</small><br><b>คิว ${nextQueue.q}</b></div>
-                </div>
-            `;
-
             filtered.forEach(o => {
-                list.innerHTML += `
+                container.innerHTML += `
                     <div class="card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h2 style="color:var(--accent-pink)">Order #${o.oid}</h2>
-                            <span class="badge-status st-${o.status}" style="background:var(--accent-pink)">คิวที่ ${o.q}</span>
+                            <span style="font-weight:bold; color:var(--pink-main);">คุณ ${o.name}</span>
+                            <span class="badge-id">${o.id}</span>
                         </div>
-                        <div class="mt-2">
-                            <p><b>ชื่อลูกค้า :</b> คุณ ${o.name}</p>
-                            <p><b>งาน :</b> ${o.job}</p>
-                        </div>
+                        <p style="font-size:0.8rem; color:#888; margin-top:5px;">${o.job}</p>
                         <div class="progress-outer">
-                            <div class="progress-inner" style="width: ${o.pct}%"></div>
+                            <div class="progress-inner" style="width:${o.pct}%"></div>
                         </div>
-                        <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:bold;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
                             <span>สถานะ: ${o.status}</span>
                             <span>${o.pct}%</span>
                         </div>
-                        <div style="background:#fff5f9; padding:15px; border-radius:15px; margin-top:15px; font-size:0.9rem;">
-                            <p><b>📢 โน้ต:</b> ${o.note || 'แอดมินกำลังดำเนินการให้นะคะ'}</p>
-                            <hr style="border:0; border-top:1px dashed #ffd6ec; margin:10px 0;">
-                            <p style="font-size:0.75rem; color:#aaa;">ลงคิวเมื่อ: ${o.created}</p>
-                            <p style="font-size:0.75rem; color:#aaa;">✨ อัปเดตล่าสุด: ${o.updated}</p>
+                        <div style="background:#fff9fc; padding:10px; border-radius:15px; margin-top:10px; font-size:0.8rem; border:1px dashed #ffd6ec;">
+                            📢 ${o.note || 'กำลังปั่นงานให้นะคะ'}
                         </div>
                     </div>
                 `;
             });
+        }
 
-            if(filtered.length === 0 && filter !== "") {
-                list.innerHTML += `<div class="card" style="text-align:center;">ไม่พบข้อมูลที่คุณค้นหาค่ะ 🥺</div>`;
-            }
+        function renderAdmin() {
+            const container = document.getElementById('admin-list');
+            container.innerHTML = "<h3>รายการคิวทั้งหมด</h3>";
+            orders.forEach((o, i) => {
+                container.innerHTML += `
+                    <div class="card" style="border-left: 5px solid #ff85c0;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <b>${o.id} - คุณ ${o.name}</b>
+                            <button onclick="deleteOrder(${i})" style="border:none; background:#ff7675; color:white; padding:2px 10px; border-radius:10px; font-size:0.7rem;">ลบ</button>
+                        </div>
+                        <p style="font-size:0.8rem;">สถานะ: ${o.status} (${o.pct}%)</p>
+                    </div>
+                `;
+            });
+            renderChats();
+        }
+
+        function deleteOrder(i) {
+            orders.splice(i, 1);
+            localStorage.setItem('pj_queues', JSON.stringify(orders));
+            renderAdmin();
         }
 
         function searchFilter() {
-            const val = document.getElementById('search-input').value;
-            renderCustomer(val);
+            renderCustomer(document.getElementById('search-input').value);
         }
 
-        function sendChatMessage() {
-            const oid = document.getElementById('chat-order-id').value;
-            if(!oid) {
-                alert('กรุณาใส่รหัสออเดอร์ก่อนติดต่อแอดมิน');
-                return;
+        // --- Chat Functions ---
+        function adminReply() {
+            const msg = document.getElementById('admin-reply-input').value;
+            if(!msg) return;
+            chatHistory.push({user: 'Admin', text: msg});
+            localStorage.setItem('pj_chats', JSON.stringify(chatHistory));
+            document.getElementById('admin-reply-input').value = "";
+            renderChats();
+        }
+
+        function renderChats() {
+            const box = document.getElementById('admin-chat-history');
+            box.innerHTML = "";
+            chatHistory.forEach(c => {
+                box.innerHTML += `<div class="chat-line"><span class="chat-user">[${c.user}]</span> ${c.text}</div>`;
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function toggleCustomerChat() {
+            const msg = prompt("พิมพ์ข้อความถึงแอดมิน:");
+            if(msg) {
+                chatHistory.push({user: 'Customer', text: msg});
+                localStorage.setItem('pj_chats', JSON.stringify(chatHistory));
+                alert("ส่งข้อความแล้ว! แอดมินจะตอบกลับเร็วๆ นี้ค่ะ ✨");
+                renderChats();
             }
-            document.getElementById('auto-reply').style.display = 'block';
-            document.getElementById('chat-text').value = "";
         }
 
-        // Initialize
+        // Particles
+        function initParticles() {
+            const container = document.getElementById('particle-container');
+            for(let i=0; i<10; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.innerHTML = ['🌸','💗','✨','🫧'][Math.floor(Math.random()*4)];
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (Math.random()*5 + 5) + 's';
+                container.appendChild(p);
+            }
+        }
+
+        initParticles();
         renderCustomer();
     </script>
 </body>

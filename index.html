@@ -348,7 +348,7 @@
 
         function copyFullInfo(idx) {
             const o = orders[idx];
-            const text = `🎀 ข้อมูลออเดอร์ PJ Kawaii ✨\n เลขออเดอร์: ${o.id}\n👤 ชื่อลูกค้า: ${o.name}\n✨ สถานะ: ${o.status}\nความคืบหน้า: ${o.percent}%\n📅 เริ่มออเดอร์: ${o.created}\n🔄 อัปเดตล่าสุด: ${o.updated}`;
+            const text = `🎀 แอดมินอัปเดตข้อมูลออเดอร์เข้าระบบแล้ว ✨\n เลขออเดอร์: ${o.id}\n👤 ชื่อลูกค้า: ${o.name}\n✨ สถานะ: ${o.status}\nความคืบหน้า: ${o.percent}%\n📅 เริ่มออเดอร์: ${o.created}\n🔄 อัปเดตล่าสุด: ${o.updated}`;
             navigator.clipboard.writeText(text).then(() => showToast('📋 คัดลอกข้อมูลแล้ว'));
         }
 

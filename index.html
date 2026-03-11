@@ -4,499 +4,351 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎀 Kawaii Order Queue ✨</title>
-    <link href="[https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap](https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap)" rel="stylesheet">
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* บังคับใช้ฟอนต์ Mitr ทั้งหมด */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Mitr', sans-serif !important; 
+        }
+
         body {
-            font-family: 'Prompt', 'Mitr', sans-serif;
             background: linear-gradient(135deg, #ffe4f5 0%, #f3e5ff 50%, #e5f4ff 100%);
             color: #4a4a4a;
             min-height: 100vh;
         }
+
         .container { max-width: 1000px; margin: 0 auto; padding: 30px 15px; }
         .header { text-align: center; margin-bottom: 40px; }
-        .header h1 { font-size: 3rem; background: linear-gradient(135deg, #ff85b3, #ffb3d9, #d8c5e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
-        .header p { color: #8b8b8b; letter-spacing: 2px; }
-        .card { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border-radius: 30px; padding: 30px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(255,179,217,0.25); }
-        .card h3 { color: #ff85b3; font-size: 1.3rem; margin-bottom: 20px; }
-        .btn { padding: 12px 24px; border: none; border-radius: 20px; font-family: 'Mitr', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .header h1 { font-size: 3rem; background: linear-gradient(135deg, #ff85b3, #ffb3d9, #d8c5e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; font-weight: 600; }
+        .header p { color: #8b8b8b; letter-spacing: 1px; font-weight: 300; }
+        
+        .card { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border-radius: 30px; padding: 30px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(255,179,217,0.25); position: relative; }
+        .card h3 { color: #ff85b3; font-size: 1.3rem; margin-bottom: 20px; font-weight: 500; }
+        
+        .btn { padding: 12px 24px; border: none; border-radius: 20px; font-weight: 500; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .btn-primary { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; box-shadow: 0 8px 24px rgba(255,179,217,0.25); }
-        .btn-primary:hover { transform: translateY(-2px); }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-secondary { background: #ffe4f5; color: #ff85b3; border: 2px solid #ffb3d9; }
         .btn-danger { background: linear-gradient(135deg, #ff8fa3, #ff6b85); color: white; }
-        .btn-small { padding: 8px 14px; font-size: 0.75rem; }
-        .toggle-btn { padding: 12px 28px; border: 2px solid #f5f5f5; border-radius: 50px; background: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.3s; font-weight: 600; }
+        .btn-small { padding: 8px 14px; font-size: 0.8rem; }
+        
+        .toggle-btn { padding: 12px 28px; border: 2px solid #f5f5f5; border-radius: 50px; background: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.3s; font-weight: 400; }
         .toggle-btn.active { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; border-color: #ff85b3; transform: scale(1.05); }
-        input, textarea { width: 100%; padding: 14px; border: 2px solid #f5f5f5; border-radius: 20px; background: white; font-family: 'Prompt', sans-serif; font-size: 16px; }
-        input:focus, textarea:focus { border-color: #ffb3d9; background: #ffe4f5; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #ff85b3; }
+        
+        input, textarea { width: 100%; padding: 14px; border: 2px solid #f5f5f5; border-radius: 20px; background: white; font-size: 16px; }
+        input:focus, textarea:focus { border-color: #ffb3d9; outline: none; background: #ffe4f5; }
+        
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #ff85b3; }
         .input-group { margin-bottom: 18px; }
+        
         .pill-group { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
-        .pill { padding: 10px 16px; border: 2px solid #f5f5f5; border-radius: 50px; background: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.3s; font-weight: 600; font-size: 0.9rem; }
-        .pill:hover { background: #ffe4f5; border-color: #ffb3d9; }
-        .pill.active { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; border-color: #ff85b3; transform: scale(1.08); }
-        .progress-bar { width: 100%; height: 24px; background: rgba(255,255,255,0.6); border-radius: 50px; overflow: hidden; margin-top: 12px; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #ffb3d9, #d8c5e8); width: 0%; transition: width 0.8s; }
-        .queue-card { background: rgba(255,255,255,0.85); padding: 20px; border-radius: 30px; border-left: 6px solid #ffb3d9; margin-bottom: 15px; }
-        .queue-card h4 { color: #ff85b3; margin-bottom: 8px; }
-        .badge { background: linear-gradient(135deg, #ff85b3, #ffb3d9); color: white; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .pill { padding: 8px 16px; border: 2px solid #f5f5f5; border-radius: 50px; background: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
+        .pill.active { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; border-color: #ff85b3; }
+
+        /* Queue Card ปรับแต่งพิเศษ */
+        .queue-card { 
+            background: rgba(255,255,255,0.85); 
+            padding: 25px; 
+            border-radius: 30px; 
+            border-left: 8px solid #ffb3d9; 
+            margin-bottom: 20px; 
+            position: relative; /* สำหรับจัดวางสถานะมุมล่างขวา */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .queue-card h4 { color: #ff85b3; margin-bottom: 10px; font-size: 1.2rem; }
+        .queue-card p { margin-bottom: 5px; font-size: 0.95rem; color: #666; }
+        
+        /* สถานะ Pill มุมล่างขวา */
+        .status-pill-fixed {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: white;
+            background: linear-gradient(135deg, #ffb3d9, #d8c5e8);
+            box-shadow: 0 4px 10px rgba(255,179,217,0.3);
+        }
+
+        .badge { background: linear-gradient(135deg, #ff85b3, #ffb3d9); color: white; padding: 4px 15px; border-radius: 20px; font-size: 0.8rem; }
+        
+        .progress-bar { width: 100%; height: 12px; background: #eee; border-radius: 50px; overflow: hidden; margin: 15px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #ffb3d9, #d8c5e8); transition: width 0.8s; }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(5px); }
         .overlay.active { display: flex; }
-        .modal { background: white; padding: 40px; border-radius: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); max-width: 420px; width: 90%; }
-        .modal h2 { color: #ff85b3; font-size: 1.8rem; margin-bottom: 15px; }
-        .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #ff85b3, #ffb3d9); color: white; padding: 14px 28px; border-radius: 50px; z-index: 9999; display: none; box-shadow: 0 8px 24px rgba(255,179,217,0.25); animation: slideDown 0.3s ease; }
-        .toast.show { display: block; }
-        @keyframes slideDown { from { opacity: 0; transform: translate(-50%, -50px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        .modal { background: white; padding: 40px; border-radius: 30px; text-align: center; max-width: 400px; width: 90%; }
+        
+        .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background: #ff85b3; color: white; padding: 12px 30px; border-radius: 50px; z-index: 9999; display: none; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        
         .view { display: none; }
         .view.active { display: block; }
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-box { background: rgba(255,255,255,0.8); padding: 20px; border-radius: 20px; text-align: center; }
-        .stat-num { font-size: 2rem; font-weight: 700; color: #ffb3d9; }
-        .stat-label { color: #8b8b8b; font-size: 0.8rem; margin-top: 5px; }
-        .empty-state { text-align: center; padding: 40px 20px; color: #8b8b8b; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        @media (max-width: 768px) {
-            .header h1 { font-size: 2rem; }
-            .card { padding: 20px; }
-            .grid-2 { grid-template-columns: 1fr; }
-            .pill { padding: 8px 12px; font-size: 0.8rem; }
+        
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-box { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .stat-num { font-size: 1.8rem; font-weight: 600; color: #ff85b3; }
+        .stat-label { font-size: 0.8rem; color: #888; }
+
+        @media (max-width: 600px) {
+            .header h1 { font-size: 2.2rem; }
+            .stats { grid-template-columns: 1fr; }
+            .status-pill-fixed { position: static; display: inline-block; margin-top: 10px; }
         }
     </style>
 </head>
 <body>
-    <div class="toast" id="toast"></div>
 
-    <div id="clientView" class="view active">
-        <div class="container">
-            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap;">
-                <button class="toggle-btn active" onclick="showView('client')">👁️ ตรวจสอบคิว</button>
-                <button class="toggle-btn" onclick="tryAdmin()">🛠️ ระบบจัดการ</button>
+<div class="toast" id="toast"></div>
+
+<div id="clientView" class="view active">
+    <div class="container">
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 30px;">
+            <button class="toggle-btn active" onclick="showView('client')">👁️ เช็คคิว</button>
+            <button class="toggle-btn" onclick="tryAdmin()">🛠️ จัดการ</button>
+        </div>
+
+        <div class="header">
+            <h1>PJ Kawaii Queue</h1>
+            <p>ตรวจสอบสถานะออเดอร์ของคุณ ✨</p>
+        </div>
+
+        <div class="card">
+            <h3>🔍 ค้นหาออเดอร์</h3>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="clientSearch" placeholder="ระบุเลขออเดอร์ของคุณ...">
+                <button class="btn btn-primary" onclick="clientSearch()">ค้นหา</button>
             </div>
+        </div>
 
-            <div class="header">
-                <h1>🎀 PJ Kawaii Queue ✨</h1>
-                <p>Professional Service Dashboard</p>
-            </div>
+        <div id="searchResult"></div>
 
-            <div class="card">
-                <h3>🔍 ค้นหาออเดอร์</h3>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="clientSearch" placeholder="เลขออเดอร์ / ชื่อลูกค้า">
-                    <button class="btn btn-primary btn-small" onclick="clientSearch()">ค้นหา</button>
-                </div>
-            </div>
-
-            <div id="searchResult"></div>
-
-            <div class="card">
-                <h3>📋 รายการคิวทั้งหมด</h3>
-                <div id="clientQueue">
-                    <div class="empty-state">📭 ยังไม่มีคิว</div>
-                </div>
+        <div class="card">
+            <h3>📋 รายการคิวทั้งหมด</h3>
+            <div id="clientQueue">
+                <div style="text-align: center; padding: 40px; color: #888;">📭 ยังไม่มีข้อมูลคิวในขณะนี้</div>
             </div>
         </div>
     </div>
+</div>
 
-    <div id="adminView" class="view">
-        <div class="container">
-            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap;">
-                <button class="toggle-btn" onclick="showView('client')">👁️ ตรวจสอบคิว</button>
-                <button class="toggle-btn active" onclick="showView('admin')">🛠️ ระบบจัดการ</button>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-                <div class="header" style="margin-bottom: 0; text-align: left; flex: 1;">
-                    <h1 style="font-size: 2.5rem;">🛠 Admin</h1>
-                </div>
-                <button class="btn btn-danger" onclick="logoutAdmin()">ออกจากระบบ</button>
-            </div>
-
-            <div class="stats">
-                <div class="stat-box">
-                    <div class="stat-num" id="statTotal">0</div>
-                    <div class="stat-label">ทั้งหมด</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-num" id="statWorking">0</div>
-                    <div class="stat-label">กำลังทำ</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-num" id="statDone">0</div>
-                    <div class="stat-label">เสร็จ</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>➕ เพิ่มออเดอร์</h3>
-                <div class="grid-2">
-                    <div class="input-group">
-                        <label>Order ID (เว้นว่างเพื่อรันอัตโนมัติ)</label>
-                        <input type="text" id="orderId" placeholder="เช่น PJ-001">
-                    </div>
-                    <div class="input-group">
-                        <label>เลขคิว</label>
-                        <input type="number" id="queueNum" placeholder="1">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>ชื่อลูกค้า</label>
-                    <input type="text" id="custName" required>
-                </div>
-                <div class="input-group">
-                    <label>ติดต่อ (LINE/FB)</label>
-                    <input type="text" id="custContact">
-                </div>
-                <div class="input-group">
-                    <label>รายละเอียด</label>
-                    <textarea id="workDetail" required rows="3"></textarea>
-                </div>
-                <div class="input-group">
-                    <label>บันทึก</label>
-                    <textarea id="adminNote" rows="2"></textarea>
-                </div>
-
-                <div class="input-group">
-                    <label>📊 ความคืบหน้า: <span id="progPercent">0%</span></label>
-                    <div class="pill-group" id="progPills"></div>
-                    <input type="hidden" id="workPercent" value="0">
-                    <div class="progress-bar"><div class="progress-fill" id="progBar"></div></div>
-                </div>
-
-                <div class="input-group">
-                    <label>📌 สถานะ</label>
-                    <div class="pill-group" id="statusPills"></div>
-                    <input type="hidden" id="workStatus" value="รอเริ่มงาน">
-                </div>
-
-                <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="saveOrder()">บันทึก</button>
-            </div>
-
-            <h3 style="margin-top: 40px; margin-bottom: 20px;">📋 รายการออเดอร์</h3>
-            <div id="adminQueue">
-                <div class="empty-state">📭 ยังไม่มีออเดอร์</div>
-            </div>
+<div id="adminView" class="view">
+    <div class="container">
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 30px;">
+            <button class="toggle-btn" onclick="showView('client')">👁️ เช็คคิว</button>
+            <button class="toggle-btn active" onclick="showView('admin')">🛠️ จัดการ</button>
         </div>
-    </div>
 
-    <div class="overlay" id="loginModal">
-        <div class="modal">
-            <h2>🔒 Admin Login</h2>
-            <p>กรุณาใส่รหัสผ่าน</p>
-            <div class="input-group" style="margin-bottom: 20px;">
-                <input type="password" id="adminPass" placeholder="รหัสผ่าน" onkeypress="if(event.key==='Enter') loginAdmin()">
-            </div>
-            <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="loginAdmin()">เข้าสู่ระบบ</button>
-            <button class="btn btn-secondary" style="width: 100%;" onclick="closeLogin()">ยกเลิก</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="color: #ff85b3;">Admin Panel</h2>
+            <button class="btn btn-danger btn-small" onclick="logoutAdmin()">ออกจากระบบ</button>
         </div>
+
+        <div class="stats">
+            <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">ทั้งหมด</div></div>
+            <div class="stat-box"><div class="stat-num" id="statWorking">0</div><div class="stat-label">กำลังทำ</div></div>
+            <div class="stat-box"><div class="stat-num" id="statDone">0</div><div class="stat-label">เสร็จแล้ว</div></div>
+        </div>
+
+        <div class="card">
+            <h3>➕ เพิ่ม/แก้ไขออเดอร์</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group"><label>Order ID</label><input type="text" id="orderId" placeholder="PJ-XXX"></div>
+                <div class="input-group"><label>เลขคิว</label><input type="number" id="queueNum"></div>
+            </div>
+            <div class="input-group"><label>ชื่อลูกค้า</label><input type="text" id="custName"></div>
+            <div class="input-group"><label>รายละเอียดงาน</label><textarea id="workDetail" rows="2"></textarea></div>
+            <div class="input-group"><label>บันทึกเพิ่มเติม</label><input type="text" id="adminNote"></div>
+            
+            <label>📊 ความคืบหน้า: <span id="progPercent">0%</span></label>
+            <div class="pill-group" id="progPills"></div>
+            <input type="hidden" id="workPercent" value="0">
+
+            <label>📌 สถานะ</label>
+            <div class="pill-group" id="statusPills"></div>
+            <input type="hidden" id="workStatus" value="รอเริ่มงาน">
+
+            <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="saveOrder()">บันทึกข้อมูล ✨</button>
+        </div>
+
+        <div id="adminQueue"></div>
     </div>
+</div>
 
-    <script>
-        let orders = JSON.parse(localStorage.getItem('orders')) || [];
-        let counter = parseInt(localStorage.getItem('counter')) || 1;
-        let isLoggedIn = false;
-        let editingIdx = -1;
+<div class="overlay" id="loginModal">
+    <div class="modal">
+        <h2 style="color: #ff85b3; margin-bottom: 20px;">🔒 Admin Access</h2>
+        <input type="password" id="adminPass" placeholder="ใส่รหัสผ่าน..." style="margin-bottom: 20px;">
+        <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="loginAdmin()">เข้าสู่ระบบ</button>
+    </div>
+</div>
 
-        function saveToStorage() {
-            localStorage.setItem('orders', JSON.stringify(orders));
-            localStorage.setItem('counter', counter.toString());
-        }
+<script>
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    let counter = parseInt(localStorage.getItem('counter')) || 1;
+    let isLoggedIn = false;
+    let editingIdx = -1;
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
+    function saveToStorage() {
+        localStorage.setItem('orders', JSON.stringify(orders));
+        localStorage.setItem('counter', counter);
+    }
 
-        function showView(view) {
-            document.getElementById('clientView').classList.remove('active');
-            document.getElementById('adminView').classList.remove('active');
-            if (view === 'client') {
-                document.getElementById('clientView').classList.add('active');
-                renderClient();
-            } else {
-                if (!isLoggedIn) {
-                    showLoginModal();
-                } else {
-                    document.getElementById('adminView').classList.add('active');
-                    renderAdmin();
-                }
-            }
-        }
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 2500);
+    }
 
-        function tryAdmin() {
-            if (!isLoggedIn) {
-                showLoginModal();
-            } else {
-                showView('admin');
-            }
-        }
+    function showView(view) {
+        document.getElementById('clientView').classList.toggle('active', view === 'client');
+        document.getElementById('adminView').classList.toggle('active', view === 'admin');
+        if(view === 'client') renderClient(); else renderAdmin();
+    }
 
-        function showLoginModal() {
-            document.getElementById('loginModal').classList.add('active');
-            document.getElementById('adminPass').focus();
-        }
-
-        function closeLogin() {
+    function tryAdmin() { if(isLoggedIn) showView('admin'); else document.getElementById('loginModal').classList.add('active'); }
+    
+    function loginAdmin() {
+        if(document.getElementById('adminPass').value === 'admin123') {
+            isLoggedIn = true;
             document.getElementById('loginModal').classList.remove('active');
-            document.getElementById('adminPass').value = '';
-        }
+            showView('admin');
+        } else showToast('❌ รหัสผ่านไม่ถูกต้อง');
+    }
 
-        function loginAdmin() {
-            const pass = document.getElementById('adminPass').value;
-            if (pass === 'admin123') {
-                isLoggedIn = true;
-                closeLogin();
-                showView('admin');
-                showToast('✨ ยินดีต้อนรับ!');
-            } else {
-                showToast('❌ รหัสผ่านผิด');
-            }
-        }
+    function logoutAdmin() { isLoggedIn = false; showView('client'); }
 
-        function logoutAdmin() {
-            if (confirm('ออกจากระบบ?')) {
-                isLoggedIn = false;
-                showView('client');
-                showToast('👋 ออกจากระบบแล้ว');
-            }
-        }
-
-        function initPills() {
-            const progPills = document.getElementById('progPills');
-            const statusPills = document.getElementById('statusPills');
-
-            progPills.innerHTML = '';
-            for (let i = 0; i <= 100; i += 10) {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'pill' + (i === 0 ? ' active' : '');
-                btn.textContent = i + '%';
-                btn.onclick = (e) => {
-                    e.preventDefault();
-                    document.getElementById('workPercent').value = i;
-                    document.getElementById('progPercent').textContent = i + '%';
-                    document.getElementById('progBar').style.width = i + '%';
-                    document.querySelectorAll('#progPills .pill').forEach(p => p.classList.remove('active'));
-                    btn.classList.add('active');
-                };
-                progPills.appendChild(btn);
-            }
-
-            const statuses = ['รอเริ่มงาน', 'กำลังทำ', 'ใกล้เสร็จ', 'เสร็จแล้ว', 'ส่งงานแล้ว'];
-            statusPills.innerHTML = '';
-            statuses.forEach((status, idx) => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'pill' + (idx === 0 ? ' active' : '');
-                btn.textContent = status;
-                btn.onclick = (e) => {
-                    e.preventDefault();
-                    document.getElementById('workStatus').value = status;
-                    document.querySelectorAll('#statusPills .pill').forEach(p => p.classList.remove('active'));
-                    btn.classList.add('active');
-                };
-                statusPills.appendChild(btn);
-            });
-        }
-
-        function saveOrder() {
-            const name = document.getElementById('custName').value.trim();
-            const detail = document.getElementById('workDetail').value.trim();
-
-            if (!name || !detail) {
-                showToast('⚠️ กรุณากรอกข้อมูล');
-                return;
-            }
-
-            let id = document.getElementById('orderId').value.trim();
-            if (!id) {
-                id = `PJ-${String(counter).padStart(3, '0')}`;
-                counter++;
-            }
-
-            const order = {
-                id: id,
-                queue: document.getElementById('queueNum').value || (orders.length + 1),
-                name: name,
-                contact: document.getElementById('custContact').value.trim(),
-                detail: detail,
-                status: document.getElementById('workStatus').value,
-                percent: document.getElementById('workPercent').value,
-                note: document.getElementById('adminNote').value.trim(),
-                date: new Date().toLocaleDateString('th-TH'),
-                time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
+    function initPills() {
+        const pp = document.getElementById('progPills');
+        pp.innerHTML = '';
+        [0, 25, 50, 75, 100].forEach(v => {
+            const b = document.createElement('button');
+            b.className = 'pill'; b.textContent = v + '%';
+            b.onclick = () => {
+                document.getElementById('workPercent').value = v;
+                document.getElementById('progPercent').textContent = v + '%';
+                document.querySelectorAll('#progPills .pill').forEach(p => p.classList.remove('active'));
+                b.classList.add('active');
             };
-
-            if (editingIdx >= 0) {
-                orders[editingIdx] = order;
-                showToast('✨ อัปเดต!');
-                editingIdx = -1;
-            } else {
-                orders.push(order);
-                showToast('✨ บันทึกสำเร็จ!');
-            }
-
-            // Reset form
-            document.getElementById('orderId').value = '';
-            document.getElementById('queueNum').value = '';
-            document.getElementById('custName').value = '';
-            document.getElementById('custContact').value = '';
-            document.getElementById('workDetail').value = '';
-            document.getElementById('adminNote').value = '';
-            document.getElementById('workPercent').value = '0';
-            document.getElementById('progPercent').textContent = '0%';
-            document.getElementById('progBar').style.width = '0%';
-            initPills();
-
-            saveToStorage();
-            renderAdmin();
-        }
-
-        function deleteOrder(id) {
-            if (confirm('ลบออเดอร์?')) {
-                orders = orders.filter(o => o.id !== id);
-                saveToStorage();
-                renderAdmin();
-                showToast('🗑️ ลบแล้ว');
-            }
-        }
-
-        function editOrder(id) {
-            const idx = orders.findIndex(o => o.id === id);
-            if (idx < 0) return;
-            const o = orders[idx];
-            editingIdx = idx;
-
-            document.getElementById('orderId').value = o.id;
-            document.getElementById('queueNum').value = o.queue;
-            document.getElementById('custName').value = o.name;
-            document.getElementById('custContact').value = o.contact;
-            document.getElementById('workDetail').value = o.detail;
-            document.getElementById('adminNote').value = o.note;
-            document.getElementById('workPercent').value = o.percent;
-            document.getElementById('workStatus').value = o.status;
-            document.getElementById('progPercent').textContent = o.percent + '%';
-            document.getElementById('progBar').style.width = o.percent + '%';
-
-            initPills();
-            document.querySelectorAll('#progPills .pill').forEach(p => {
-                if (p.textContent === o.percent + '%') p.classList.add('active');
-            });
-            document.querySelectorAll('#statusPills .pill').forEach(p => {
-                if (p.textContent === o.status) p.classList.add('active');
-            });
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            showToast('✏️ แก้ไข: ' + id);
-        }
-
-        function copyOrder(id) {
-            const o = orders.find(x => x.id === id);
-            if (!o) return;
-
-            const url = window.location.href.split('?')[0];
-            const text = `🎀 ออเดอร์ของคุณได้ถูกรับเข้าระบบแล้ว! ✨\n\n` +
-            `📌 เลขออเดอร์: ${o.id}\n` +
-            `👤 ชื่อ: ${o.name}\n` +
-            `📞 ติดต่อ: ${o.contact}\n` +
-            `📋 รายละเอียดงาน: ${o.detail}\n\n` +
-            `📅 วันที่รับงาน: ${o.date}\n` +
-            `🕒 เวลา: ${o.time}\n\n` +
-            `✅ สถานะ: ${o.status}\n` +
-            `📊 ความคืบหน้า: ${o.percent}%\n\n` +
-            `🔗 ตรวจสอบคิวได้ที่นี่:\n${url}\n\n` +
-            `หรือค้นหาด้วยเลขออเดอร์ ${o.id}\nขอบคุณที่ใช้บริการค่ะ! 💗`;
-
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('✨ คัดลอก!');
-            });
-        }
-
-        function clientSearch() {
-            const term = document.getElementById('clientSearch').value.toLowerCase();
-            if (!term) {
-                showToast('⚠️ ใส่คำค้นหา');
-                return;
-            }
-
-            const results = orders.filter(o => 
-                o.id.toLowerCase().includes(term) || o.name.toLowerCase().includes(term)
-            );
-
-            const html = results.length ? results.map(o => `
-                <div class="queue-card">
-                    <div style="display: flex; justify-content: space-between;">
-                        <div><h4>${o.id}</h4><p>👤 ${o.name}</p></div>
-                        <span class="badge">#${o.queue}</span>
-                    </div>
-                    <p><strong>📋</strong> ${o.detail}</p>
-                    <p><strong>📞</strong> ${o.contact}</p>
-                    <p><strong>📌</strong> ${o.status}</p>
-                    <p><strong>💬</strong> ${o.note || 'ไม่มี'}</p>
-                    <div class="progress-bar"><div class="progress-fill" style="width: ${o.percent}%"></div></div>
-                    <p style="font-size: 0.8rem; color: #8b8b8b;">📅 ${o.date} 🕒 ${o.time}</p>
-                </div>
-            `).join('') : '<div class="empty-state">ไม่พบ</div>';
-
-            document.getElementById('searchResult').innerHTML = `<div class="card"><h3>🔍 ผลค้นหา</h3>${html}</div>`;
-        }
-
-        function renderClient() {
-            const html = orders.length ? orders.map(o => `
-                <div class="queue-card">
-                    <div style="display: flex; justify-content: space-between;">
-                        <div><h4>${o.id}</h4><p>👤 ${o.name}</p></div>
-                        <span class="badge">#${o.queue}</span>
-                    </div>
-                    <p><strong>📋</strong> ${o.detail}</p>
-                    <p><strong>📌</strong> ${o.status}</p>
-                    <div class="progress-bar"><div class="progress-fill" style="width: ${o.percent}%"></div></div>
-                    <p style="font-size: 0.8rem; color: #8b8b8b;">📅 ${o.date} 🕒 ${o.time}</p>
-                </div>
-            `).join('') : '<div class="empty-state">📭 ยังไม่มีคิว</div>';
-
-            document.getElementById('clientQueue').innerHTML = html;
-        }
-
-        function renderAdmin() {
-            document.getElementById('statTotal').textContent = orders.length;
-            document.getElementById('statWorking').textContent = orders.filter(o => 
-                o.status === 'กำลังทำ' || o.status === 'ใกล้เสร็จ'
-            ).length;
-            document.getElementById('statDone').textContent = orders.filter(o => 
-                o.status === 'เสร็จแล้ว' || o.status === 'ส่งงานแล้ว'
-            ).length;
-
-            const html = orders.length ? orders.map((o, idx) => `
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between;">
-                        <div><h4>${o.id}</h4><p>👤 ${o.name}</p></div>
-                        <span class="badge">#${o.queue}</span>
-                    </div>
-                    <p><strong>📋</strong> ${o.detail}</p>
-                    <p><strong>📞</strong> ${o.contact}</p>
-                    <p><strong>📌</strong> ${o.status}</p>
-                    <p><strong>💬</strong> ${o.note || 'ไม่มี'}</p>
-                    <div class="progress-bar"><div class="progress-fill" style="width: ${o.percent}%"></div></div>
-                    <p style="font-size: 0.8rem; color: #8b8b8b;">📅 ${o.date} 🕒 ${o.time}</p>
-                    <div class="pill-group" style="margin-top: 15px;">
-                        <button class="btn btn-primary btn-small" onclick="editOrder('${o.id}')">✏️ แก้ไข</button>
-                        <button class="btn btn-primary btn-small" onclick="copyOrder('${o.id}')">📋 คัดลอก</button>
-                        <button class="btn btn-danger btn-small" onclick="deleteOrder('${o.id}')">🗑️ ลบ</button>
-                    </div>
-                </div>
-            `).join('') : '<div class="empty-state">📭 ยังไม่มีออเดอร์</div>';
-
-            document.getElementById('adminQueue').innerHTML = html;
-        }
-
-        window.addEventListener('load', () => {
-            initPills();
-            renderClient();
+            pp.appendChild(b);
         });
-    </script>
+
+        const sp = document.getElementById('statusPills');
+        sp.innerHTML = '';
+        ['รอเริ่มงาน', 'กำลังทำ', 'เสร็จแล้ว', 'ส่งงานแล้ว'].forEach(s => {
+            const b = document.createElement('button');
+            b.className = 'pill'; b.textContent = s;
+            b.onclick = () => {
+                document.getElementById('workStatus').value = s;
+                document.querySelectorAll('#statusPills .pill').forEach(p => p.classList.remove('active'));
+                b.classList.add('active');
+            };
+            sp.appendChild(b);
+        });
+    }
+
+    function saveOrder() {
+        const name = document.getElementById('custName').value;
+        if(!name) return showToast('⚠️ กรุณากรอกชื่อลูกค้า');
+
+        const order = {
+            id: document.getElementById('orderId').value || `PJ-${String(counter++).padStart(3,'0')}`,
+            queue: document.getElementById('queueNum').value || (orders.length + 1),
+            name: name,
+            detail: document.getElementById('workDetail').value,
+            note: document.getElementById('adminNote').value,
+            percent: document.getElementById('workPercent').value,
+            status: document.getElementById('workStatus').value,
+            date: new Date().toLocaleDateString('th-TH')
+        };
+
+        if(editingIdx > -1) orders[editingIdx] = order; else orders.push(order);
+        
+        editingIdx = -1;
+        saveToStorage();
+        renderAdmin();
+        showToast('✅ บันทึกข้อมูลสำเร็จ');
+        // Clear Form
+        document.querySelectorAll('input, textarea').forEach(i => i.value = '');
+        initPills();
+    }
+
+    function renderClient() {
+        const container = document.getElementById('clientQueue');
+        if(orders.length === 0) return;
+        
+        container.innerHTML = orders.map(o => `
+            <div class="queue-card">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <h4>${o.id}</h4>
+                    <span class="badge">คิวที่ ${o.queue}</span>
+                </div>
+                <p><strong>👤 ลูกค้า:</strong> ${o.name}</p>
+                <p><strong>📋 งาน:</strong> ${o.detail}</p>
+                <div class="progress-bar"><div class="progress-fill" style="width:${o.percent}%"></div></div>
+                <p style="font-size:0.8rem; color:#aaa;">อัปเดตเมื่อ: ${o.date}</p>
+                
+                <div class="status-pill-fixed">${o.status}</div>
+            </div>
+        `).join('');
+    }
+
+    function renderAdmin() {
+        document.getElementById('statTotal').textContent = orders.length;
+        document.getElementById('statWorking').textContent = orders.filter(o => o.status === 'กำลังทำ').length;
+        document.getElementById('statDone').textContent = orders.filter(o => o.status === 'เสร็จแล้ว' || o.status === 'ส่งงานแล้ว').length;
+
+        document.getElementById('adminQueue').innerHTML = orders.map((o, i) => `
+            <div class="card" style="padding:20px; border-left:5px solid #ffb3d9;">
+                <div style="display:flex; justify-content:space-between;">
+                    <strong>${o.id} - ${o.name}</strong>
+                    <div>
+                        <button class="btn btn-primary btn-small" onclick="editOrder(${i})">แก้ไข</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteOrder(${i})">ลบ</button>
+                    </div>
+                </div>
+                <p style="font-size:0.9rem; margin-top:5px;">สถานะ: ${o.status} (${o.percent}%)</p>
+            </div>
+        `).join('');
+    }
+
+    function editOrder(i) {
+        editingIdx = i;
+        const o = orders[i];
+        document.getElementById('orderId').value = o.id;
+        document.getElementById('queueNum').value = o.queue;
+        document.getElementById('custName').value = o.name;
+        document.getElementById('workDetail').value = o.detail;
+        document.getElementById('adminNote').value = o.note;
+        document.getElementById('workPercent').value = o.percent;
+        document.getElementById('workStatus').value = o.status;
+        window.scrollTo(0,0);
+    }
+
+    function deleteOrder(i) { if(confirm('ยืนยันการลบ?')) { orders.splice(i, 1); saveToStorage(); renderAdmin(); } }
+
+    function clientSearch() {
+        const term = document.getElementById('clientSearch').value.toLowerCase();
+        const found = orders.filter(o => o.id.toLowerCase().includes(term) || o.name.toLowerCase().includes(term));
+        const resDiv = document.getElementById('searchResult');
+        
+        if(found.length > 0) {
+            resDiv.innerHTML = found.map(o => `
+                <div class="queue-card" style="border-left-color:#d8c5e8;">
+                    <h4>ผลการค้นหา: ${o.id}</h4>
+                    <p><strong>ลูกค้า:</strong> ${o.name}</p>
+                    <p><strong>รายละเอียด:</strong> ${o.detail}</p>
+                    <div class="status-pill-fixed">${o.status}</div>
+                </div>
+            `).join('');
+        } else showToast('🔍 ไม่พบข้อมูลที่ค้นหา');
+    }
+
+    window.onload = () => { initPills(); renderClient(); };
+</script>
 </body>
 </html>

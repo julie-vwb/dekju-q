@@ -7,32 +7,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mitr', sans-serif !important; }
-        body { background: linear-gradient(135deg, #ffe4f5 0%, #f3e5ff 50%, #e5f4ff 100%); background-attachment: fixed; min-height: 100vh; color: #4a4a4a; }
+        body { background: linear-gradient(135deg, #ffe4f5 0%, #f3e5ff 50%, #e5f4ff 100%); background-attachment: fixed; min-height: 100vh; color: #4a4a4a; overflow-x: hidden; }
         
-        /* --- Header & Logo --- */
-        .top-navbar { background: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(255,179,217,0.2); }
-        .menu-icon { font-size: 24px; cursor: pointer; color: #ff85b3; width: 40px; }
-        .shop-name { font-weight: 600; color: #ff85b3; font-size: 1.2rem; }
-        .shop-logo { width: 35px; height: 35px; border-radius: 50%; background: #ffb3d9; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .shop-logo img { width: 100%; height: 100%; object-fit: cover; }
+        /* --- Header & Navigation --- */
+        .top-navbar { background: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(255,179,217,0.1); }
+        .hamburger { font-size: 24px; cursor: pointer; color: #ff85b3; width: 40px; }
+        .shop-title { font-weight: 600; color: #ff85b3; font-size: 1.1rem; }
+        .shop-logo-box { width: 35px; height: 35px; border-radius: 50%; background: #ffb3d9; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .shop-logo-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- Side Menu Drawer --- */
-        .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 2000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 30px 20px; }
-        .side-menu.active { left: 0; }
-        .side-menu h3 { color: #ff85b3; margin-bottom: 20px; border-bottom: 2px solid #fff0f7; padding-bottom: 10px; }
-        .menu-item { padding: 15px; display: block; text-decoration: none; color: #666; font-weight: 400; border-radius: 12px; margin-bottom: 5px; transition: 0.2s; cursor: pointer; }
-        .menu-item:hover { background: #fff0f7; color: #ff85b3; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 1500; display: none; }
+        /* --- Side Drawer --- */
+        .drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 2001; transition: 0.3s; padding: 30px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
+        .drawer.active { left: 0; }
+        .drawer h3 { color: #ff85b3; margin-bottom: 20px; border-bottom: 2px solid #fff0f7; padding-bottom: 10px; }
+        .drawer-item { padding: 15px; display: block; text-decoration: none; color: #666; border-radius: 12px; margin-bottom: 5px; cursor: pointer; }
+        .drawer-item:hover { background: #fff0f7; color: #ff85b3; }
+        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2000; display: none; backdrop-filter: blur(2px); }
 
-        /* --- Content Layout --- */
+        /* --- Main UI --- */
         .container { max-width: 600px; margin: 0 auto; padding: 20px 15px 100px; }
         .nav-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
-        .toggle-btn { padding: 10px 20px; border: none; border-radius: 50px; background: white; color: #ff85b3; font-weight: 500; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .toggle-btn { padding: 12px 24px; border: none; border-radius: 50px; background: white; color: #ff85b3; font-weight: 500; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .toggle-btn.active { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; }
         
-        /* Announcement */
-        .announcement-bar { background: #fff0f7; border: 2px dashed #ffb3d9; border-radius: 20px; padding: 15px; margin-bottom: 20px; display: none; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 179, 217, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(255, 179, 217, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 179, 217, 0); } }
+        /* --- Announcement Area --- */
+        .broadcast-bar { background: #fff0f7; border: 2px dashed #ffb3d9; border-radius: 20px; padding: 15px; margin-bottom: 15px; display: none; align-items: flex-start; gap: 10px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,179,217,0.4); } 70% { box-shadow: 0 0 0 10px rgba(255,179,217,0); } 100% { box-shadow: 0 0 0 0 rgba(255,179,217,0); } }
 
         .card { background: rgba(255,255,255,0.8); backdrop-filter: blur(15px); border-radius: 25px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(255,179,217,0.1); border: 1px solid white; }
         input, textarea { width: 100%; padding: 12px; border: 2px solid #fff; border-radius: 15px; background: white; font-size: 15px; margin-bottom: 10px; outline: none; }
@@ -42,12 +42,13 @@
         
         .btn { padding: 12px; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; width: 100%; }
         .btn-save { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; }
-        
-        /* Admin Admin Console */
-        .admin-chat-preview { height: 150px; background: #fff; border: 2px solid #fff0f7; border-radius: 20px; margin-bottom: 10px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+
+        /* --- Admin Chat Console (Fix Bug) --- */
+        .admin-chat-preview { height: 180px; background: #fff; border: 2px solid #fff0f7; border-radius: 20px; margin-bottom: 10px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
         .msg { max-width: 85%; padding: 10px 15px; border-radius: 18px; font-size: 14px; }
-        .msg.user { align-self: flex-start; background: #f0f0f0; }
-        .msg.admin { align-self: flex-end; background: #ffb3d9; color: white; }
+        .msg.user { align-self: flex-start; background: #f0f0f0; border-bottom-left-radius: 2px; }
+        .msg.admin { align-self: flex-end; background: #ffb3d9; color: white; border-bottom-right-radius: 2px; }
+        .send-txt-btn { background: #ffb3d9; border: none; border-radius: 15px; padding: 0 20px; color: white; font-weight: 600; cursor: pointer; }
 
         .toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #ff85b3; color: white; padding: 10px 20px; border-radius: 50px; z-index: 9999; display: none; }
     </style>
@@ -55,43 +56,44 @@
 <body>
 
     <nav class="top-navbar">
-        <div class="menu-icon" onclick="toggleMenu()">☰</div>
-        <div class="shop-name">PJ Kawaii Queue ✨</div>
-        <div class="shop-logo">
-            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=PJ" alt="Logo">
+        <div class="hamburger" onclick="toggleDrawer()">☰</div>
+        <div class="shop-title">PJ Kawaii Queue ✨</div>
+        <div class="shop-logo-box">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=PJ" alt="Shop Logo">
         </div>
     </nav>
 
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <div class="side-menu" id="sideMenu">
-        <h3>Menu</h3>
-        <a href="https://m.me/yourpage" target="_blank" class="menu-item">💬 ติดต่อแอดมิน (Messenger)</a>
-        <a href="https://line.me/ti/p/~yourid" target="_blank" class="menu-item">💚 ติดต่อทาง Line</a>
-        <div class="menu-item" onclick="toggleMenu(); showView('client');">📢 แจ้งปัญหา/ประกาศล่าสุด</div>
-        <div class="menu-item" onclick="toggleMenu(); showView('admin');" style="margin-top: 20px; color: #ccc; font-size: 0.8rem;">⚙️ สำหรับแอดมินเท่านั้น</div>
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+    <div class="drawer" id="sideDrawer">
+        <h3>เมนูหลัก</h3>
+        <div class="drawer-item" onclick="toggleDrawer(); showView('client')">🔎 เช็คคิวงาน</div>
+        <a href="https://line.me" target="_blank" class="drawer-item">💬 ติดต่อแอดมิน</a>
+        <div class="drawer-item" onclick="toggleDrawer(); alert('กำลังดำเนินการแจ้งปัญหาไปยังระบบ...')">⚠️ แจ้งปัญหาการใช้งาน</div>
+        <div class="drawer-item" onclick="toggleDrawer(); showView('admin')" style="margin-top:20px; color:#ccc; font-size:0.8rem;">🔒 เฉพาะแอดมิน</div>
     </div>
 
     <div id="toast" class="toast"></div>
 
     <div class="container">
         <div class="nav-group">
-            <button class="toggle-btn active" id="tab-client" onclick="showView('client')">🔎 ตรวจสอบคิว</button>
-            <button class="toggle-btn" id="tab-admin" onclick="tryAdmin()">⚙️ แอดมิน</button>
+            <button class="toggle-btn active" id="tab-client" onclick="showView('client')">ตรวจสอบคิว</button>
+            <button class="toggle-btn" id="tab-admin" onclick="tryAdmin()">แอดมิน</button>
         </div>
 
         <div id="clientView">
-            <div id="announcementArea" class="announcement-bar">
+            <div id="clientNoticeBar" class="broadcast-bar">
                 <span>📢</span>
-                <div id="announcementText" style="font-size: 0.9rem; color: #ff5da2; font-weight: 500;"></div>
+                <div id="noticeText" style="font-size: 0.9rem; color: #ff5da2; font-weight: 500;"></div>
             </div>
+            
             <div class="card"><input type="text" id="clientSearch" placeholder="ค้นหาเลขออเดอร์หรือชื่อ..." oninput="renderClient()"></div>
             <div id="clientQueueList"></div>
         </div>
 
         <div id="adminView" style="display:none;">
             <div class="card" style="border: 2px solid #ffb3d9;">
-                <h3 style="color:#ff85b3; font-size:1rem; margin-bottom:10px;">📢 จัดการประกาศหน้าเว็บ</h3>
-                <textarea id="adminNoticeInput" rows="2" placeholder="พิมพ์แจ้งปัญหาหรืออัปเดตงานที่นี่..."></textarea>
+                <h3 style="color:#ff85b3; font-size:1rem; margin-bottom:10px;">📢 ประกาศถึงลูกค้า</h3>
+                <textarea id="adminNoticeInput" rows="2" placeholder="พิมพ์แจ้งปัญหาหรืออัปเดตงานให้โชว์หน้าเช็คคิว..."></textarea>
                 <div style="display:flex; gap:10px;">
                     <button class="btn btn-save" onclick="saveNotice()">บันทึกประกาศ</button>
                     <button class="btn" style="background:#eee; width:40%;" onclick="clearNotice()">ล้าง</button>
@@ -102,20 +104,22 @@
                 <h3 style="color:#ff85b3; font-size:1rem; margin-bottom:10px;">💬 Chat Console</h3>
                 <div id="adminChatPreview" class="admin-chat-preview"></div>
                 <div style="display:flex; gap:8px;">
-                    <input type="text" id="adminReplyInput" placeholder="พิมพ์ข้อความ..." style="margin-bottom:0;" onkeypress="if(event.key==='Enter') adminSendMsg()">
-                    <button onclick="adminSendMsg()" style="background:#ffb3d9; border:none; border-radius:15px; padding:0 15px; color:white; font-weight:600;">ส่ง</button>
+                    <input type="text" id="adminReplyInput" placeholder="ตอบแชทลูกค้า..." style="margin-bottom:0;" onkeypress="if(event.key==='Enter') adminSendMsg()">
+                    <button class="send-txt-btn" onclick="adminSendMsg()">ส่ง</button>
                 </div>
             </div>
 
             <div class="card">
-                <h3>เพิ่มคิวใหม่</h3>
-                <input type="text" id="orderId" placeholder="เลข 3 หลัก (เช่น 001)">
-                <input type="text" id="custName" placeholder="ชื่อลูกค้า">
-                <textarea id="workDetail" rows="2" placeholder="รายละเอียดงาน"></textarea>
-                <label>สถานะงาน</label>
+                <h3 id="formTitle">จัดการออเดอร์</h3>
+                <input type="hidden" id="editIndex" value="-1">
+                <label>เลขออเดอร์ (ไม่ต้องพิมพ์ PJ-)</label>
+                <input type="text" id="orderId" placeholder="เช่น 006">
+                <label>ชื่อลูกค้า</label>
+                <input type="text" id="custName">
+                <label>สถานะ</label>
                 <div class="pill-group" id="sPills"></div>
                 <input type="hidden" id="vStatus" value="รอเริ่มงาน">
-                <button class="btn btn-save" onclick="saveOrder()">บันทึกออเดอร์ ✨</button>
+                <button class="btn btn-save" onclick="saveOrder()">บันทึกข้อมูล ✨</button>
             </div>
             <div id="adminList"></div>
         </div>
@@ -123,20 +127,16 @@
 
     <script>
         let orders = JSON.parse(localStorage.getItem('orders')) || [];
-        let notice = localStorage.getItem('adminNotice') || "";
+        let globalNotice = localStorage.getItem('adminNotice') || "";
 
-        function toggleMenu() {
-            const menu = document.getElementById('sideMenu');
-            const overlay = document.getElementById('overlay');
-            menu.classList.toggle('active');
-            overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
+        function toggleDrawer() {
+            const d = document.getElementById('sideDrawer');
+            const o = document.getElementById('drawerOverlay');
+            d.classList.toggle('active');
+            o.style.display = d.classList.contains('active') ? 'block' : 'none';
         }
 
-        function showToast(m) { 
-            const t=document.getElementById('toast'); 
-            t.textContent=m; t.style.display='block'; 
-            setTimeout(()=>t.style.display='none',2000); 
-        }
+        function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
         
         function showView(v) {
             document.getElementById('clientView').style.display = v==='client'?'block':'none';
@@ -146,16 +146,16 @@
             v==='client' ? renderClient() : renderAdmin();
         }
 
-        function tryAdmin() { showView('admin'); document.getElementById('adminNoticeInput').value = notice; }
+        function tryAdmin() { showView('admin'); document.getElementById('adminNoticeInput').value = globalNotice; }
 
+        // --- ระบบประกาศ ---
         function saveNotice() {
-            notice = document.getElementById('adminNoticeInput').value.trim();
-            localStorage.setItem('adminNotice', notice);
-            showToast('📢 อัปเดตประกาศเรียบร้อย');
+            globalNotice = document.getElementById('adminNoticeInput').value.trim();
+            localStorage.setItem('adminNotice', globalNotice);
+            showToast('📢 บันทึกประกาศแจ้งปัญหาแล้ว');
         }
-
         function clearNotice() {
-            notice = "";
+            globalNotice = "";
             document.getElementById('adminNoticeInput').value = "";
             localStorage.setItem('adminNotice', "");
             showToast('🗑️ ล้างประกาศแล้ว');
@@ -165,10 +165,8 @@
             const sp=document.getElementById('sPills'); sp.innerHTML='';
             ['รอเริ่มงาน','กำลังทำ','ใกล้เสร็จ','เสร็จแล้ว'].forEach(s=>{
                 const b=document.createElement('div'); b.className='pill'; b.textContent=s;
-                b.onclick=()=>{ 
-                    document.getElementById('vStatus').value=s; 
-                    sp.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); 
-                    b.classList.add('active'); 
+                b.onclick=()=>{ document.getElementById('vStatus').value=s; 
+                    sp.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); b.classList.add('active'); 
                 };
                 sp.appendChild(b);
             });
@@ -176,44 +174,62 @@
 
         function saveOrder() {
             const name = document.getElementById('custName').value.trim();
-            const id = document.getElementById('orderId').value.trim();
-            if(!name || !id) return showToast('⚠️ กรุณาใส่ข้อมูลให้ครบ');
-            const now = new Date().toLocaleString('th-TH');
-            orders.unshift({ id: 'PJ-'+id.padStart(3,'0'), name, detail: document.getElementById('workDetail').value, status: document.getElementById('vStatus').value, updated: now });
+            const idVal = document.getElementById('orderId').value.trim();
+            if(!name || !idVal) return showToast('⚠️ กรุณาใส่เลขและชื่อ');
+            
+            const now = new Date().toLocaleString('th-TH', {dateStyle:'short', timeStyle:'short'});
+            const o = {
+                id: 'PJ-' + idVal.padStart(3,'0'),
+                name: name,
+                status: document.getElementById('vStatus').value,
+                updated: now
+            };
+            orders.unshift(o);
             localStorage.setItem('orders', JSON.stringify(orders));
-            showToast('✅ บันทึกสำเร็จ'); renderAdmin();
+            showToast('✅ บันทึกแล้ว'); renderAdmin();
         }
 
         function renderAdmin() {
             const list = document.getElementById('adminList'); list.innerHTML = '';
             orders.forEach((o, i) => {
-                list.innerHTML += `<div class="card" style="padding:15px;">
-                    <strong>${o.id} - ${o.name}</strong>
-                    <div style="margin-top:10px;">
-                        <button class="btn" style="background:#fff0f0; color:#ff6b6b; padding:5px 10px; width:auto; font-size:0.8rem;" onclick="deleteOrder(${i})">ลบ</button>
-                    </div>
+                list.innerHTML += `<div class="card" style="padding:15px; display:flex; justify-content:space-between; align-items:center;">
+                    <span><strong>${o.id}</strong> - ${o.name}</span>
+                    <button onclick="deleteOrder(${i})" style="color:red; background:none; border:none; cursor:pointer;">ลบ</button>
                 </div>`;
             });
         }
 
         function renderClient() {
             const list = document.getElementById('clientQueueList');
-            const area = document.getElementById('announcementArea');
-            if(notice) { area.style.display = 'flex'; document.getElementById('announcementText').textContent = notice; }
-            else area.style.display = 'none';
+            const bar = document.getElementById('clientNoticeBar');
+            const txt = document.getElementById('noticeText');
+            
+            // แสดงประกาศถ้ามีข้อมูล
+            if(globalNotice) { bar.style.display = 'flex'; txt.textContent = globalNotice; }
+            else { bar.style.display = 'none'; }
 
             list.innerHTML = '';
             orders.forEach(o => {
                 list.innerHTML += `<div class="queue-card">
                     <span style="color:#ff85b3; font-weight:600;">${o.id}</span>
                     <div style="font-weight:500;">คุณ ${o.name}</div>
-                    <div style="font-size:0.7rem; color:#999;">🔄 ${o.updated}</div>
+                    <div style="font-size:0.7rem; color:#999;">อัปเดต: ${o.updated}</div>
                     <div class="status-pill">${o.status}</div>
                 </div>`;
             });
         }
 
-        function deleteOrder(i) { orders.splice(i,1); localStorage.setItem('orders', JSON.stringify(orders)); renderAdmin(); }
+        function deleteOrder(i) { if(confirm('ลบรายการ?')) { orders.splice(i,1); localStorage.setItem('orders', JSON.stringify(orders)); renderAdmin(); } }
+
+        function adminSendMsg() {
+            const input = document.getElementById('adminReplyInput');
+            const val = input.value.trim();
+            if(!val) return;
+            const preview = document.getElementById('adminChatPreview');
+            const d = document.createElement('div'); d.className = 'msg admin'; d.textContent = val;
+            preview.appendChild(d); preview.scrollTop = preview.scrollHeight;
+            input.value = '';
+        }
 
         window.onload = () => { initForm(); renderClient(); };
     </script>

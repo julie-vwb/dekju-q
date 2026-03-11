@@ -25,7 +25,7 @@
         .card { background: rgba(255,255,255,0.8); backdrop-filter: blur(15px); border-radius: 25px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(255,179,217,0.2); border: 1px solid white; position: relative; }
         .header h1 { text-align: center; font-size: 2.2rem; background: linear-gradient(135deg, #ff85b3, #d8c5e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; font-weight: 600; }
 
-        /* Category System (แยกหมวดหมู่) */
+        /* Category System */
         .category-title { color: #ff85b3; margin: 25px 0 10px 5px; font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .category-title::after { content: ""; flex: 1; height: 2px; background: linear-gradient(90deg, #ffb3d9, transparent); }
 
@@ -53,6 +53,7 @@
         
         .btn { padding: 12px; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .btn-save { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; width: 100%; font-size: 1.1rem; }
+        .btn-edit { background: #fdf6e3; color: #b58900; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; }
         .btn-copy { background: #eef7ff; color: #4a90e2; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; }
         .btn-del { background: #fff0f0; color: #ff6b6b; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; }
 
@@ -78,7 +79,8 @@
 
         <div id="adminView" style="display:none;">
             <div class="card">
-                <h3>จัดการออเดอร์</h3>
+                <h3 id="adminFormTitle">จัดการออเดอร์</h3>
+                <input type="hidden" id="editIndex" value="-1">
                 <label>Order ID (เว้นว่างเพื่อรันอัตโนมัติ)</label>
                 <input type="text" id="orderId" placeholder="เช่น PJ-001">
                 <label>ชื่อลูกค้า</label>
@@ -96,7 +98,8 @@
                 <div class="pill-group" id="sPills"></div>
                 <input type="hidden" id="vStatus" value="รอเริ่มงาน">
 
-                <button class="btn btn-save" onclick="saveOrder()">บันทึก</button>
+                <button class="btn btn-save" id="saveBtn" onclick="saveOrder()">บันทึก</button>
+                <button class="btn" id="cancelEditBtn" style="display:none; width:100%; margin-top:8px; background:#f0f0f0; color:#666;" onclick="resetAdminForm()">ยกเลิกการแก้ไข</button>
             </div>
             <div id="adminList"></div>
         </div>
@@ -146,22 +149,60 @@
 
         function saveOrder() {
             const name = document.getElementById('custName').value.trim();
+            const editIdx = parseInt(document.getElementById('editIndex').value);
             if(!name) return showToast('⚠️ ใส่ชื่อลูกค้าด้วย');
+            
             const o = {
-                id: document.getElementById('orderId').value.trim() || `PJ-${String(counter++).padStart(3,'0')}`,
+                id: document.getElementById('orderId').value.trim() || (editIdx > -1 ? orders[editIdx].id : `PJ-${String(counter++).padStart(3,'0')}`),
                 name: name,
                 contact: document.getElementById('custContact').value.trim(),
                 detail: document.getElementById('workDetail').value.trim(),
                 percent: document.getElementById('vPercent').value,
                 status: document.getElementById('vStatus').value,
-                date: new Date().toLocaleDateString('th-TH'),
-                time: new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})
+                date: editIdx > -1 ? orders[editIdx].date : new Date().toLocaleDateString('th-TH'),
+                time: editIdx > -1 ? orders[editIdx].time : new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})
             };
-            orders.unshift(o);
+
+            if(editIdx > -1) {
+                orders[editIdx] = o;
+                showToast('✅ อัปเดตข้อมูลแล้ว');
+            } else {
+                orders.unshift(o);
+                showToast('✅ บันทึกแล้ว');
+            }
+
             localStorage.setItem('orders', JSON.stringify(orders));
             localStorage.setItem('counter', counter);
-            showToast('✅ บันทึกแล้ว');
-            showView('admin');
+            resetAdminForm();
+            renderAdmin();
+        }
+
+        function editOrder(idx) {
+            const o = orders[idx];
+            document.getElementById('editIndex').value = idx;
+            document.getElementById('orderId').value = o.id;
+            document.getElementById('custName').value = o.name;
+            document.getElementById('custContact').value = o.contact;
+            document.getElementById('workDetail').value = o.detail;
+            document.getElementById('vPercent').value = o.percent;
+            document.getElementById('vStatus').value = o.status;
+            document.getElementById('pText').textContent = o.percent + '%';
+
+            // Update Pills UI
+            document.querySelectorAll('#pPills .pill').forEach(p => p.classList.toggle('active', p.textContent === o.percent+'%'));
+            document.querySelectorAll('#sPills .pill').forEach(p => p.classList.toggle('active', p.textContent === o.status));
+
+            document.getElementById('adminFormTitle').textContent = '📝 แก้ไขออเดอร์';
+            document.getElementById('saveBtn').textContent = 'อัปเดตข้อมูล ✨';
+            document.getElementById('cancelEditBtn').style.display = 'block';
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function resetAdminForm() {
+            document.getElementById('editIndex').value = '-1';
+            document.getElementById('adminFormTitle').textContent = 'จัดการออเดอร์';
+            document.getElementById('saveBtn').textContent = 'บันทึก';
+            document.getElementById('cancelEditBtn').style.display = 'none';
             document.querySelectorAll('input, textarea').forEach(i=>i.value='');
             initForm();
         }
@@ -212,6 +253,7 @@
                                 <p style="font-size:0.8rem; color:#777;">${o.status} (${o.percent}%)</p>
                             </div>
                             <div style="display:flex; gap:5px;">
+                                <button class="btn-edit" onclick="editOrder(${i})">แก้ไข</button>
                                 <button class="btn-copy" onclick="copy('${o.id}')">คัดลอก</button>
                                 <button class="btn-del" onclick="if(confirm('ลบ?')){orders.splice(${i},1); localStorage.setItem('orders',JSON.stringify(orders)); renderAdmin();}">ลบ</button>
                             </div>

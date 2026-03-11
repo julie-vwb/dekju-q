@@ -9,10 +9,14 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mitr', sans-serif !important; }
         body { background: linear-gradient(135deg, #ffe4f5 0%, #f3e5ff 50%, #e5f4ff 100%); background-attachment: fixed; min-height: 100vh; color: #4a4a4a; overflow-x: hidden; }
         
-        .top-navbar { background: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(255,179,217,0.2); }
-        .menu-btn { font-size: 24px; color: #ff85b3; cursor: pointer; width: 40px; border:none; background:none; text-align: left; }
+        /* แก้ไขเฉพาะส่วนนี้เพื่อขยับชื่อร้านไปชิดโลโก้ */
+        .top-navbar { background: white; padding: 10px 20px; display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(255,179,217,0.2); }
+        .menu-btn { font-size: 24px; color: #ff85b3; cursor: pointer; width: 40px; border:none; background:none; text-align: left; flex-shrink: 0; }
+        
+        /* เพิ่ม class ใหม่สำหรับจัดกลุ่มโลโก้และชื่อให้ติดกัน */
+        .brand-group { display: flex; align-items: center; gap: 8px; margin-left: auto; }
         .shop-name-title { font-weight: 600; color: #ff85b3; font-size: 1.1rem; }
-        .shop-logo-top { width: 35px; height: 35px; border-radius: 50%; background: #ffb3d9; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .shop-logo-top { width: 35px; height: 35px; border-radius: 50%; background: #ffb3d9; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .shop-logo-top img { width: 100%; height: 100%; object-fit: cover; }
 
         .broadcast-container { background: #fff0f7; border: 2px solid #ffb3d9; border-radius: 20px; margin: 15px 0; padding: 12px 15px; display: none; align-items: flex-start; gap: 10px; box-shadow: 0 4px 12px rgba(255,179,217,0.1); }
@@ -78,9 +82,11 @@
 
     <nav class="top-navbar">
         <div class="menu-btn" onclick="toggleDrawer()">📂</div>
-        <div class="shop-name-title">PJ Kawaii Queue ✨</div>
-        <div class="shop-logo-top">
-            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=PJ" alt="Logo">
+        <div class="brand-group">
+            <div class="shop-name-title">PJ Kawaii Queue ✨</div>
+            <div class="shop-logo-top">
+                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=PJ" alt="Logo">
+            </div>
         </div>
     </nav>
 

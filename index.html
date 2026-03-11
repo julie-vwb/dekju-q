@@ -3,480 +3,529 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ Kawaii Order Queue System ✨</title>
+    <title>🌸 Kawaii Order Queue SaaS ✨</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500&family=Prompt:wght@300;400;600&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* --- 🎨 Global Design System --- */
         :root {
             --primary-pink: #ffafcc;
-            --secondary-pink: #ffc8dd;
-            --primary-purple: #cdb4db;
-            --primary-blue: #a2d2ff;
-            --soft-blue: #bde0fe;
+            --deep-pink: #ff85a1;
+            --soft-purple: #cdb4db;
+            --pastel-blue: #a2d2ff;
+            --glass-bg: rgba(255, 255, 255, 0.8);
             --white: #ffffff;
-            --text-color: #5c5c5c;
-            --glass: rgba(255, 255, 255, 0.75);
+            --text: #5f5f5f;
+            --shadow: 0 10px 30px rgba(255, 175, 204, 0.3);
         }
 
-        * { box-sizing: border-box; font-family: 'Prompt', 'Nunito', sans-serif; }
+        * { box-sizing: border-box; font-family: 'Mitr', 'Nunito', sans-serif; }
 
         body {
-            margin: 0; padding: 0; min-height: 100vh;
-            background: linear-gradient(180deg, #ffd6ec, #e8dfff, #dff1ff);
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffd6ec 0%, #e8dfff 100%);
             background-attachment: fixed;
-            color: var(--text-color);
-            overflow-x: hidden;
-            display: flex; flex-direction: column; align-items: center;
+            color: var(--text);
+            min-height: 100vh;
         }
 
-        /* --- Animations & Floating Particles --- */
-        .floating-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
-        .emoji-particle { position: absolute; font-size: 1.5rem; animation: floatUp 10s linear infinite; opacity: 0.6; }
+        /* --- ✨ Floating Particles --- */
+        .particles-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1;
+        }
+
+        .heart {
+            position: absolute; color: var(--primary-pink);
+            animation: floatUp 8s linear infinite; opacity: 0.5;
+        }
+
         @keyframes floatUp {
-            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(110vh) scale(0); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
         }
 
-        /* --- Global UI --- */
-        .container { width: 95%; max-width: 800px; padding: 20px; margin-top: 40px; margin-bottom: 100px; animation: fadeUp 0.8s ease-out; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card {
-            background: var(--glass); backdrop-filter: blur(15px);
-            border-radius: 25px; padding: 30px; border: 2px solid var(--white);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px;
-            transition: transform 0.3s ease;
+        /* --- 📱 Layout --- */
+        .container {
+            width: 95%; max-width: 900px;
+            margin: 40px auto; padding-bottom: 100px;
         }
-        .card:hover { transform: translateY(-5px); }
 
-        h1, h2, h3 { color: #ff758c; text-align: center; font-family: 'Mitr', sans-serif; }
-
-        .btn-gradient {
-            background: linear-gradient(45deg, var(--primary-pink), var(--primary-purple));
-            color: white; border: none; padding: 12px 25px; border-radius: 30px;
-            cursor: pointer; font-weight: 600; transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(255, 175, 204, 0.4);
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        .card-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 35px;
+            border: 2px solid var(--white);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
-        .btn-gradient:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(255, 175, 204, 0.6); }
-        .btn-copy { background: var(--soft-blue); color: #5c5c5c; padding: 8px 15px; font-size: 0.8rem; }
 
-        /* --- Kawaii Candy Stripe Progress Bar --- */
+        @keyframes bounceIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- 🎀 Queue Card Design --- */
+        .queue-card {
+            display: flex;
+            background: var(--white);
+            border-radius: 25px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .queue-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(255, 175, 204, 0.4); }
+
+        .indicator { width: 8px; background: var(--primary-pink); }
+
+        .card-content { flex: 1; padding: 20px; }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+
+        .order-id-tag {
+            background: var(--soft-purple); color: white;
+            padding: 4px 12px; border-radius: 10px; font-weight: 800; font-size: 0.85rem;
+        }
+
+        .date-badge {
+            background: #f0f0f0; padding: 4px 10px; border-radius: 10px;
+            font-size: 0.75rem; color: #888; font-weight: bold;
+        }
+
+        .job-title { font-size: 1.2rem; font-weight: 600; color: var(--deep-pink); margin: 10px 0 5px 0; }
+        
+        .customer-info { font-size: 0.95rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+
+        .platform-tag {
+            background: var(--pastel-blue); color: white;
+            padding: 2px 8px; border-radius: 6px; font-size: 0.7rem;
+        }
+
+        /* --- 📊 Progress Bar --- */
         .progress-container {
-            width: 100%; background: rgba(255,255,255,0.5);
-            border-radius: 50px; height: 30px; margin: 15px 0;
-            position: relative; overflow: hidden; border: 2px solid var(--white);
+            height: 12px; background: #eee; border-radius: 10px;
+            overflow: hidden; margin: 10px 0; position: relative;
         }
-        .progress-bar {
-            height: 100%; border-radius: 50px; width: 0%;
-            background: linear-gradient(45deg, 
-                var(--primary-pink) 25%, var(--primary-purple) 25%, 
-                var(--primary-purple) 50%, var(--primary-pink) 50%, 
-                var(--primary-pink) 75%, var(--primary-purple) 75%, var(--primary-purple) 100%);
-            background-size: 40px 40px;
-            animation: moveStripes 2s linear infinite;
-            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 0 15px rgba(255, 175, 204, 0.5);
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-pink), var(--soft-purple));
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
         }
-        @keyframes moveStripes { from { background-position: 0 0; } to { background-position: 40px 0; } }
 
-        /* --- Admin Dashboard Specific --- */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: white; padding: 15px; border-radius: 20px; text-align: center; }
-        .stat-val { font-size: 1.5rem; font-weight: bold; color: var(--primary-pink); }
-        .status-pill { padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; color: white; font-weight: bold; display: inline-block; }
+        .update-time { font-size: 0.7rem; color: #bbb; text-align: right; margin-top: 5px; }
 
-        /* --- Chat UI --- */
-        .chat-display { display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; padding: 10px; }
-        .chat-bubble { padding: 10px 15px; border-radius: 18px; max-width: 80%; font-size: 0.9rem; position: relative; }
-        .chat-user { background: var(--soft-blue); align-self: flex-end; border-bottom-right-radius: 2px; }
-        .chat-admin { background: var(--secondary-pink); align-self: flex-start; border-bottom-left-radius: 2px; }
+        /* --- 💊 Status Pills --- */
+        .status-pill-group {
+            display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0;
+        }
 
-        /* Floating Chat Widget */
-        .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
-        .chat-toggle { width: 60px; height: 60px; border-radius: 50%; background: var(--primary-pink); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s; }
-        .chat-window { position: absolute; bottom: 70px; right: 0; width: 320px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: none; flex-direction: column; animation: popIn 0.3s ease; }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .chat-header { background: linear-gradient(45deg, var(--primary-pink), var(--primary-purple)); color: white; padding: 15px; text-align: center; font-weight: bold; }
+        .pill {
+            padding: 8px 18px; border-radius: 50px; border: 2px solid transparent;
+            cursor: pointer; font-size: 0.85rem; font-weight: 600;
+            background: #f8f8f8; transition: 0.3s; color: #888;
+        }
 
-        input, textarea, select {
-            width: 100%; padding: 12px 18px; border-radius: 15px; border: 2px solid #eee;
-            margin-bottom: 15px; outline: none; transition: 0.3s;
+        .pill:hover { transform: scale(1.05); background: var(--white); border-color: var(--primary-pink); }
+
+        .pill.active {
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 133, 161, 0.4);
+        }
+
+        .pill-wait { background: #e0e0e0; } .pill-wait.active { background: #a0a0a0; }
+        .pill-work { background: #ffe5ec; } .pill-work.active { background: #ff85a1; }
+        .pill-soon { background: #f3e5f5; } .pill-soon.active { background: #ba68c8; }
+        .pill-done { background: #e3f2fd; } .pill-done.active { background: #64b5f6; }
+        .pill-ship { background: #e8f5e9; } .pill-ship.active { background: #81c784; }
+
+        /* --- 🔘 Buttons --- */
+        .btn-main {
+            background: linear-gradient(45deg, var(--deep-pink), var(--primary-pink));
+            color: white; border: none; padding: 12px 25px;
+            border-radius: 50px; cursor: pointer; font-weight: 600;
+            transition: 0.3s; box-shadow: 0 4px 15px rgba(255, 133, 161, 0.3);
+            display: flex; align-items: center; gap: 8px; justify-content: center;
+        }
+
+        .btn-main:hover { transform: translateY(-3px); filter: brightness(1.1); }
+
+        .btn-icon {
+            width: 35px; height: 35px; border-radius: 10px; border: none;
+            cursor: pointer; background: #f5f5f5; color: #888; transition: 0.2s;
+        }
+
+        .btn-icon:hover { background: var(--primary-pink); color: white; }
+
+        /* --- 💬 Chat Widget --- */
+        .chat-widget {
+            position: fixed; bottom: 30px; right: 30px; z-index: 999;
+        }
+
+        .chat-btn {
+            width: 65px; height: 65px; border-radius: 50%;
+            background: var(--deep-pink); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 25px; cursor: pointer; box-shadow: var(--shadow);
+        }
+
+        .chat-box {
+            position: absolute; bottom: 80px; right: 0;
+            width: 320px; height: 450px; background: white;
+            border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            display: none; flex-direction: column; overflow: hidden;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .chat-header {
+            background: var(--primary-pink); padding: 15px;
+            color: white; font-weight: bold; text-align: center;
+        }
+
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #fffcfd; }
+
+        .msg {
+            max-width: 80%; padding: 10px 15px; border-radius: 18px;
+            margin-bottom: 10px; font-size: 0.85rem; line-height: 1.4;
+        }
+
+        .msg-admin { background: var(--primary-pink); color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .msg-user { background: var(--pastel-blue); color: white; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 4px; }
+
+        .chat-input { padding: 15px; display: flex; gap: 8px; border-top: 1px solid #eee; }
+        .chat-input input { flex: 1; border: none; background: #f5f5f5; padding: 10px; border-radius: 15px; outline: none; }
+
+        /* --- 🏆 Success Modal --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 10000;
+        }
+
+        .modal-content {
+            background: white; padding: 40px; border-radius: 35px;
+            text-align: center; width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop { from { transform: scale(0.5); } to { transform: scale(1); } }
+
+        .modal-icon {
+            font-size: 50px; color: var(--primary-pink); margin-bottom: 20px;
+        }
+
+        /* --- Input Styles --- */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--deep-pink); }
+        input, select, textarea {
+            width: 100%; padding: 12px 18px; border-radius: 15px; border: 2px solid #f0f0f0;
+            outline: none; transition: 0.3s;
         }
         input:focus { border-color: var(--primary-pink); background: #fffcfd; }
 
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3); backdrop-filter: blur(8px);
-            display: none; justify-content: center; align-items: center; z-index: 2000;
-        }
-        .modal { background: white; width: 90%; max-width: 400px; padding: 35px; border-radius: 35px; text-align: center; }
-
-        @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } }
+        /* --- Admin Specific --- */
+        .admin-controls { display: flex; gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; }
     </style>
 </head>
-
 <body>
-    <div class="floating-container" id="floatingParticles"></div>
 
-    <div class="container" id="clientView">
+    <div class="particles-bg" id="particles"></div>
+
+    <div class="container">
         <header style="text-align: center; margin-bottom: 40px;">
-            <h1 style="font-size: 2.8rem; margin-bottom: 0;">🎀 Order Queue ✨</h1>
-            <p style="color: #a291a2; font-family: 'Nunito'; font-weight: 700;">Kawaii Service Dashboard</p>
+            <h1 style="font-size: 2.5rem; color: var(--deep-pink); margin: 0;">🎀 Kawaii Queue Dashboard</h1>
+            <p style="color: #aaa; font-weight: bold; letter-spacing: 2px;">MANAGEMENT SYSTEM V.2</p>
         </header>
 
-        <div class="card">
-            <h3>🔍 ตรวจสอบคิวงานของคุณ</h3>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <input type="text" id="searchInput" placeholder="เลขออเดอร์ / ชื่อ / LINE ID / Facebook" style="flex: 1; margin-bottom: 0;">
-                <button class="btn-gradient" onclick="searchOrder()">ค้นหาคิว 💗</button>
-            </div>
-            <div id="queueStatusSummary" style="margin-top: 15px; text-align: center; font-size: 0.9rem; color: #888;"></div>
-        </div>
-
-        <div id="searchResults"></div>
-
-        <div class="card">
-            <h3>📋 รายการคิวทั้งหมด</h3>
-            <div id="allQueuesList" style="max-height: 400px; overflow-y: auto;"></div>
-        </div>
-
-        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
-            <a href="#" class="btn-line" style="background:#00b900; color:white; padding:10px 20px; border-radius:25px; text-decoration:none;"><i class="fab fa-line"></i> LINE</a>
-            <a href="#" class="btn-fb" style="background:#1877f2; color:white; padding:10px 20px; border-radius:25px; text-decoration:none;"><i class="fab fa-facebook"></i> Facebook</a>
-        </div>
-    </div>
-
-    <div class="container" id="adminPanel" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h2>🛠 Admin Panel</h2>
-            <button class="btn-gradient" onclick="logout()" style="background: #ff758c;">ออกจากระบบ</button>
-        </div>
-
-        <div class="stats-grid" id="adminStats"></div>
-
-        <div class="card">
-            <h3>➕ จัดการออเดอร์</h3>
-            <div id="adminForm">
+        <div class="card-glass" id="adminArea">
+            <h2 id="formTitle"><i class="fas fa-plus-circle"></i> สร้างออเดอร์ใหม่</h2>
+            <div id="orderForm">
                 <input type="hidden" id="editIndex" value="-1">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="text" id="orderId" placeholder="Order ID (เช่น PJ-001)">
-                    <input type="text" id="queueNum" placeholder="เลขคิว">
-                </div>
-                <input type="text" id="custName" placeholder="ชื่อลูกค้า">
-                <input type="text" id="custContact" placeholder="LINE / FB ID">
-                <textarea id="workDetail" placeholder="รายละเอียดงาน"></textarea>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <select id="workStatus">
-                        <option value="รอเริ่มงาน">⏳ รอเริ่มงาน</option>
-                        <option value="กำลังทำ">⚙️ กำลังทำ</option>
-                        <option value="ใกล้เสร็จ">✨ ใกล้เสร็จ</option>
-                        <option value="เสร็จแล้ว">✅ เสร็จแล้ว</option>
-                        <option value="ส่งงานแล้ว">🚚 ส่งงานแล้ว</option>
-                    </select>
-                    <div style="display: flex; align-items: center; gap: 5px;">
-                        <input type="range" id="workPercent" min="0" max="100" step="5" style="margin:0;">
-                        <span id="percentVal" style="font-weight: bold; width: 40px;">0%</span>
-                        <button onclick="adjustPercent(10)" style="border:none; background:var(--primary-pink); color:white; border-radius:50%; width:30px; height:30px; cursor:pointer;">+</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>ชื่องาน / หัวข้อ</label>
+                        <input type="text" id="jobTitle" placeholder="เช่น วาดรูปจิบิ">
+                    </div>
+                    <div class="form-group">
+                        <label>ชื่อลูกค้า</label>
+                        <input type="text" id="custName" placeholder="เช่น คุณดาว">
                     </div>
                 </div>
-                <textarea id="adminNote" placeholder="อัปเดตจากแอดมิน (แสดงให้ลูกค้าเห็น)"></textarea>
-                <button class="btn-gradient" style="width: 100%;" onclick="saveOrder()">บันทึกข้อมูลคิว 💗</button>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>แพลตฟอร์ม</label>
+                        <select id="platform">
+                            <option value="Line">Line</option>
+                            <option value="Facebook">Facebook</option>
+                            <option value="Website">Website</option>
+                            <option value="TikTok">TikTok</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ความคืบหน้า (%)</label>
+                        <input type="number" id="progress" min="0" max="100" value="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>เลือกสถานะปัจจุบัน</label>
+                    <div class="status-pill-group" id="statusPicker">
+                        <div class="pill pill-wait active" onclick="setStatus('รอเริ่มงาน', this)">⏳ รอเริ่มงาน</div>
+                        <div class="pill pill-work" onclick="setStatus('กำลังทำ', this)">⚙️ กำลังทำ</div>
+                        <div class="pill pill-soon" onclick="setStatus('ใกล้เสร็จ', this)">✨ ใกล้เสร็จ</div>
+                        <div class="pill pill-done" onclick="setStatus('เสร็จแล้ว', this)">✅ เสร็จแล้ว</div>
+                        <div class="pill pill-ship" onclick="setStatus('ส่งงานแล้ว', this)">📦 ส่งงานแล้ว</div>
+                    </div>
+                    <input type="hidden" id="currentStatus" value="รอเริ่มงาน">
+                </div>
+
+                <button class="btn-main" style="width: 100%;" onclick="saveOrder()">
+                    <i class="fas fa-heart"></i> บันทึกข้อมูลคิว
+                </button>
             </div>
         </div>
 
-        <div id="adminOrderList"></div>
+        <h2 style="text-align: center; color: var(--deep-pink);"><i class="fas fa-list-ul"></i> รายการคิวงานทั้งหมด</h2>
+        <div id="queueList">
+            </div>
     </div>
 
     <div class="chat-widget">
-        <div class="chat-window" id="chatWindow">
-            <div class="chat-header">💌 Support Chat</div>
-            <div id="chatDisplay" class="chat-display" style="background: #fffcfd;"></div>
-            <div style="padding: 10px;">
-                <input type="text" id="chatOrderId" placeholder="Order ID ของคุณ" style="margin-bottom: 5px; padding: 8px;">
-                <textarea id="chatMessage" placeholder="พิมพ์ข้อความ..." rows="2" style="margin-bottom: 5px; padding: 8px;"></textarea>
-                <button class="btn-gradient" style="width: 100%; padding: 8px;" onclick="sendChatMessage()">ส่ง ✨</button>
+        <div class="chat-box" id="chatBox">
+            <div class="chat-header">🌸 Support Chat</div>
+            <div class="chat-messages" id="chatMsgs">
+                <div class="msg msg-admin">สวัสดีค่ะ มีอะไรให้แอดมินช่วยไหมคะ? ✨</div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="พิมพ์ข้อความ...">
+                <button class="btn-icon" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
-        <div class="chat-toggle" onclick="toggleChat()"><i class="fas fa-comment-heart"></i></div>
-    </div>
-
-    <div class="overlay" id="loginOverlay">
-        <div class="modal">
-            <h2 style="margin-top:0;">🔒 Admin Login</h2>
-            <input type="password" id="adminPass" placeholder="ใส่รหัสผ่าน (admin123)">
-            <button class="btn-gradient" style="width: 100%;" onclick="checkLogin()">💗 เข้าสู่ระบบ</button>
-            <p onclick="closeLogin()" style="cursor:pointer; color:#aaa; margin-top:15px; font-size:0.8rem;">ยกเลิก</p>
+        <div class="chat-btn" onclick="toggleChat()">
+            <i class="fas fa-comment-dots"></i>
         </div>
     </div>
 
-    <footer>
-        <button onclick="openLogin()" style="background:none; border:none; color:#bbb; cursor:pointer; font-size:0.8rem; margin: 40px 0;">⚙️ สำหรับแอดมิน</button>
-    </footer>
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">✨</div>
+            <h2 style="color: var(--deep-pink); margin-top: 0;">บันทึกข้อมูลสำเร็จ!</h2>
+            <p style="color: #888;">ระบบจัดการข้อมูลคิวเรียบร้อยแล้วค่ะ</p>
+            <button class="btn-main" style="width: 100%; margin-top: 20px;" onclick="closeModal()">
+                ตกลง 💗
+            </button>
+        </div>
+    </div>
 
     <script>
-        let orders = JSON.parse(localStorage.getItem('kawaii_orders')) || [];
-        let messages = JSON.parse(localStorage.getItem('kawaii_messages')) || [];
-        let orderCounter = parseInt(localStorage.getItem('pj_counter')) || 1;
+        /* --- 📋 Data Logic --- */
+        let orders = JSON.parse(localStorage.getItem('kawaii_saas_orders')) || [];
+        let orderCounter = parseInt(localStorage.getItem('kawaii_counter')) || 1;
+        let selectedStatus = "รอเริ่มงาน";
 
-        function saveData() {
-            localStorage.setItem('kawaii_orders', JSON.stringify(orders));
-            localStorage.setItem('kawaii_messages', JSON.stringify(messages));
-            localStorage.setItem('pj_counter', orderCounter.toString());
-            renderAll();
-        }
-
-        function renderAll() {
-            renderClientView();
-            renderAdminView();
-            renderChatHistory();
-        }
-
-        // --- Helper ---
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('คัดลอกลง Clipboard แล้วค่ะ! ✨');
-            });
-        }
-
-        function toggleChat() {
-            const win = document.getElementById('chatWindow');
-            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        // --- Admin Functions ---
-        function checkLogin() {
-            if (document.getElementById('adminPass').value === 'admin123') {
-                document.getElementById('clientView').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                closeLogin();
-            } else { alert('รหัสผ่านผิดนะค๊าาา~ ❌'); }
-        }
-
-        function logout() {
-            document.getElementById('clientView').style.display = 'block';
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('adminPass').value = '';
-        }
-
-        function adjustPercent(val) {
-            let s = document.getElementById('workPercent');
-            s.value = Math.min(100, parseInt(s.value) + val);
-            document.getElementById('percentVal').innerText = s.value + '%';
+        function setStatus(status, el) {
+            selectedStatus = status;
+            document.getElementById('currentStatus').value = status;
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
         }
 
         function saveOrder() {
-            const idx = parseInt(document.getElementById('editIndex').value);
-            let id = document.getElementById('orderId').value;
+            const title = document.getElementById('jobTitle').value;
+            const name = document.getElementById('custName').value;
+            const platform = document.getElementById('platform').value;
+            const progress = document.getElementById('progress').value;
+            const editIdx = parseInt(document.getElementById('editIndex').value);
             
-            // Auto Generate ID if empty
-            if(!id && idx === -1) {
-                id = `PJ-${String(orderCounter).padStart(3, '0')}`;
-                orderCounter++;
-            }
+            if(!title || !name) return alert("กรุณากรอกข้อมูลให้ครบนะคะ 🎀");
 
-            const newOrder = {
-                id: id,
-                queue: document.getElementById('queueNum').value || (orders.length + 1),
-                name: document.getElementById('custName').value,
-                contact: document.getElementById('custContact').value,
-                detail: document.getElementById('workDetail').value,
-                status: document.getElementById('workStatus').value,
-                percent: document.getElementById('workPercent').value,
-                note: document.getElementById('adminNote').value,
-                updated: new Date().toLocaleString('th-TH')
-            };
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            const dateStr = now.toLocaleDateString('th-TH');
 
-            if (idx === -1) {
+            if(editIdx === -1) {
+                // NEW ORDER
+                const newOrder = {
+                    id: `PJ-${orderCounter.toString().padStart(3, '0')}`,
+                    title, name, platform, progress,
+                    status: selectedStatus,
+                    date: dateStr,
+                    lastUpdate: timeStr
+                };
                 orders.push(newOrder);
-                // Auto copy message for new order
-                const autoMsg = `เลขออเดอร์ของคุณคือ ${newOrder.id}\nขอบคุณที่ใช้บริการค่ะ\nสามารถตรวจสอบคิวได้ที่ลิงก์นี้: ${window.location.href}`;
-                copyText(autoMsg);
+                orderCounter++;
             } else {
-                orders[idx] = newOrder;
+                // EDIT ORDER
+                orders[editIdx].title = title;
+                orders[editIdx].name = name;
+                orders[editIdx].platform = platform;
+                orders[editIdx].progress = progress;
+                orders[editIdx].status = selectedStatus;
+                orders[editIdx].lastUpdate = timeStr;
             }
 
-            resetAdminForm();
-            saveData();
-            alert('บันทึกข้อมูลสำเร็จ! ✨');
+            localStorage.setItem('kawaii_saas_orders', JSON.stringify(orders));
+            localStorage.setItem('kawaii_counter', orderCounter);
+            
+            renderOrders();
+            resetForm();
+            openModal();
         }
 
-        function resetAdminForm() {
-            document.getElementById('editIndex').value = "-1";
-            document.getElementById('adminForm').querySelectorAll('input, textarea').forEach(i => i.value = '');
-            document.getElementById('workPercent').value = 0;
-            document.getElementById('percentVal').innerText = '0%';
-        }
+        function renderOrders() {
+            const list = document.getElementById('queueList');
+            list.innerHTML = "";
 
-        function deleteOrder(i) { if(confirm('จะลบคิวนี้จริงๆ หรอคะ? 🥺')) { orders.splice(i, 1); saveData(); } }
+            orders.forEach((o, i) => {
+                const card = document.createElement('div');
+                card.className = "queue-card";
+                card.innerHTML = `
+                    <div class="indicator" style="background: ${getStatusColor(o.status)}"></div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <span class="order-id-tag">${o.id}</span>
+                            <span class="date-badge">📅 ${o.date}</span>
+                        </div>
+                        <div class="job-title">${o.title}</div>
+                        <div class="customer-info">
+                            <strong>👤 ${o.name}</strong>
+                            <span class="platform-tag">${o.platform}</span>
+                        </div>
+                        
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:bold;">
+                            <span>Progress</span>
+                            <span style="color:var(--deep-pink)">${o.progress}%</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-fill" style="width: ${o.progress}%; background:${getStatusColor(o.status)}"></div>
+                        </div>
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:0.85rem; font-weight:bold; color:${getStatusColor(o.status)}">${o.status}</span>
+                            <div class="update-time">🕒 อัปเดตล่าสุด: ${o.lastUpdate} น.</div>
+                        </div>
 
-        function editOrder(i) {
-            const o = orders[i];
-            document.getElementById('editIndex').value = i;
-            document.getElementById('orderId').value = o.id;
-            document.getElementById('queueNum').value = o.queue;
-            document.getElementById('custName').value = o.name;
-            document.getElementById('custContact').value = o.contact;
-            document.getElementById('workDetail').value = o.detail;
-            document.getElementById('workStatus').value = o.status;
-            document.getElementById('workPercent').value = o.percent;
-            document.getElementById('percentVal').innerText = o.percent + '%';
-            document.getElementById('adminNote').value = o.note;
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-
-        // --- Client Functions ---
-        function searchOrder() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const results = orders.filter(o => 
-                o.id.toLowerCase().includes(term) || o.name.toLowerCase().includes(term) || o.contact.toLowerCase().includes(term)
-            );
-
-            const display = document.getElementById('searchResults');
-            if (results.length === 0) {
-                display.innerHTML = '<div class="card" style="text-align:center;">ไม่พบข้อมูลออเดอร์ค่ะ 😿</div>';
-                return;
-            }
-
-            display.innerHTML = results.map(o => `
-                <div class="card" style="border-left: 10px solid ${getStatusColor(o.status)}">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="status-pill" style="background:${getStatusColor(o.status)}">${o.status}</span>
-                        <strong style="color:var(--primary-pink); font-size:1.2rem;">คิวที่ ${o.queue}</strong>
+                        <div class="admin-controls">
+                            <button class="btn-icon" title="Copy Message" onclick="copyFullMsg(${i})"><i class="fas fa-share-square"></i></button>
+                            <button class="btn-icon" title="Copy ID" onclick="copyToClip('${o.id}')"><i class="fas fa-fingerprint"></i></button>
+                            <button class="btn-icon" title="Edit" onclick="editOrder(${i})"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon" title="Delete" onclick="deleteOrder(${i})" style="color:#ffafcc"><i class="fas fa-trash"></i></button>
+                        </div>
                     </div>
-                    <h2 style="text-align:left; margin: 10px 0;">Order #${o.id}</h2>
-                    <p><strong>ชื่อ:</strong> ${o.name} | <strong>งาน:</strong> ${o.detail}</p>
-                    <div class="progress-container"><div class="progress-bar" style="width:${o.percent}%"></div></div>
-                    <p style="text-align:right; font-size:0.8rem; margin:0;">ความคืบหน้า: ${o.percent}%</p>
-                    <div style="background:#fff; padding:15px; border-radius:15px; margin-top:10px; font-size:0.9rem;">
-                        <strong>💬 อัปเดตจากแอดมิน:</strong> ${o.note || 'กำลังดำเนินการค่ะ'}
-                    </div>
-                    <small style="display:block; margin-top:10px; color:#aaa;">อัปเดตล่าสุด: ${o.updated}</small>
-                </div>
-            `).join('');
+                `;
+                list.appendChild(card);
+            });
         }
 
         function getStatusColor(s) {
-            const colors = {'รอเริ่มงาน':'#ccc', 'กำลังทำ':'#cdb4db', 'ใกล้เสร็จ':'#ffafcc', 'เสร็จแล้ว':'#a2d2ff', 'ส่งงานแล้ว':'#bde0fe'};
-            return colors[s] || '#ffafcc';
+            if(s === 'กำลังทำ') return '#ff85a1';
+            if(s === 'ใกล้เสร็จ') return '#ba68c8';
+            if(s === 'เสร็จแล้ว') return '#64b5f6';
+            if(s === 'ส่งงานแล้ว') return '#81c784';
+            return '#bbb';
         }
 
-        function sendChatMessage() {
-            const id = document.getElementById('chatOrderId').value;
-            const msg = document.getElementById('chatMessage').value;
-            if(!id) return alert('กรุณาระบุ Order ID ก่อนนะคะ 🎀');
-            if(!msg) return;
+        /* --- 📋 Utils --- */
+        function copyToClip(text) {
+            navigator.clipboard.writeText(text);
+            alert("คัดลอก '" + text + "' แล้วค่ะ ✨");
+        }
 
-            messages.push({id, text: msg, sender: 'user', time: new Date().toLocaleTimeString()});
-            document.getElementById('chatMessage').value = '';
+        function copyFullMsg(i) {
+            const o = orders[i];
+            const msg = `เลขออเดอร์: ${o.id}\nลูกค้า: ${o.name}\nงาน: ${o.title}\nวันที่รับงาน: ${o.date}\nสถานะ: ${o.status} (${o.progress}%)\nอัปเดตล่าสุด: ${o.lastUpdate} น.`;
+            copyToClip(msg);
+        }
+
+        function editOrder(i) {
+            const o = orders[i];
+            document.getElementById('jobTitle').value = o.title;
+            document.getElementById('custName').value = o.name;
+            document.getElementById('platform').value = o.platform;
+            document.getElementById('progress').value = o.progress;
+            document.getElementById('editIndex').value = i;
+            document.getElementById('formTitle').innerHTML = "📝 แก้ไขออเดอร์ " + o.id;
             
-            setTimeout(() => {
-                messages.push({id, text: 'รับทราบค่ะ! แอดมินจะรีบตอบกลับภายใน 1-5 นาทีนะค๊าาา ✨', sender: 'admin', time: new Date().toLocaleTimeString()});
-                saveData();
-            }, 1000);
-            saveData();
+            // Set status pill active
+            const pills = document.querySelectorAll('.pill');
+            pills.forEach(p => {
+                if(p.innerText.includes(o.status)) setStatus(o.status, p);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function renderChatHistory() {
-            const display = document.getElementById('chatDisplay');
-            display.innerHTML = messages.slice(-15).map(m => `
-                <div class="chat-bubble ${m.sender==='user'?'chat-user':'chat-admin'}">
-                    <small style="font-size:0.6rem; opacity:0.6; display:block;">${m.id} - ${m.time}</small>
-                    ${m.text}
-                </div>
-            `).join('');
-            display.scrollTop = display.scrollHeight;
-        }
-
-        function renderClientView() {
-            const list = document.getElementById('allQueuesList');
-            if (orders.length === 0) { list.innerHTML = '<p style="text-align:center; color:#ccc;">ยังไม่มีคิวงาน</p>'; return; }
-            
-            list.innerHTML = orders.map(o => `
-                <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px dashed #eee; align-items:center;">
-                    <span><strong>#${o.id}</strong> ${o.name}</span>
-                    <span style="font-weight:bold; color:var(--primary-pink);">คิว ${o.queue}</span>
-                    <span style="font-size:0.7rem; background:${getStatusColor(o.status)}; color:white; padding:2px 8px; border-radius:10px;">${o.status}</span>
-                </div>
-            `).join('');
-            
-            const active = orders.find(o => o.status === 'กำลังทำ');
-            document.getElementById('queueStatusSummary').innerHTML = active ? `ขณะนี้แอดมินกำลังทำ <strong>คิวที่ ${active.queue}</strong> อยู่ค่ะ ✨` : 'ยังไม่มีคิวที่กำลังดำเนินการ';
-        }
-
-        function renderAdminView() {
-            const list = document.getElementById('adminOrderList');
-            const stats = document.getElementById('adminStats');
-            
-            const total = orders.length;
-            const doing = orders.filter(o => o.status === 'กำลังทำ' || o.status === 'ใกล้เสร็จ').length;
-            const done = orders.filter(o => o.status === 'เสร็จแล้ว' || o.status === 'ส่งงานแล้ว').length;
-
-            stats.innerHTML = `
-                <div class="stat-card"><div>งานทั้งหมด</div><div class="stat-val">${total}</div></div>
-                <div class="stat-card"><div>กำลังทำ</div><div class="stat-val" style="color:#cdb4db">${doing}</div></div>
-                <div class="stat-card"><div>เสร็จแล้ว</div><div class="stat-val" style="color:#a2d2ff">${done}</div></div>
-            `;
-
-            list.innerHTML = orders.map((o, i) => {
-                const fullInfo = `ออเดอร์: ${o.id}\nลูกค้า: ${o.name}\nรายละเอียด: ${o.detail}\nสถานะ: ${o.status} (${o.percent}%)`;
-                const customerMsg = `เลขออเดอร์ของคุณคือ ${o.id}\nสามารถตรวจสอบสถานะงานได้ที่นี่: ${window.location.href}`;
-                
-                return `
-                <div class="card" style="padding:15px; border-left:5px solid ${getStatusColor(o.status)}">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <strong>#${o.id} (คิว ${o.queue})</strong>
-                        <span class="status-pill" style="background:${getStatusColor(o.status)}">${o.status}</span>
-                    </div>
-                    <div style="font-size: 0.9rem; margin-top: 5px;">ลูกค้า: ${o.name} | ${o.percent}%</div>
-                    
-                    <div style="margin-top:10px; display: flex; gap: 5px; flex-wrap: wrap;">
-                        <button class="btn-gradient" onclick="editOrder(${i})" style="padding:5px 12px; font-size:0.75rem;">แก้ไข</button>
-                        <button class="btn-gradient btn-copy" onclick="copyText('${o.id}')" style="padding:5px 12px; font-size:0.75rem;">คัดลอก ID</button>
-                        <button class="btn-gradient btn-copy" onclick="copyText('${o.name}')" style="padding:5px 12px; font-size:0.75rem;">คัดลอกชื่อ</button>
-                        <button class="btn-gradient btn-copy" onclick="copyText('${customerMsg}')" style="padding:5px 12px; font-size:0.75rem; background: var(--primary-purple); color:white;">คัดลอกข้อความส่งลูกค้า</button>
-                        <button class="btn-gradient" onclick="replyAdmin('${o.id}')" style="padding:5px 12px; font-size:0.75rem; background: #a2d2ff;">ตอบแชท</button>
-                        <button class="btn-gradient" onclick="deleteOrder(${i})" style="padding:5px 12px; font-size:0.75rem; background:#ff758c;">ลบ</button>
-                    </div>
-                </div>
-            `}).join('');
-        }
-
-        function replyAdmin(id) {
-            const msg = prompt(`ตอบกลับออเดอร์ ${id}:`);
-            if(msg) {
-                messages.push({id, text: msg, sender: 'admin', time: new Date().toLocaleTimeString()});
-                saveData();
+        function deleteOrder(i) {
+            if(confirm("ลบออเดอร์นี้ใช่ไหมคะ? 🥺")) {
+                orders.splice(i, 1);
+                localStorage.setItem('kawaii_saas_orders', JSON.stringify(orders));
+                renderOrders();
             }
         }
 
-        function createParticles() {
-            const container = document.getElementById('floatingParticles');
-            const emojis = ['🌸', '✨', '💗', '⭐', '🎀', '🫧', '💫'];
+        function resetForm() {
+            document.getElementById('orderForm').querySelectorAll('input').forEach(i => i.value = '');
+            document.getElementById('editIndex').value = "-1";
+            document.getElementById('progress').value = 0;
+            document.getElementById('formTitle').innerHTML = "<i class='fas fa-plus-circle'></i> สร้างออเดอร์ใหม่";
+        }
+
+        /* --- 🏠 UI Effects --- */
+        function toggleChat() {
+            const box = document.getElementById('chatBox');
+            box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            if(!input.value) return;
+            const chatMsgs = document.getElementById('chatMsgs');
+            
+            chatMsgs.innerHTML += `<div class="msg msg-user">${input.value}</div>`;
+            input.value = "";
+            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+
+            setTimeout(() => {
+                chatMsgs.innerHTML += `<div class="msg msg-admin">แอดมินรับทราบค่ะ จะรีบตรวจสอบข้อมูลให้นะคะ 🫧</div>`;
+                chatMsgs.scrollTop = chatMsgs.scrollHeight;
+            }, 1000);
+        }
+
+        function openModal() { document.getElementById('successModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('successModal').style.display = 'none'; }
+
+        // Heart Background
+        function createHearts() {
+            const container = document.getElementById('particles');
+            const icons = ['💗', '✨', '🌸', '🍬'];
             setInterval(() => {
-                const el = document.createElement('div');
-                el.className = 'emoji-particle';
-                el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-                el.style.left = Math.random() * 100 + 'vw';
-                el.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                container.appendChild(el);
-                setTimeout(() => el.remove(), 10000);
-            }, 800);
+                const h = document.createElement('div');
+                h.className = 'heart';
+                h.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                h.style.left = Math.random() * 100 + "vw";
+                h.style.animationDuration = (Math.random() * 3 + 5) + "s";
+                container.appendChild(h);
+                setTimeout(() => h.remove(), 8000);
+            }, 1500);
         }
 
-        function openLogin() { document.getElementById('loginOverlay').style.display = 'flex'; }
-        function closeLogin() { document.getElementById('loginOverlay').style.display = 'none'; }
-
-        document.getElementById('workPercent').oninput = function() {
-            document.getElementById('percentVal').innerText = this.value + '%';
-        }
-
-        window.onload = () => { createParticles(); renderAll(); };
+        window.onload = () => {
+            renderOrders();
+            createHearts();
+        };
     </script>
 </body>
 </html>

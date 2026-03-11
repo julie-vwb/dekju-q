@@ -900,13 +900,15 @@
         }
 
         let id = document.getElementById('orderId').value.trim();
-        if (!id) {
+        const editIdx = document.getElementById('orderForm').dataset.editIdx;
+        
+        if (!id && !editIdx) {
             id = `PJ-${String(orderCounter).padStart(3, '0')}`;
             orderCounter++;
         }
 
         const order = {
-            id: id,
+            id: id || (editIdx ? orders[editIdx].id : `PJ-${String(orderCounter).padStart(3, '0')}`),
             queue: document.getElementById('queueNum').value || orders.length + 1,
             name: name,
             contact: document.getElementById('custContact').value.trim(),
@@ -918,7 +920,15 @@
             time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
         };
 
-        orders.push(order);
+        if (editIdx !== undefined && editIdx !== '') {
+            orders[editIdx] = order;
+            showToast('✨ อัปเดตออเดอร์สำเร็จ!');
+        } else {
+            orders.push(order);
+            showToast('✨ บันทึกออเดอร์สำเร็จ!');
+        }
+
+        document.getElementById('orderForm').dataset.editIdx = '';
         document.getElementById('orderForm').reset();
         document.getElementById('workPercent').value = 0;
         document.getElementById('progressPercent').textContent = '0%';
@@ -927,7 +937,6 @@
         document.querySelectorAll('.status-pill').forEach((p, i) => p.classList.toggle('active', i === 0));
 
         saveData();
-        showToast('✨ บันทึกออเดอร์สำเร็จ!');
     }
 
     // Delete order
@@ -939,6 +948,70 @@
         }
     }
 
+    // Edit order
+    function editOrder(id) {
+        const order = orders.find(o => o.id === id);
+        if (!order) return;
+
+        document.getElementById('orderId').value = order.id;
+        document.getElementById('queueNum').value = order.queue;
+        document.getElementById('custName').value = order.name;
+        document.getElementById('custContact').value = order.contact;
+        document.getElementById('workDetail').value = order.detail;
+        document.getElementById('adminNote').value = order.note;
+        document.getElementById('workPercent').value = order.percent;
+        document.getElementById('workStatus').value = order.status;
+        document.getElementById('progressPercent').textContent = order.percent + '%';
+        document.getElementById('progressBar').style.width = order.percent + '%';
+
+        document.querySelectorAll('.progress-pill').forEach(p => {
+            p.classList.toggle('active', p.getAttribute('data-percent') === order.percent.toString());
+        });
+        document.querySelectorAll('.status-pill').forEach(p => {
+            p.classList.toggle('active', p.getAttribute('data-status') === order.status);
+        });
+
+        document.getElementById('orderForm').dataset.editIdx = orders.indexOf(order);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showToast('✏️ แก้ไขออเดอร์: ' + id);
+    }
+
+    // Copy order info
+    function copyOrder(id) {
+        const order = orders.find(o => o.id === id);
+        if (!order) return;
+
+        const siteUrl = window.location.href.split('?')[0];
+        const checkUrl = `${siteUrl}?check=${order.id}`;
+
+        const text = `🎀 ออเดอร์ของคุณได้ถูกรับเข้าระบบแล้ว! ✨
+```
+
+📌 เลขออเดอร์: ${order.id}
+👤 ชื่อ: ${order.name}
+📞 ติดต่อ: ${order.contact}
+📋 รายละเอียดงาน: ${order.detail}
+
+📅 วันที่รับงาน: ${order.date}
+🕒 เวลา: ${order.time}
+
+✅ สถานะ: ${order.status}
+📊 ความคืบหน้า: ${order.percent}%
+
+🔗 ตรวจสอบคิวของคุณได้ที่นี่:
+${checkUrl}
+
+หรือค้นหาด้วยเลขออเดอร์ ${order.id}
+ขอบคุณที่ใช้บริการค่ะ! 💗`;
+
+```
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('✨ คัดลอกข้อมูลแล้ว');
+        }).catch(() => {
+            showToast('❌ ไม่สามารถคัดลอกได้');
+        });
+    }
+
     // Search order
     function searchOrder() {
         const term = document.getElementById('searchInput').value.toLowerCase();
@@ -948,8 +1021,8 @@
         }
 
         const results = orders.filter(o => 
-            o.id.toLowerCase().includes(term) || 
-            o.name.toLowerCase().includes(term)
+            (o.id && o.id.toLowerCase().includes(term)) || 
+            (o.name && o.name.toLowerCase().includes(term))
         );
 
         const display = document.getElementById('searchResults');
@@ -962,17 +1035,19 @@
             <div class="card">
                 <div class="queue-header">
                     <div class="queue-title">
-                        <h4>${o.id}</h4>
-                        <p>👤 ${o.name}</p>
+                        <h4>${o.id || '-'}</h4>
+                        <p>👤 ${o.name || '-'}</p>
                     </div>
-                    <span class="queue-badge">#${o.queue}</span>
+                    <span class="queue-badge">#${o.queue || '-'}</span>
                 </div>
-                <p><strong>📋 รายละเอียด:</strong> ${o.detail}</p>
-                <p><strong>สถานะ:</strong> ${o.status}</p>
+                <p><strong>📋 รายละเอียด:</strong> ${o.detail || '-'}</p>
+                <p><strong>📞 ติดต่อ:</strong> ${o.contact || '-'}</p>
+                <p><strong>📌 สถานะ:</strong> ${o.status || '-'}</p>
+                <p><strong>💬 บันทึก:</strong> ${o.note || 'ไม่มี'}</p>
                 <div class="progress-bar-container">
-                    <div class="progress-bar-fill" style="width: ${o.percent}%"></div>
+                    <div class="progress-bar-fill" style="width: ${o.percent || 0}%"></div>
                 </div>
-                <p style="text-align: right; color: var(--text-light); font-size: 0.8rem;">📅 ${o.date} 🕒 ${o.time}</p>
+                <p style="text-align: right; color: var(--text-light); font-size: 0.8rem;">📅 ${o.date || '-'} 🕒 ${o.time || '-'}</p>
             </div>
         `).join('');
     }
@@ -994,16 +1069,17 @@
                 <div class="queue-card">
                     <div class="queue-header">
                         <div class="queue-title">
-                            <h4>${o.id}</h4>
-                            <p>👤 ${o.name}</p>
+                            <h4>${o.id || '-'}</h4>
+                            <p>👤 ${o.name || '-'}</p>
                         </div>
-                        <span class="queue-badge">#${o.queue}</span>
+                        <span class="queue-badge">#${o.queue || '-'}</span>
                     </div>
-                    <p style="margin: 8px 0; color: var(--text-light); font-size: 0.85rem;">📋 ${o.detail}</p>
+                    <p style="margin: 8px 0; color: var(--text-light); font-size: 0.85rem;">📋 ${o.detail || '-'}</p>
+                    <p style="margin: 4px 0; color: var(--text-light); font-size: 0.8rem;">📌 ${o.status || '-'}</p>
                     <div class="progress-bar-container">
-                        <div class="progress-bar-fill" style="width: ${o.percent}%"></div>
+                        <div class="progress-bar-fill" style="width: ${o.percent || 0}%"></div>
                     </div>
-                    <p style="text-align: right; color: var(--text-light); font-size: 0.75rem;">${o.date} ${o.time}</p>
+                    <p style="text-align: right; color: var(--text-light); font-size: 0.75rem;">${o.date || '-'} ${o.time || '-'}</p>
                 </div>
             `).join('');
 
@@ -1022,20 +1098,31 @@
                 <div class="card">
                     <div class="queue-header">
                         <div class="queue-title">
-                            <h4>${o.id}</h4>
-                            <p>👤 ${o.name}</p>
+                            <h4>${o.id || '-'}</h4>
+                            <p>👤 ${o.name || '-'}</p>
                         </div>
-                        <span class="queue-badge">#${o.queue}</span>
+                        <span class="queue-badge">#${o.queue || '-'}</span>
                     </div>
-                    <p><strong>📋 รายละเอียด:</strong> ${o.detail}</p>
-                    <p><strong>📌 สถานะ:</strong> ${o.status}</p>
+                    <p><strong>📋 รายละเอียด:</strong> ${o.detail || '-'}</p>
+                    <p><strong>📞 ติดต่อ:</strong> ${o.contact || '-'}</p>
+                    <p><strong>📌 สถานะ:</strong> ${o.status || '-'}</p>
+                    <p><strong>📊 ความคืบหน้า:</strong> ${o.percent || 0}%</p>
                     <div class="progress-bar-container">
-                        <div class="progress-bar-fill" style="width: ${o.percent}%"></div>
+                        <div class="progress-bar-fill" style="width: ${o.percent || 0}%"></div>
                     </div>
                     <p><strong>💬 บันทึก:</strong> ${o.note || 'ไม่มี'}</p>
-                    <button class="btn btn-danger btn-small" onclick="deleteOrder('${o.id}')">
-                        <i class="fas fa-trash"></i> ลบ
-                    </button>
+                    <p style="font-size: 0.8rem; color: var(--text-light);">📅 ${o.date || '-'} 🕒 ${o.time || '-'}</p>
+                    <div class="btn-group" style="margin-top: 12px;">
+                        <button class="btn btn-primary btn-small" onclick="editOrder('${o.id}')">
+                            <i class="fas fa-edit"></i> แก้ไข
+                        </button>
+                        <button class="btn btn-primary btn-small" onclick="copyOrder('${o.id}')">
+                            <i class="fas fa-copy"></i> คัดลอก
+                        </button>
+                        <button class="btn btn-danger btn-small" onclick="deleteOrder('${o.id}')">
+                            <i class="fas fa-trash"></i> ลบ
+                        </button>
+                    </div>
                 </div>
             `).join('');
         }

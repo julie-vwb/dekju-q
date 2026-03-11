@@ -2243,6 +2243,11 @@
         </div>
     </div>
 </div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 🔐 LOGIN MODAL -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="overlay" id="loginOverlay">
     <div class="modal">
         <h2>🔒 Admin Login</h2>
         <p>กรุณาใส่รหัสผ่านเพื่อเข้าสู่ระบบจัดการ</p>
@@ -2961,33 +2966,41 @@ ${checkLink}
     /* ═══════════════════════════════════════════════════════════════ */
     /* 💊 PILL BUTTONS HANDLERS */
     /* ═══════════════════════════════════════════════════════════════ */
-    document.querySelectorAll('.progress-pill-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const percent = this.getAttribute('data-percent');
-            document.getElementById('workPercent').value = percent;
-            document.getElementById('percentDisplay').innerText = percent + '%';
-            
-            document.querySelectorAll('.progress-pill-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            showToast(`📊 ตั้งค่าความคืบหน้าเป็น ${percent}%`);
+    /* ═══════════════════════════════════════════════════════════════ */
+    /* 💊 PILL BUTTONS HANDLERS */
+    /* ═══════════════════════════════════════════════════════════════ */
+    function initPillButtons() {
+        document.querySelectorAll('.progress-pill-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const percent = this.getAttribute('data-percent');
+                document.getElementById('workPercent').value = percent;
+                document.getElementById('percentDisplay').innerText = percent + '%';
+                
+                document.querySelectorAll('.progress-pill-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                showToast(`📊 ตั้งค่าความคืบหน้าเป็น ${percent}%`);
+            });
         });
-    });
 
-    document.querySelectorAll('.pill-status-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const status = this.getAttribute('data-status');
-            document.getElementById('workStatus').value = status;
-            
-            const statusInfo = STATUS_INFO[status] || STATUS_INFO['รอเริ่มงาน'];
-            document.getElementById('statusDisplay').innerText = `✓ ${status}`;
-            
-            document.querySelectorAll('.pill-status-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            showToast(`📌 อัพเดตสถานะเป็น ${status}`);
+        document.querySelectorAll('.pill-status-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const status = this.getAttribute('data-status');
+                document.getElementById('workStatus').value = status;
+                
+                const statusInfo = STATUS_INFO[status] || STATUS_INFO['รอเริ่มงาน'];
+                document.getElementById('statusDisplay').innerText = `✓ ${status}`;
+                
+                document.querySelectorAll('.pill-status-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                showToast(`📌 อัพเดตสถานะเป็น ${status}`);
+            });
         });
-    });
+    }
+
 
     /* ═══════════════════════════════════════════════════════════════ */
     /* 🚀 INITIALIZATION & QUERY HANDLER */
@@ -3012,6 +3025,9 @@ ${checkLink}
             document.getElementById('searchInput').value = checkId;
             setTimeout(() => searchOrder(), 500);
         }
+
+        // Initialize pill button handlers
+        initPillButtons();
     });
 </script>
 ```

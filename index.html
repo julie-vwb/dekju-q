@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🎀 PJ Kawaii Queue ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CSS พื้นฐานเดิม */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mitr', sans-serif !important; }
         body { background: linear-gradient(135deg, #ffe4f5 0%, #f3e5ff 50%, #e5f4ff 100%); background-attachment: fixed; min-height: 100vh; color: #4a4a4a; overflow-x: hidden; }
         
@@ -17,24 +15,23 @@
         .shop-logo-top { width: 35px; height: 35px; border-radius: 50%; background: #ffb3d9; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .shop-logo-top img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* ปรับปรุง: ประกาศแบบนิ่ง (ไม่เลื่อน) */
         .broadcast-container { background: #fff0f7; border: 2px solid #ffb3d9; border-radius: 20px; margin: 15px 0; padding: 12px 15px; display: none; align-items: flex-start; gap: 10px; box-shadow: 0 4px 12px rgba(255,179,217,0.1); }
         .broadcast-label { background: #ffb3d9; color: white; padding: 2px 8px; border-radius: 8px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; margin-top: 2px; }
         .broadcast-text-fixed { color: #ff5da2; font-weight: 500; font-size: 0.85rem; line-height: 1.4; }
 
-        /* ปรับปรุง: Guide Cards 4 ช่องแบบตะมุตะมิ ไม่เต็มจอ */
-        .guide-section { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; padding: 0 5px; }
-        .guide-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(5px); padding: 12px 8px; border-radius: 20px; box-shadow: 0 4px 10px rgba(255,179,217,0.1); border: 1px solid #fff; text-align: center; }
-        .guide-card i { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.1rem; margin-bottom: 5px; }
+        /* Guide Cards ในหน้าต่าง Modal */
+        .guide-section { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
+        .guide-card { background: #fff0f7; padding: 12px 8px; border-radius: 20px; border: 1px solid #ffb3d9; text-align: center; }
+        .guide-emoji { font-size: 1.5rem; margin-bottom: 5px; display: block; }
         .guide-card h4 { font-size: 0.75rem; color: #ff85b3; margin-bottom: 2px; }
         .guide-card p { font-size: 0.6rem; color: #888; line-height: 1.2; }
 
-        /* สไตล์เดิมอื่นๆ */
         .side-drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 2001; transition: 0.3s; padding: 30px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
         .side-drawer.active { left: 0; }
-        .drawer-item { padding: 15px; border-radius: 12px; margin-bottom: 5px; cursor: pointer; color: #666; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .drawer-item { padding: 15px; border-radius: 12px; margin-bottom: 5px; cursor: pointer; color: #666; display: flex; align-items: center; gap: 10px; text-decoration: none; border: none; background: none; width: 100%; font-size: 1rem; }
         .drawer-item:hover { background: #fff0f7; color: #ff85b3; }
         .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2000; display: none; }
+        
         .container { max-width: 600px; margin: 0 auto; padding: 20px 15px; padding-bottom: 100px; }
         .nav-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
         .toggle-btn { padding: 12px 24px; border: none; border-radius: 50px; background: white; color: #ff85b3; font-weight: 500; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
@@ -60,6 +57,11 @@
         .btn-edit { background: #fdf6e3; color: #b58900; }
         .btn-del { background: #fff0f0; color: #ff6b6b; }
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ff85b3; color: white; padding: 10px 20px; border-radius: 50px; z-index: 9999; display: none; }
+        
+        /* Modal General Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 10000; }
+        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 90%; max-width: 380px; text-align: center; position: relative; }
+
         #chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
         #chat-btn { width: 60px; height: 60px; border-radius: 30px; background: linear-gradient(135deg, #ffb3d9, #d8c5e8); border: none; color: white; font-size: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255,133,179,0.4); }
         #chat-window { position: fixed; bottom: 90px; right: 20px; width: 320px; height: 450px; background: white; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; flex-direction: column; overflow: hidden; border: 1px solid #fce4ec; }
@@ -70,10 +72,6 @@
         .chat-body .msg.admin { align-self: flex-start; background: white; border: 1px solid #ffe4f5; border-bottom-left-radius: 2px; }
         .chat-body .msg.user { align-self: flex-end; background: #ffb3d9; color: white; border-bottom-right-radius: 2px; }
         .admin-chat-preview { height: 180px; background: #fff; border: 2px solid #fff0f7; border-radius: 20px; margin-bottom: 10px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .admin-chat-preview .msg.user { align-self: flex-start; background: #f0f0f0; color: #333; border-bottom-left-radius: 2px; }
-        .admin-chat-preview .msg.admin { align-self: flex-end; background: #ffb3d9; color: white; border-bottom-right-radius: 2px; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 10000; }
-        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 85%; max-width: 320px; text-align: center; }
     </style>
 </head>
 <body>
@@ -88,9 +86,39 @@
 
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <div class="side-drawer" id="sideDrawer">
-        <h3 style="color:#ff85b3; margin-bottom:20px;">เมนู</h3>
-        <div class="drawer-item" onclick="toggleDrawer(); showView('client')">🔍 ตรวจสอบคิว</div>
+        <h3 style="color:#ff85b3; margin-bottom:20px; padding-left:15px;">เมนู</h3>
+        <button class="drawer-item" onclick="toggleDrawer(); showView('client')">🔎 ตรวจสอบคิว</button>
+        <button class="drawer-item" onclick="toggleDrawer(); openHowToModal()">📖 วิธีการใช้งานเว็บ</button>
         <a href="https://lin.ee/a5pIvAMe" target="_blank" class="drawer-item" style="text-decoration:none;">💬 ติดต่อแอดมิน</a>
+    </div>
+
+    <div id="howToModal" class="modal-overlay" onclick="closeHowToModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3 style="color:#ff85b3">📖 วิธีการใช้งาน</h3>
+            <div class="guide-section">
+                <div class="guide-card">
+                    <span class="guide-emoji">🔍</span>
+                    <h4>ค้นหาคิว</h4>
+                    <p>ใส่เลข PJ หรือชื่อ</p>
+                </div>
+                <div class="guide-card">
+                    <span class="guide-emoji">💬</span>
+                    <h4>คุยกับเรา</h4>
+                    <p>แชทสดมุมขวาล่าง</p>
+                </div>
+                <div class="guide-card">
+                    <span class="guide-emoji">🪄</span>
+                    <h4>สถานะงาน</h4>
+                    <p>อัปเดตแบบเรียลไทม์</p>
+                </div>
+                <div class="guide-card">
+                    <span class="guide-emoji">📢</span>
+                    <h4>ข่าวด่วน</h4>
+                    <p>ติดตามประกาศร้าน</p>
+                </div>
+            </div>
+            <button class="btn btn-save" style="margin-top: 20px;" onclick="closeHowToModal()">รับทราบค่ะ ✨</button>
+        </div>
     </div>
 
     <div id="toast" class="toast"></div>
@@ -113,29 +141,6 @@
         </div>
 
         <div id="clientView">
-            <div class="guide-section">
-                <div class="guide-card">
-                    <i class="fa-solid fa-search"></i>
-                    <h4>ค้นหาคิว</h4>
-                    <p>ใส่เลข PJ หรือชื่อ</p>
-                </div>
-                <div class="guide-card">
-                    <i class="fa-solid fa-comments"></i>
-                    <h4>คุยกับเรา</h4>
-                    <p>แชทสดมุมขวาล่าง</p>
-                </div>
-                <div class="guide-card">
-                    <i class="fa-solid fa-magic-wand-sparkles"></i>
-                    <h4>สถานะงาน</h4>
-                    <p>อัปเดตแบบเรียลไทม์</p>
-                </div>
-                <div class="guide-card">
-                    <i class="fa-solid fa-bell"></i>
-                    <h4>ข่าวด่วน</h4>
-                    <p>ติดตามประกาศร้าน</p>
-                </div>
-            </div>
-
             <div id="broadcastArea" class="broadcast-container">
                 <div class="broadcast-label">NOTICE</div>
                 <div class="broadcast-text-fixed" id="broadcastText"></div>
@@ -163,7 +168,7 @@
                 <p id="activeChatTarget" style="font-size:0.8rem; color:#888; margin-bottom:10px; font-weight:500;">คุยกับ: -</p>
                 <div style="display:flex; gap:8px;">
                     <input type="text" id="adminReplyInput" placeholder="ตอบแชทลูกค้าที่นี่..." style="margin-bottom:0;" onkeypress="if(event.key==='Enter') adminSendMsg()">
-                    <button onclick="adminSendMsg()" style="background:#ffb3d9; border:none; border-radius:15px; padding:0 15px; color:white; cursor:pointer; font-size: 20px;">✈️</button>
+                    <button onclick="adminSendMsg()" style="background:#ffb3d9; border:none; border-radius:15px; padding:0 15px; color:white; cursor:pointer; font-size: 20px;">🚀</button>
                 </div>
             </div>
 
@@ -196,7 +201,7 @@
             <div class="chat-body" id="chat-content"></div>
             <div class="chat-footer">
                 <input type="text" id="chat-input" placeholder="พิมพ์ข้อความ..." onkeypress="if(event.key==='Enter') sendMsg()">
-                <button onclick="sendMsg()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#ffb3d9;">✈️</button>
+                <button onclick="sendMsg()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#ffb3d9;">🚀</button>
             </div>
         </div>
         <button id="chat-btn" onclick="toggleChat()">💬</button>
@@ -215,6 +220,15 @@
             const o = document.getElementById('drawerOverlay');
             d.classList.toggle('active');
             o.style.display = d.classList.contains('active') ? 'block' : 'none';
+        }
+
+        // เพิ่มฟังก์ชันสำหรับ Modal วิธีการใช้งาน
+        function openHowToModal() {
+            document.getElementById('howToModal').style.display = 'flex';
+        }
+
+        function closeHowToModal() {
+            document.getElementById('howToModal').style.display = 'none';
         }
 
         function saveNotice() {
@@ -302,7 +316,6 @@
             const list = document.getElementById('clientQueueCategorized');
             const search = document.getElementById('clientSearch').value.toLowerCase();
             
-            // อัปเดต ประกาศแบบนิ่ง
             const bArea = document.getElementById('broadcastArea');
             if(globalNotice) { 
                 bArea.style.display = 'flex'; 

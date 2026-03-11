@@ -671,6 +671,8 @@
         <div class="card">
             <h3>➕ เพิ่มคิวงานใหม่</h3>
             <form id="orderForm" onsubmit="saveOrder(event)">
+                <input type="hidden" id="editIdx" value="">
+                
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="input-group">
                         <label>Order ID (เว้นว่างเพื่อรันอัตโนมัติ)</label>
@@ -900,7 +902,7 @@
         }
 
         let id = document.getElementById('orderId').value.trim();
-        const editIdx = document.getElementById('orderForm').dataset.editIdx;
+        const editIdx = document.getElementById('editIdx').value;
         
         if (!id && !editIdx) {
             id = `PJ-${String(orderCounter).padStart(3, '0')}`;
@@ -920,15 +922,15 @@
             time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
         };
 
-        if (editIdx !== undefined && editIdx !== '') {
-            orders[editIdx] = order;
+        if (editIdx && editIdx !== '') {
+            orders[parseInt(editIdx)] = order;
             showToast('✨ อัปเดตออเดอร์สำเร็จ!');
         } else {
             orders.push(order);
             showToast('✨ บันทึกออเดอร์สำเร็จ!');
         }
 
-        document.getElementById('orderForm').dataset.editIdx = '';
+        document.getElementById('editIdx').value = '';
         document.getElementById('orderForm').reset();
         document.getElementById('workPercent').value = 0;
         document.getElementById('progressPercent').textContent = '0%';
@@ -950,8 +952,10 @@
 
     // Edit order
     function editOrder(id) {
-        const order = orders.find(o => o.id === id);
-        if (!order) return;
+        const idx = orders.findIndex(o => o.id === id);
+        if (idx === -1) return;
+        
+        const order = orders[idx];
 
         document.getElementById('orderId').value = order.id;
         document.getElementById('queueNum').value = order.queue;
@@ -971,7 +975,7 @@
             p.classList.toggle('active', p.getAttribute('data-status') === order.status);
         });
 
-        document.getElementById('orderForm').dataset.editIdx = orders.indexOf(order);
+        document.getElementById('editIdx').value = idx;
         window.scrollTo({ top: 0, behavior: 'smooth' });
         showToast('✏️ แก้ไขออเดอร์: ' + id);
     }

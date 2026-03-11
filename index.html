@@ -7,15 +7,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* สไตล์เดิมที่ปรับปรุง */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mitr', sans-serif !important; }
         body { background: linear-gradient(135deg, #ffe4f5 0%, #f3e5ff 50%, #e5f4ff 100%); background-attachment: fixed; min-height: 100vh; color: #4a4a4a; overflow-x: hidden; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px 15px; padding-bottom: 100px; }
         
+        /* Navigation */
         .nav-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
         .toggle-btn { padding: 12px 24px; border: none; border-radius: 50px; background: white; color: #ff85b3; font-weight: 500; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
         .toggle-btn.active { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; transform: scale(1.05); }
         
+        /* Cards & Forms */
         .card { background: rgba(255,255,255,0.8); backdrop-filter: blur(15px); border-radius: 25px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(255,179,217,0.2); border: 1px solid white; position: relative; }
         .category-title { color: #ff85b3; margin: 25px 0 10px 5px; font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .category-title::after { content: ""; flex: 1; height: 2px; background: linear-gradient(90deg, #ffb3d9, transparent); }
@@ -24,44 +25,44 @@
         input:focus { border-color: #ffb3d9; }
         label { display: block; margin: 10px 0 5px 8px; font-weight: 500; color: #ff85b3; font-size: 0.9rem; }
 
+        /* Queue Items */
         .queue-card { background: white; padding: 18px; border-radius: 22px; margin-bottom: 12px; position: relative; border-left: 6px solid #ffb3d9; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .status-pill-fixed { position: absolute; bottom: 15px; right: 15px; padding: 6px 15px; border-radius: 50px; background: #fff0f7; color: #ff85b3; font-weight: 600; font-size: 0.8rem; border: 1.5px solid #ffb3d9; }
         .progress-bar { height: 8px; background: #f0f0f0; border-radius: 10px; overflow: hidden; width: 60%; margin-top: 10px;}
         .progress-fill { height: 100%; background: linear-gradient(90deg, #ffb3d9, #d8c5e8); transition: 0.8s; }
         
+        /* Pills & Buttons */
         .pill-group { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
         .pill { padding: 6px 12px; background: white; border: 1.5px solid #eee; border-radius: 12px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
         .pill.active { background: #ffb3d9; color: white; border-color: #ffb3d9; box-shadow: 0 3px 10px rgba(255,179,217,0.4); }
         
         .btn { padding: 12px; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .btn-save { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; width: 100%; font-size: 1.1rem; }
-        .btn-edit { background: #fdf6e3; color: #b58900; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; }
-        .btn-del { background: #fff0f0; color: #ff6b6b; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; }
+        .btn-edit { background: #fdf6e3; color: #b58900; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; border:none; cursor:pointer;}
+        .btn-copy { background: #eef7ff; color: #4a90e2; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; border:none; cursor:pointer;}
+        .btn-del { background: #fff0f0; color: #ff6b6b; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; border:none; cursor:pointer;}
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ff85b3; color: white; padding: 10px 20px; border-radius: 50px; z-index: 9999; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
-        /* --- ระบบ Chat --- */
+        /* Checklist Style */
+        .check-item { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-size: 0.9rem; }
+        .check-item input[type="checkbox"] { width: 18px; height: 18px; margin-bottom: 0; cursor: pointer; accent-color: #ffb3d9; }
+
+        /* Chat Widget */
         #chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
         #chat-btn { width: 60px; height: 60px; border-radius: 30px; background: linear-gradient(135deg, #ffb3d9, #d8c5e8); border: none; color: white; font-size: 30px; cursor: pointer; box-shadow: 0 5px 20px rgba(255,133,179,0.4); display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-        #chat-btn:active { transform: scale(0.9); }
-        
         #chat-window { position: fixed; bottom: 90px; right: 20px; width: 320px; height: 450px; background: white; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; flex-direction: column; overflow: hidden; border: 1px solid #fce4ec; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
         .chat-header { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; padding: 15px; text-align: center; font-weight: 600; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #fff9fb; display: flex; flex-direction: column; gap: 10px; }
         .chat-footer { padding: 10px; display: flex; gap: 8px; background: white; border-top: 1px solid #eee; align-items: center; }
         .chat-footer input { margin-bottom: 0; border-radius: 20px; padding: 8px 15px; font-size: 14px; border: 1px solid #ffe4f5; }
-        
         .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.4; }
         .msg.admin { align-self: flex-start; background: white; border: 1px solid #ffe4f5; border-bottom-left-radius: 2px; }
         .msg.user { align-self: flex-end; background: #ffb3d9; color: white; border-bottom-right-radius: 2px; }
 
-        /* --- Custom Delete Modal --- */
+        /* Custom Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 10000; }
-        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 85%; max-width: 320px; text-align: center; border: 2px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-modal { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-modal:active { transform: scale(0.95); }
+        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 85%; max-width: 320px; text-align: center; }
     </style>
 </head>
 <body>
@@ -72,9 +73,9 @@
         <div class="modal-content">
             <h3 style="color:#ff85b3">🗑️ ลบออเดอร์?</h3>
             <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">รายการนี้จะหายไปตลอดกาลเลยน้า~</p>
-            <div class="modal-btns">
-                <button class="btn-modal" onclick="closeDelModal()" style="background:#f5f5f5; color:#888;">ยกเลิก</button>
-                <button id="confirmDelBtn" class="btn-modal" style="background:linear-gradient(135deg, #ff9999, #ff6b6b); color:white;">ตกลง ลบเลย</button>
+            <div class="pill-group" style="justify-content:center; margin-top:20px;">
+                <button class="pill" onclick="closeDelModal()">ยกเลิก</button>
+                <button id="confirmDelBtn" class="pill active" style="background:#ff6b6b; border-color:#ff6b6b;">ตกลง ลบเลย</button>
             </div>
         </div>
     </div>
@@ -86,7 +87,7 @@
         </div>
 
         <div id="clientView">
-            <div class="card"><input type="text" id="clientSearch" placeholder="ค้นหาออเดอร์..." oninput="renderClient()"></div>
+            <div class="card"><input type="text" id="clientSearch" placeholder="ค้นหาเลขออเดอร์หรือชื่อ..." oninput="renderClient()"></div>
             <div id="clientQueueCategorized"></div>
         </div>
 
@@ -94,15 +95,22 @@
             <div class="card">
                 <h3 id="formTitle">จัดการออเดอร์</h3>
                 <input type="hidden" id="editIndex" value="-1">
-                <label>Order ID</label><input type="text" id="orderId">
+                <label>Order ID</label><input type="text" id="orderId" placeholder="ปล่อยว่างเพื่อรันออโต้">
                 <label>ชื่อลูกค้า</label><input type="text" id="custName">
                 <label>ติดต่อ</label><input type="text" id="custContact">
-                <label>รายละเอียด</label><textarea id="workDetail" rows="2"></textarea>
+                <label>รายละเอียดงาน</label><textarea id="workDetail" rows="2"></textarea>
+                
+                <label>เช็คลิสต์รายการ (แยกด้วยคอมม่า ,)</label>
+                <input type="text" id="checklistInput" placeholder="ร่างภาพ, ลงสี, ส่งงาน..." oninput="updateChecklistPreview()">
+                <div id="checklistPreview" style="margin-bottom:15px;"></div>
+
                 <label>ความคืบหน้า: <span id="pText">0%</span></label>
                 <div class="pill-group" id="pPills"></div><input type="hidden" id="vPercent" value="0">
+                
                 <label>สถานะ</label>
                 <div class="pill-group" id="sPills"></div><input type="hidden" id="vStatus" value="รอเริ่มงาน">
-                <button class="btn btn-save" id="saveBtn" onclick="saveOrder()">บันทึก ✨</button>
+                
+                <button class="btn btn-save" id="saveBtn" onclick="saveOrder()">บันทึกข้อมูล ✨</button>
                 <button class="btn" id="cancelBtn" style="display:none; width:100%; margin-top:5px; background:#eee;" onclick="resetForm()">ยกเลิกการแก้ไข</button>
             </div>
             <div id="adminList"></div>
@@ -119,11 +127,11 @@
         <div id="chat-window">
             <div class="chat-header">🎀 คุยกับแอดมิน ✨</div>
             <div class="chat-body" id="chat-content">
-                <div class="msg admin">สวัสดีค่ะ! กรุณาพิมพ์ **เลขออเดอร์** (เช่น PJ-001) เพื่อตรวจสอบตัวตนก่อนคุยนะคะ 💬</div>
+                <div class="msg admin">สวัสดีค่ะ! กรุณาพิมพ์ **เลขออเดอร์** เพื่อตรวจสอบก่อนคุยนะคะ 💬</div>
             </div>
             <div class="chat-footer">
                 <input type="text" id="chat-input" placeholder="พิมพ์เลขออเดอร์..." onkeypress="if(event.key==='Enter') sendMsg()">
-                <button onclick="sendMsg()" style="background:none; border:none; font-size:24px; cursor:pointer; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">✈️</button>
+                <button onclick="sendMsg()" style="background:none; border:none; font-size:24px; cursor:pointer;">✈️</button>
             </div>
         </div>
         <button id="chat-btn" onclick="toggleChat()">💬</button>
@@ -170,22 +178,106 @@
             activePill.classList.add('active');
         }
 
+        // --- ระบบ Checkbox ---
+        function updateChecklistPreview() {
+            const val = document.getElementById('checklistInput').value;
+            const preview = document.getElementById('checklistPreview');
+            preview.innerHTML = '';
+            if(!val) return;
+            val.split(',').forEach(item => {
+                if(item.trim()) {
+                    preview.innerHTML += `<div class="check-item"><input type="checkbox" disabled> <span>${item.trim()}</span></div>`;
+                }
+            });
+        }
+
         function saveOrder() {
             const name = document.getElementById('custName').value.trim();
             const idx = parseInt(document.getElementById('editIndex').value);
-            if(!name) return showToast('⚠️ ใส่ชื่อด้วย');
+            if(!name) return showToast('⚠️ ใส่ชื่อลูกค้าด้วยนะ');
+            
+            const checkItems = document.getElementById('checklistInput').value.split(',').filter(i=>i.trim()).map(i => ({text: i.trim(), done: false}));
+
             const o = {
                 id: document.getElementById('orderId').value || `PJ-${String(counter++).padStart(3,'0')}`,
                 name: name, contact: document.getElementById('custContact').value, detail: document.getElementById('workDetail').value,
+                checklist: idx === -1 ? checkItems : orders[idx].checklist, // ถ้าแก้ของเก่าจะใช้ค่าเดิมก่อน
                 percent: document.getElementById('vPercent').value, status: document.getElementById('vStatus').value,
-                date: idx === -1 ? new Date().toLocaleDateString('th-TH') : orders[idx].date,
-                time: idx === -1 ? new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) : orders[idx].time
+                date: idx === -1 ? new Date().toLocaleDateString('th-TH') : orders[idx].date
             };
+
             if(idx === -1) orders.unshift(o); else orders[idx] = o;
             localStorage.setItem('orders', JSON.stringify(orders));
             localStorage.setItem('counter', counter);
-            showToast(idx === -1 ? '✅ บันทึกแล้ว' : '✅ อัปเดตแล้ว');
+            showToast('✅ บันทึกข้อมูลเรียบร้อย ✨');
             resetForm(); renderAdmin();
+        }
+
+        function renderAdmin() {
+            const list = document.getElementById('adminList'); list.innerHTML = '<div class="category-title">รายการคิวทั้งหมด</div>';
+            orders.forEach((o, i) => {
+                list.innerHTML += `
+                <div class="card" style="padding:15px; border-left:5px solid #ffb3d9;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <strong>${o.id} - ${o.name}</strong>
+                            <p style="font-size:0.8rem; color:#888;">${o.status} (${o.percent}%)</p>
+                        </div>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-copy" onclick="copyOrder(${i})">คัดลอก</button>
+                            <button class="btn-edit" onclick="editOrder(${i})">แก้ไข</button>
+                            <button class="btn-del" onclick="askDelete(${i})">ลบ</button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function renderClient() {
+            const list = document.getElementById('clientQueueCategorized');
+            const search = document.getElementById('clientSearch').value.toLowerCase();
+            list.innerHTML = '';
+            const filtered = orders.filter(o => o.id.toLowerCase().includes(search) || o.name.toLowerCase().includes(search));
+            
+            ['กำลังทำ','รอเริ่มงาน','เสร็จแล้ว','ส่งงานแล้ว'].forEach(cat => {
+                const group = filtered.filter(o => cat === 'กำลังทำ' ? (o.status === 'กำลังทำ' || o.status === 'ใกล้เสร็จ') : o.status === cat);
+                if(group.length > 0) {
+                    list.innerHTML += `<div class="category-title">✨ ${cat}</div>`;
+                    group.forEach(o => {
+                        let checks = (o.checklist || []).map(c => `
+                            <div class="check-item">
+                                <input type="checkbox" ${isAdminMode ? '' : 'disabled'} ${c.done ? 'checked' : ''} onchange="toggleCheck(${orders.indexOf(o)}, '${c.text}')"> 
+                                <span style="${c.done ? 'text-decoration:line-through; color:#ccc;' : ''}">${c.text}</span>
+                            </div>`).join('');
+                        
+                        list.innerHTML += `
+                        <div class="queue-card">
+                            <span style="color:#ffb3d9; font-weight:600;">${o.id}</span>
+                            <div style="font-weight:500;">คุณ ${o.name}</div>
+                            <div style="font-size:0.85rem; color:#666; margin:5px 0;">${o.detail}</div>
+                            <div style="margin:10px 0;">${checks}</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:${o.percent}%"></div></div>
+                            <div class="status-pill-fixed">${o.status}</div>
+                        </div>`;
+                    });
+                }
+            });
+        }
+
+        function toggleCheck(orderIdx, text) {
+            const item = orders[orderIdx].checklist.find(c => c.text === text);
+            if(item) {
+                item.done = !item.done;
+                localStorage.setItem('orders', JSON.stringify(orders));
+                renderClient();
+            }
+        }
+
+        function copyOrder(idx) {
+            const o = orders[idx];
+            let checkText = (o.checklist || []).map(c => `${c.done ? '✅' : '⬜'} ${c.text}`).join('\n');
+            const text = `🎀 ออเดอร์: ${o.id}\nคุณ: ${o.name}\n✨ สถานะ: ${o.status} (${o.percent}%)\n📍 รายการ:\n${checkText}\nขอบคุณที่อุดหนุนนะคะ ✨`;
+            navigator.clipboard.writeText(text).then(() => showToast('📋 คัดลอกข้อมูลแล้ว!'));
         }
 
         function editOrder(idx) {
@@ -195,14 +287,14 @@
             document.getElementById('custName').value = o.name;
             document.getElementById('custContact').value = o.contact;
             document.getElementById('workDetail').value = o.detail;
+            document.getElementById('checklistInput').value = (o.checklist || []).map(c=>c.text).join(',');
             document.getElementById('vPercent').value = o.percent;
             document.getElementById('vStatus').value = o.status;
             document.getElementById('pText').textContent = o.percent + '%';
             document.getElementById('formTitle').textContent = "📝 แก้ไขออเดอร์";
             document.getElementById('saveBtn').textContent = "อัปเดตข้อมูล ✨";
             document.getElementById('cancelBtn').style.display = "block";
-            document.querySelectorAll('#pPills .pill').forEach(p => { if(p.textContent === o.percent+'%') p.classList.add('active'); else p.classList.remove('active'); });
-            document.querySelectorAll('#sPills .pill').forEach(p => { if(p.textContent === o.status) p.classList.add('active'); else p.classList.remove('active'); });
+            updateChecklistPreview();
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
@@ -210,45 +302,18 @@
             document.getElementById('editIndex').value = "-1";
             document.querySelectorAll('input, textarea').forEach(i=>i.value='');
             document.getElementById('formTitle').textContent = "จัดการออเดอร์";
-            document.getElementById('saveBtn').textContent = "บันทึก ✨";
+            document.getElementById('saveBtn').textContent = "บันทึกข้อมูล ✨";
             document.getElementById('cancelBtn').style.display = "none";
+            document.getElementById('checklistPreview').innerHTML = '';
             initForm();
         }
 
-        function renderClient() {
-            const list = document.getElementById('clientQueueCategorized');
-            const search = document.getElementById('clientSearch').value.toLowerCase();
-            list.innerHTML = '';
-            const filtered = orders.filter(o => o.id.toLowerCase().includes(search) || o.name.toLowerCase().includes(search));
-            ['กำลังทำ','รอเริ่มงาน','เสร็จแล้ว','ส่งงานแล้ว'].forEach(cat => {
-                const group = filtered.filter(o => cat === 'กำลังทำ' ? (o.status === 'กำลังทำ' || o.status === 'ใกล้เสร็จ') : o.status === cat);
-                if(group.length > 0) {
-                    list.innerHTML += `<div class="category-title">✨ ${cat}</div>`;
-                    group.forEach(o => {
-                        list.innerHTML += `<div class="queue-card"><span class="q-id">${o.id}</span><div class="q-name">คุณ ${o.name}</div><div class="q-detail">${o.detail}</div><div class="progress-bar"><div class="progress-fill" style="width:${o.percent}%"></div></div><div class="status-pill-fixed">${o.status}</div></div>`;
-                    });
-                }
-            });
-        }
-
-        function renderAdmin() {
-            const list = document.getElementById('adminList'); list.innerHTML = '<div class="category-title">รายการคิวทั้งหมด</div>';
-            orders.forEach((o, i) => {
-                list.innerHTML += `<div class="card" style="padding:15px; border-left:5px solid #ffb3d9;"><div style="display:flex; justify-content:space-between; align-items:center;"><div><strong>${o.id} - ${o.name}</strong><p style="font-size:0.8rem;">${o.status} (${o.percent}%)</p></div><div style="display:flex; gap:5px;"><button class="btn-edit" onclick="editOrder(${i})">แก้ไข</button><button class="btn-del" onclick="askDelete(${i})">ลบ</button></div></div></div>`;
-            });
-        }
-
-        function askDelete(idx) {
-            deleteIdx = idx;
-            document.getElementById('deleteModal').style.display = 'flex';
-        }
+        function askDelete(idx) { deleteIdx = idx; document.getElementById('deleteModal').style.display = 'flex'; }
         function closeDelModal() { document.getElementById('deleteModal').style.display = 'none'; }
         document.getElementById('confirmDelBtn').onclick = () => {
             orders.splice(deleteIdx, 1);
             localStorage.setItem('orders', JSON.stringify(orders));
-            closeDelModal();
-            renderAdmin();
-            showToast('🗑️ ลบรายการแล้ว');
+            closeDelModal(); renderAdmin(); showToast('🗑️ ลบรายการแล้ว');
         };
 
         function toggleChat() {
@@ -269,31 +334,22 @@
             const input = document.getElementById('chat-input');
             const val = input.value.trim();
             if(!val) return;
-
             addMsg(val, 'user');
             input.value = '';
 
             if(!isVerified) {
                 const found = orders.find(o => o.id.toLowerCase() === val.toLowerCase());
                 if(found) {
-                    isVerified = true;
-                    currentOrder = found;
+                    isVerified = true; currentOrder = found;
                     input.placeholder = "พิมพ์ข้อความ...";
-                    setTimeout(() => {
-                        addMsg(`ยืนยันตัวตนสำเร็จ! คุณ ${found.name} ใช่ไหมคะ? มีอะไรให้แอดมินช่วยเกี่ยวกับออเดอร์ ${found.id} ดีคะ? ✨`, 'admin');
-                    }, 800);
+                    setTimeout(() => addMsg(`ยืนยันตัวตนสำเร็จ! คุณ ${found.name} มีอะไรให้แอดมินช่วยเกี่ยวกับออเดอร์ ${found.id} ดีคะ? ✨`, 'admin'), 800);
                 } else {
-                    setTimeout(() => addMsg("ไม่พบเลขคิวนี้ในระบบเลยค่ะ ลองเช็คอีกทีน้า 🥺", 'admin'), 800);
+                    setTimeout(() => addMsg("ไม่พบเลขคิวนี้เลยค่ะ ลองเช็คอีกทีน้า 🥺", 'admin'), 800);
                 }
             } else {
                 setTimeout(() => {
-                    let reply = "รับทราบค่ะ! เดี๋ยวแอดมินรีบเช็คให้นะคะ 💖";
-                    const lowVal = val.toLowerCase();
-                    if(lowVal.includes("สถานะ") || lowVal.includes("ถึงไหน")) {
-                        reply = `ออเดอร์ ${currentOrder.id} ของคุณ ${currentOrder.name} ตอนนี้สถานะคือ "${currentOrder.status}" (${currentOrder.percent}%) ค่ะ อดใจรออีกนิดน้า ✨`;
-                    } else if(lowVal.includes("ขอบคุณ")) {
-                        reply = "ยินดีให้บริการเสมอเลยค่าาา ~ รักนะคะ! 🎀";
-                    }
+                    let reply = "แอดมินรับทราบค่ะ! เดี๋ยวรีบเช็คให้เลยน้า 💖";
+                    if(val.includes("สถานะ")) reply = `ออเดอร์ ${currentOrder.id} คือ "${currentOrder.status}" (${currentOrder.percent}%) ค่ะ ✨`;
                     addMsg(reply, 'admin');
                 }, 1000);
             }

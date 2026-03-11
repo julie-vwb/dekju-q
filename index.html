@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ Order Queue Check - Kawaii System ✨</title>
+    <title>✨ Kawaii Order Queue System ✨</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500&family=Prompt:wght@300;400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500&family=Prompt:wght@300;400;600&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -18,46 +17,23 @@
             --soft-blue: #bde0fe;
             --white: #ffffff;
             --text-color: #5c5c5c;
-            --glass: rgba(255, 255, 255, 0.7);
+            --glass: rgba(255, 255, 255, 0.75);
         }
 
-        * {
-            box-sizing: border-box;
-            font-family: 'Prompt', 'Nunito', sans-serif;
-        }
+        * { box-sizing: border-box; font-family: 'Prompt', 'Nunito', sans-serif; }
 
         body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
+            margin: 0; padding: 0; min-height: 100vh;
             background: linear-gradient(180deg, #ffd6ec, #e8dfff, #dff1ff);
             background-attachment: fixed;
             color: var(--text-color);
             overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- Floating Particles & Emojis --- */
-        .floating-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .emoji-particle {
-            position: absolute;
-            font-size: 1.5rem;
-            animation: floatUp 10s linear infinite;
-            opacity: 0.6;
-        }
-
+        /* --- Animations & Floating Particles --- */
+        .floating-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        .emoji-particle { position: absolute; font-size: 1.5rem; animation: floatUp 10s linear infinite; opacity: 0.6; }
         @keyframes floatUp {
             0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
             10% { opacity: 0.6; }
@@ -65,428 +41,221 @@
             100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
 
-        .sparkle {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: white;
-            border-radius: 50%;
-            filter: blur(2px);
-            animation: sparkleAnim 2s infinite;
-        }
-
-        @keyframes sparkleAnim {
-            0%, 100% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.2); opacity: 1; }
-        }
-
         /* --- Global UI --- */
-        .container {
-            width: 95%;
-            max-width: 800px;
-            padding: 20px;
-            margin-top: 40px;
-            margin-bottom: 100px;
-            animation: fadeUp 0.8s ease-out;
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .container { width: 95%; max-width: 800px; padding: 20px; margin-top: 40px; margin-bottom: 100px; animation: fadeUp 0.8s ease-out; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border-radius: 25px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            border: 2px solid var(--white);
-            margin-bottom: 25px;
+            background: var(--glass); backdrop-filter: blur(15px);
+            border-radius: 25px; padding: 30px; border: 2px solid var(--white);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px;
             transition: transform 0.3s ease;
         }
+        .card:hover { transform: translateY(-5px); }
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        h1, h2, h3 {
-            color: #ff758c;
-            text-align: center;
-            font-family: 'Mitr', sans-serif;
-        }
+        h1, h2, h3 { color: #ff758c; text-align: center; font-family: 'Mitr', sans-serif; }
 
         .btn-gradient {
             background: linear-gradient(45deg, var(--primary-pink), var(--primary-purple));
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            color: white; border: none; padding: 12px 25px; border-radius: 30px;
+            cursor: pointer; font-weight: 600; transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(255, 175, 204, 0.4);
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
         }
+        .btn-gradient:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(255, 175, 204, 0.6); }
+        .btn-copy { background: var(--soft-blue); color: #5c5c5c; padding: 8px 15px; font-size: 0.8rem; }
 
-        .btn-gradient:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(255, 175, 204, 0.6);
+        /* --- Kawaii Candy Stripe Progress Bar --- */
+        .progress-container {
+            width: 100%; background: rgba(255,255,255,0.5);
+            border-radius: 50px; height: 30px; margin: 15px 0;
+            position: relative; overflow: hidden; border: 2px solid var(--white);
         }
+        .progress-bar {
+            height: 100%; border-radius: 50px; width: 0%;
+            background: linear-gradient(45deg, 
+                var(--primary-pink) 25%, var(--primary-purple) 25%, 
+                var(--primary-purple) 50%, var(--primary-pink) 50%, 
+                var(--primary-pink) 75%, var(--primary-purple) 75%, var(--primary-purple) 100%);
+            background-size: 40px 40px;
+            animation: moveStripes 2s linear infinite;
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 15px rgba(255, 175, 204, 0.5);
+        }
+        @keyframes moveStripes { from { background-position: 0 0; } to { background-position: 40px 0; } }
+
+        /* --- Admin Dashboard Specific --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: white; padding: 15px; border-radius: 20px; text-align: center; }
+        .stat-val { font-size: 1.5rem; font-weight: bold; color: var(--primary-pink); }
+        .status-pill { padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; color: white; font-weight: bold; display: inline-block; }
+
+        /* --- Chat UI --- */
+        .chat-display { display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; padding: 10px; }
+        .chat-bubble { padding: 10px 15px; border-radius: 18px; max-width: 80%; font-size: 0.9rem; position: relative; }
+        .chat-user { background: var(--soft-blue); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-admin { background: var(--secondary-pink); align-self: flex-start; border-bottom-left-radius: 2px; }
+
+        /* Floating Chat Widget */
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        .chat-toggle { width: 60px; height: 60px; border-radius: 50%; background: var(--primary-pink); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s; }
+        .chat-window { position: absolute; bottom: 70px; right: 0; width: 320px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: none; flex-direction: column; animation: popIn 0.3s ease; }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .chat-header { background: linear-gradient(45deg, var(--primary-pink), var(--primary-purple)); color: white; padding: 15px; text-align: center; font-weight: bold; }
 
         input, textarea, select {
-            width: 100%;
-            padding: 15px;
-            border-radius: 15px;
-            border: 2px solid #f1f1f1;
-            margin-bottom: 15px;
-            outline: none;
-            transition: border-color 0.3s;
+            width: 100%; padding: 12px 18px; border-radius: 15px; border: 2px solid #eee;
+            margin-bottom: 15px; outline: none; transition: 0.3s;
         }
+        input:focus { border-color: var(--primary-pink); background: #fffcfd; }
 
-        input:focus {
-            border-color: var(--primary-pink);
-        }
-
-        /* --- Progress Bar --- */
-        .progress-container {
-            width: 100%;
-            background: #eee;
-            border-radius: 20px;
-            height: 25px;
-            margin: 15px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #ffafcc, #cdb4db, #a2d2ff);
-            background-size: 200% 100%;
-            border-radius: 20px;
-            width: 0%;
-            transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            animation: moveGradient 2s linear infinite;
-        }
-
-        .progress-bar::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(
-                90deg, 
-                rgba(255,255,255,0) 0%, 
-                rgba(255,255,255,0.4) 50%, 
-                rgba(255,255,255,0) 100%
-            );
-            animation: shine 1.5s infinite;
-        }
-
-        @keyframes shine {
-            from { transform: translateX(-100%); }
-            to { transform: translateX(100%); }
-        }
-
-        @keyframes moveGradient {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
-
-        /* --- Order List & Search --- */
-        .search-box {
-            display: flex;
-            gap: 10px;
-        }
-
-        .order-card-item {
-            border-left: 8px solid var(--primary-pink);
-            padding: 20px;
-            background: white;
-            margin-bottom: 15px;
-            border-radius: 20px;
-            position: relative;
-        }
-
-        .status-pill {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        /* --- Modal/Popup --- */
         .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(5px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
         }
+        .modal { background: white; width: 90%; max-width: 400px; padding: 35px; border-radius: 35px; text-align: center; }
 
-        .modal {
-            background: white;
-            width: 90%;
-            max-width: 450px;
-            padding: 30px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        /* --- Chat System --- */
-        .chat-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #fff9fc;
-            border-radius: 20px;
-            border: 1px dashed var(--primary-pink);
-        }
-
-        .chat-bubble {
-            padding: 10px 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-        .chat-user { background: var(--soft-blue); align-self: flex-end; margin-left: auto; }
-        .chat-admin { background: var(--secondary-pink); align-self: flex-start; }
-
-        /* --- Footer --- */
-        footer {
-            margin-top: auto;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .admin-login-trigger {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #aaa;
-            transition: color 0.3s;
-        }
-        .admin-login-trigger:hover { color: var(--primary-pink); }
-
-        /* --- Admin Panel Specific --- */
-        #adminPanel {
-            display: none;
-            width: 100%;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        .stat-card {
-            background: white;
-            padding: 15px;
-            border-radius: 20px;
-            text-align: center;
-        }
-        .stat-val { font-size: 1.5rem; font-weight: bold; color: var(--primary-pink); }
-
-        .social-btns {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-        .btn-line { background: #00b900; color: white; border-radius: 20px; padding: 10px 20px; text-decoration: none; font-size: 0.9rem; }
-        .btn-fb { background: #1877f2; color: white; border-radius: 20px; padding: 10px 20px; text-decoration: none; font-size: 0.9rem; }
-
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .search-box { flex-direction: column; }
-        }
+        @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
-<body>
 
+<body>
     <div class="floating-container" id="floatingParticles"></div>
 
     <div class="container" id="clientView">
         <header style="text-align: center; margin-bottom: 40px;">
-            <h1 style="font-size: 2.5rem; margin-bottom: 5px;">🎀 Order Queue ✨</h1>
-            <p style="color: #888;">ตรวจสอบคิวงานสุดคาวาอี้ของคุณได้ที่นี่</p>
+            <h1 style="font-size: 2.8rem; margin-bottom: 0;">🎀 Order Queue ✨</h1>
+            <p style="color: #a291a2; font-family: 'Nunito'; font-weight: 700;">Kawaii Service Dashboard</p>
         </header>
 
         <div class="card">
             <h3>🔍 ตรวจสอบคิวงานของคุณ</h3>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="เลขออเดอร์ / ชื่อ / LINE ID / Facebook">
-                <button class="btn-gradient" onclick="searchOrder()">ค้นหา</button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="searchInput" placeholder="เลขออเดอร์ / ชื่อ / LINE ID / Facebook" style="flex: 1; margin-bottom: 0;">
+                <button class="btn-gradient" onclick="searchOrder()">ค้นหาคิว 💗</button>
             </div>
-            <div id="queueStatusSummary" style="margin-top: 15px; font-size: 0.9rem; text-align: center; color: #777;">
-                </div>
+            <div id="queueStatusSummary" style="margin-top: 15px; text-align: center; font-size: 0.9rem; color: #888;"></div>
         </div>
 
         <div id="searchResults"></div>
 
         <div class="card">
             <h3>📋 รายการคิวทั้งหมด</h3>
-            <div id="allQueuesList"></div>
+            <div id="allQueuesList" style="max-height: 400px; overflow-y: auto;"></div>
         </div>
 
-        <div class="card chat-section">
-            <h3>💌 สอบถามแอดมิน</h3>
-            <input type="text" id="chatOrderId" placeholder="ระบุ Order ID (จำเป็น)">
-            <textarea id="chatMessage" placeholder="พิมพ์ข้อความของคุณที่นี่..." rows="3"></textarea>
-            <button class="btn-gradient" style="width: 100%;" onclick="sendChatMessage()">ส่งข้อความ 🎀</button>
-            <div id="chatDisplay" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto;">
-                </div>
-        </div>
-
-        <div class="social-btns">
-            <a href="#" class="btn-line"><i class="fab fa-line"></i> ติดต่อ LINE</a>
-            <a href="#" class="btn-fb"><i class="fab fa-facebook"></i> ติดต่อ Facebook</a>
+        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+            <a href="#" class="btn-line" style="background:#00b900; color:white; padding:10px 20px; border-radius:25px; text-decoration:none;"><i class="fab fa-line"></i> LINE</a>
+            <a href="#" class="btn-fb" style="background:#1877f2; color:white; padding:10px 20px; border-radius:25px; text-decoration:none;"><i class="fab fa-facebook"></i> Facebook</a>
         </div>
     </div>
 
-    <div class="container" id="adminPanel">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2>🛠 Admin Dashboard</h2>
+    <div class="container" id="adminPanel" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <h2>🛠 Admin Panel</h2>
             <button class="btn-gradient" onclick="logout()" style="background: #ff758c;">ออกจากระบบ</button>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div>งานทั้งหมด</div>
-                <div class="stat-val" id="statTotal">0</div>
-            </div>
-            <div class="stat-card">
-                <div>กำลังทำ</div>
-                <div class="stat-val" id="statDoing" style="color: #cdb4db;">0</div>
-            </div>
-            <div class="stat-card">
-                <div>เสร็จแล้ว</div>
-                <div class="stat-val" id="statDone" style="color: #a2d2ff;">0</div>
-            </div>
-        </div>
+        <div class="stats-grid" id="adminStats"></div>
 
         <div class="card">
-            <h3>➕ เพิ่ม / แก้ไข ออเดอร์</h3>
+            <h3>➕ จัดการออเดอร์</h3>
             <div id="adminForm">
                 <input type="hidden" id="editIndex" value="-1">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="text" id="orderId" placeholder="Order ID (เช่น A01)">
+                    <input type="text" id="orderId" placeholder="Order ID (เช่น PJ-001)">
                     <input type="text" id="queueNum" placeholder="เลขคิว">
                 </div>
                 <input type="text" id="custName" placeholder="ชื่อลูกค้า">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="text" id="custLine" placeholder="LINE ID">
-                    <input type="text" id="custFb" placeholder="Facebook">
-                </div>
+                <input type="text" id="custContact" placeholder="LINE / FB ID">
                 <textarea id="workDetail" placeholder="รายละเอียดงาน"></textarea>
                 
-                <label>สถานะ:</label>
-                <select id="workStatus">
-                    <option value="รอเริ่มงาน">⏳ รอเริ่มงาน</option>
-                    <option value="กำลังทำ">⚙️ กำลังทำ</option>
-                    <option value="ใกล้เสร็จ">✨ ใกล้เสร็จ</option>
-                    <option value="เสร็จแล้ว">✅ เสร็จแล้ว</option>
-                    <option value="ส่งงานแล้ว">🚚 ส่งงานแล้ว</option>
-                </select>
-
-                <label>ความคืบหน้า: <span id="percentVal">0</span>%</label>
-                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
-                    <input type="range" id="workPercent" min="0" max="100" step="5" style="margin:0;">
-                    <button class="btn-gradient" onclick="adjustPercent(10)" style="padding: 5px 15px;">+10%</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <select id="workStatus">
+                        <option value="รอเริ่มงาน">⏳ รอเริ่มงาน</option>
+                        <option value="กำลังทำ">⚙️ กำลังทำ</option>
+                        <option value="ใกล้เสร็จ">✨ ใกล้เสร็จ</option>
+                        <option value="เสร็จแล้ว">✅ เสร็จแล้ว</option>
+                        <option value="ส่งงานแล้ว">🚚 ส่งงานแล้ว</option>
+                    </select>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <input type="range" id="workPercent" min="0" max="100" step="5" style="margin:0;">
+                        <span id="percentVal" style="font-weight: bold; width: 40px;">0%</span>
+                        <button onclick="adjustPercent(10)" style="border:none; background:var(--primary-pink); color:white; border-radius:50%; width:30px; height:30px; cursor:pointer;">+</button>
+                    </div>
                 </div>
-
-                <textarea id="adminNote" placeholder="ข้อความอัปเดตจากแอดมิน"></textarea>
-                <button class="btn-gradient" style="width: 100%;" onclick="saveOrder()">บันทึกข้อมูลออเดอร์ 💗</button>
+                <textarea id="adminNote" placeholder="อัปเดตจากแอดมิน (แสดงให้ลูกค้าเห็น)"></textarea>
+                <button class="btn-gradient" style="width: 100%;" onclick="saveOrder()">บันทึกข้อมูลคิว 💗</button>
             </div>
         </div>
 
         <div id="adminOrderList"></div>
     </div>
 
+    <div class="chat-widget">
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">💌 Support Chat</div>
+            <div id="chatDisplay" class="chat-display" style="background: #fffcfd;"></div>
+            <div style="padding: 10px;">
+                <input type="text" id="chatOrderId" placeholder="Order ID ของคุณ" style="margin-bottom: 5px; padding: 8px;">
+                <textarea id="chatMessage" placeholder="พิมพ์ข้อความ..." rows="2" style="margin-bottom: 5px; padding: 8px;"></textarea>
+                <button class="btn-gradient" style="width: 100%; padding: 8px;" onclick="sendChatMessage()">ส่ง ✨</button>
+            </div>
+        </div>
+        <div class="chat-toggle" onclick="toggleChat()"><i class="fas fa-comment-heart"></i></div>
+    </div>
+
     <div class="overlay" id="loginOverlay">
         <div class="modal">
-            <h2 style="margin-top:0;">🔒 เข้าสู่ระบบแอดมิน</h2>
-            <p>กรุณาใส่รหัสผ่านเพื่อจัดการคิว</p>
-            <input type="password" id="adminPass" placeholder="รหัสผ่าน">
+            <h2 style="margin-top:0;">🔒 Admin Login</h2>
+            <input type="password" id="adminPass" placeholder="ใส่รหัสผ่าน (admin123)">
             <button class="btn-gradient" style="width: 100%;" onclick="checkLogin()">💗 เข้าสู่ระบบ</button>
-            <button onclick="closeLogin()" style="background:none; border:none; color:#aaa; margin-top:15px; cursor:pointer;">ยกเลิก</button>
+            <p onclick="closeLogin()" style="cursor:pointer; color:#aaa; margin-top:15px; font-size:0.8rem;">ยกเลิก</p>
         </div>
     </div>
 
     <footer>
-        <button class="admin-login-trigger" onclick="openLogin()">⚙️ Admin Login</button>
+        <button onclick="openLogin()" style="background:none; border:none; color:#bbb; cursor:pointer; font-size:0.8rem; margin: 40px 0;">⚙️ สำหรับแอดมิน</button>
     </footer>
 
     <script>
-        /* --- Data Management --- */
         let orders = JSON.parse(localStorage.getItem('kawaii_orders')) || [];
         let messages = JSON.parse(localStorage.getItem('kawaii_messages')) || [];
+        let orderCounter = parseInt(localStorage.getItem('pj_counter')) || 1;
 
         function saveData() {
             localStorage.setItem('kawaii_orders', JSON.stringify(orders));
             localStorage.setItem('kawaii_messages', JSON.stringify(messages));
+            localStorage.setItem('pj_counter', orderCounter.toString());
+            renderAll();
+        }
+
+        function renderAll() {
             renderClientView();
             renderAdminView();
+            renderChatHistory();
         }
 
-        /* --- Effects --- */
-        function createParticles() {
-            const container = document.getElementById('floatingParticles');
-            const emojis = ['🌸', '✨', '💗', '⭐', '🎀', '🫧', '💫'];
-            const count = 20;
-
-            for (let i = 0; i < count; i++) {
-                createEmoji(container, emojis);
-            }
-
-            setInterval(() => {
-                const sparkles = document.createElement('div');
-                sparkles.className = 'sparkle';
-                sparkles.style.left = Math.random() * 100 + 'vw';
-                sparkles.style.top = Math.random() * 100 + 'vh';
-                container.appendChild(sparkles);
-                setTimeout(() => sparkles.remove(), 2000);
-            }, 300);
+        // --- Helper ---
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('คัดลอกลง Clipboard แล้วค่ะ! ✨');
+            });
         }
 
-        function createEmoji(container, emojis) {
-            const el = document.createElement('div');
-            el.className = 'emoji-particle';
-            el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            el.style.left = Math.random() * 100 + 'vw';
-            el.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            el.style.animationDelay = (Math.random() * 5) + 's';
-            container.appendChild(el);
+        function toggleChat() {
+            const win = document.getElementById('chatWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        /* --- UI Logic --- */
-        function openLogin() { document.getElementById('loginOverlay').style.display = 'flex'; }
-        function closeLogin() { document.getElementById('loginOverlay').style.display = 'none'; }
-
+        // --- Admin Functions ---
         function checkLogin() {
-            const pass = document.getElementById('adminPass').value;
-            if (pass === 'admin123') {
+            if (document.getElementById('adminPass').value === 'admin123') {
                 document.getElementById('clientView').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 closeLogin();
-                renderAdminView();
-            } else {
-                alert('รหัสผ่านไม่ถูกต้องนะค๊าาาา~ ❌');
-            }
+            } else { alert('รหัสผ่านผิดนะค๊าาา~ ❌'); }
         }
 
         function logout() {
@@ -496,28 +265,26 @@
         }
 
         function adjustPercent(val) {
-            const slider = document.getElementById('workPercent');
-            let newValue = parseInt(slider.value) + val;
-            if (newValue > 100) newValue = 100;
-            slider.value = newValue;
-            document.getElementById('percentVal').innerText = newValue;
+            let s = document.getElementById('workPercent');
+            s.value = Math.min(100, parseInt(s.value) + val);
+            document.getElementById('percentVal').innerText = s.value + '%';
         }
 
-        document.getElementById('workPercent')?.addEventListener('input', (e) => {
-            document.getElementById('percentVal').innerText = e.target.value;
-        });
-
-        /* --- Admin Functions --- */
         function saveOrder() {
-            const id = document.getElementById('orderId').value;
-            const idx = document.getElementById('editIndex').value;
+            const idx = parseInt(document.getElementById('editIndex').value);
+            let id = document.getElementById('orderId').value;
             
+            // Auto Generate ID if empty
+            if(!id && idx === -1) {
+                id = `PJ-${String(orderCounter).padStart(3, '0')}`;
+                orderCounter++;
+            }
+
             const newOrder = {
-                id: id || 'A' + Math.floor(Math.random() * 1000).toString().padStart(3, '0'),
+                id: id,
                 queue: document.getElementById('queueNum').value || (orders.length + 1),
                 name: document.getElementById('custName').value,
-                line: document.getElementById('custLine').value,
-                fb: document.getElementById('custFb').value,
+                contact: document.getElementById('custContact').value,
                 detail: document.getElementById('workDetail').value,
                 status: document.getElementById('workStatus').value,
                 percent: document.getElementById('workPercent').value,
@@ -525,269 +292,191 @@
                 updated: new Date().toLocaleString('th-TH')
             };
 
-            if (idx == -1) {
+            if (idx === -1) {
                 orders.push(newOrder);
+                // Auto copy message for new order
+                const autoMsg = `เลขออเดอร์ของคุณคือ ${newOrder.id}\nขอบคุณที่ใช้บริการค่ะ\nสามารถตรวจสอบคิวได้ที่ลิงก์นี้: ${window.location.href}`;
+                copyText(autoMsg);
             } else {
                 orders[idx] = newOrder;
-                document.getElementById('editIndex').value = "-1";
             }
 
-            clearForm();
+            resetAdminForm();
             saveData();
-            alert('บันทึกเรียบร้อยแล้วค่ะ! ✨');
+            alert('บันทึกข้อมูลสำเร็จ! ✨');
         }
 
-        function clearForm() {
-            document.getElementById('orderId').value = '';
-            document.getElementById('queueNum').value = '';
-            document.getElementById('custName').value = '';
-            document.getElementById('custLine').value = '';
-            document.getElementById('custFb').value = '';
-            document.getElementById('workDetail').value = '';
-            document.getElementById('adminNote').value = '';
-            document.getElementById('workPercent').value = 0;
-            document.getElementById('percentVal').innerText = 0;
+        function resetAdminForm() {
             document.getElementById('editIndex').value = "-1";
+            document.getElementById('adminForm').querySelectorAll('input, textarea').forEach(i => i.value = '');
+            document.getElementById('workPercent').value = 0;
+            document.getElementById('percentVal').innerText = '0%';
         }
 
-        function editOrder(index) {
-            const o = orders[index];
+        function deleteOrder(i) { if(confirm('จะลบคิวนี้จริงๆ หรอคะ? 🥺')) { orders.splice(i, 1); saveData(); } }
+
+        function editOrder(i) {
+            const o = orders[i];
+            document.getElementById('editIndex').value = i;
             document.getElementById('orderId').value = o.id;
             document.getElementById('queueNum').value = o.queue;
             document.getElementById('custName').value = o.name;
-            document.getElementById('custLine').value = o.line;
-            document.getElementById('custFb').value = o.fb;
+            document.getElementById('custContact').value = o.contact;
             document.getElementById('workDetail').value = o.detail;
             document.getElementById('workStatus').value = o.status;
             document.getElementById('workPercent').value = o.percent;
-            document.getElementById('percentVal').innerText = o.percent;
+            document.getElementById('percentVal').innerText = o.percent + '%';
             document.getElementById('adminNote').value = o.note;
-            document.getElementById('editIndex').value = index;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        function deleteOrder(index) {
-            if (confirm('แน่ใจนะคะว่าจะลบออเดอร์นี้? 🥺')) {
-                orders.splice(index, 1);
-                saveData();
-            }
-        }
-
-        function getStatusColor(status) {
-            switch(status) {
-                case 'รอเริ่มงาน': return '#ccc';
-                case 'กำลังทำ': return '#cdb4db';
-                case 'ใกล้เสร็จ': return '#ffafcc';
-                case 'เสร็จแล้ว': return '#a2d2ff';
-                case 'ส่งงานแล้ว': return '#bde0fe';
-                default: return '#ffafcc';
-            }
-        }
-
-        function renderAdminView() {
-            const list = document.getElementById('adminOrderList');
-            const total = orders.length;
-            const doing = orders.filter(o => o.status === 'กำลังทำ' || o.status === 'ใกล้เสร็จ').length;
-            const done = orders.filter(o => o.status === 'เสร็จแล้ว' || o.status === 'ส่งงานแล้ว').length;
-
-            document.getElementById('statTotal').innerText = total;
-            document.getElementById('statDoing').innerText = doing;
-            document.getElementById('statDone').innerText = done;
-
-            list.innerHTML = orders.map((o, i) => `
-                <div class="card" style="padding: 15px; border-left: 5px solid ${getStatusColor(o.status)}">
-                    <div style="display: flex; justify-content: space-between;">
-                        <strong>#${o.id} (คิว ${o.queue})</strong>
-                        <span class="status-pill" style="background:${getStatusColor(o.status)}">${o.status}</span>
-                    </div>
-                    <div style="font-size: 0.9rem;">
-                        <div>ลูกค้า: ${o.name}</div>
-                        <div>ความคืบหน้า: ${o.percent}%</div>
-                    </div>
-                    <div style="margin-top: 10px; display: flex; gap: 5px;">
-                        <button class="btn-gradient" onclick="editOrder(${i})" style="padding: 5px 10px; font-size: 0.8rem;">แก้ไข</button>
-                        <button class="btn-gradient" onclick="deleteOrder(${i})" style="padding: 5px 10px; font-size: 0.8rem; background: #ff8fa3;">ลบ</button>
-                        <button class="btn-gradient" onclick="replyChat('${o.id}')" style="padding: 5px 10px; font-size: 0.8rem; background: #a2d2ff;">ตอบแชท</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        /* --- Client Functions --- */
+        // --- Client Functions ---
         function searchOrder() {
             const term = document.getElementById('searchInput').value.toLowerCase();
             const results = orders.filter(o => 
-                o.id.toLowerCase().includes(term) || 
-                o.name.toLowerCase().includes(term) || 
-                o.line.toLowerCase().includes(term) || 
-                o.fb.toLowerCase().includes(term) ||
-                o.queue.toString() === term
+                o.id.toLowerCase().includes(term) || o.name.toLowerCase().includes(term) || o.contact.toLowerCase().includes(term)
             );
 
             const display = document.getElementById('searchResults');
             if (results.length === 0) {
-                display.innerHTML = '<div class="card" style="text-align:center;">ไม่พบข้อมูลออเดอร์ที่คุณค้นหาค่ะ 😿</div>';
+                display.innerHTML = '<div class="card" style="text-align:center;">ไม่พบข้อมูลออเดอร์ค่ะ 😿</div>';
                 return;
             }
 
-            display.innerHTML = '<h3>✨ ผลการค้นหา</h3>' + results.map(o => renderOrderCard(o, true)).join('');
-        }
-
-        function renderOrderCard(o, isUserSearch = false) {
-            const currentlyDoing = orders.find(x => x.status === 'กำลังทำ') || {queue: '-'};
-            const nextQueue = orders.find(x => x.status === 'รอเริ่มงาน') || {queue: '-'};
-
-            return `
-                <div class="card order-card-item">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                            <span class="status-pill" style="background:${getStatusColor(o.status)}">${o.status}</span>
-                            <h2 style="text-align: left; margin: 5px 0;">Order #${o.id}</h2>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 0.8rem; color: #888;">คิวที่</div>
-                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-pink);">${o.queue}</div>
-                        </div>
+            display.innerHTML = results.map(o => `
+                <div class="card" style="border-left: 10px solid ${getStatusColor(o.status)}">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="status-pill" style="background:${getStatusColor(o.status)}">${o.status}</span>
+                        <strong style="color:var(--primary-pink); font-size:1.2rem;">คิวที่ ${o.queue}</strong>
                     </div>
-                    
-                    <div style="margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem;">
-                        <div><strong>ชื่อลูกค้า:</strong> ${o.name}</div>
-                        <div><strong>รายละเอียด:</strong> ${o.detail}</div>
-                        <div><strong>วันที่รับงาน:</strong> ${o.updated.split(' ')[0]}</div>
-                        <div><strong>อัปเดตล่าสุด:</strong> ${o.updated}</div>
+                    <h2 style="text-align:left; margin: 10px 0;">Order #${o.id}</h2>
+                    <p><strong>ชื่อ:</strong> ${o.name} | <strong>งาน:</strong> ${o.detail}</p>
+                    <div class="progress-container"><div class="progress-bar" style="width:${o.percent}%"></div></div>
+                    <p style="text-align:right; font-size:0.8rem; margin:0;">ความคืบหน้า: ${o.percent}%</p>
+                    <div style="background:#fff; padding:15px; border-radius:15px; margin-top:10px; font-size:0.9rem;">
+                        <strong>💬 อัปเดตจากแอดมิน:</strong> ${o.note || 'กำลังดำเนินการค่ะ'}
                     </div>
-
-                    <div style="background: #fdfdfd; padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #eee;">
-                        <strong>💬 ข้อความจากแอดมิน:</strong><br>
-                        <small>${o.note || 'แอดมินกำลังตั้งใจทำงานให้อยู่นะคะ ✨'}</small>
-                    </div>
-
-                    <div style="margin-top: 15px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                            <span>ความคืบหน้า</span>
-                            <span>${o.percent}%</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar" style="width: ${o.percent}%"></div>
-                        </div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 20px; text-align: center; font-size: 0.8rem;">
-                        <div style="background: #fff; padding: 10px; border-radius: 15px;">
-                            <div style="color: #aaa;">กำลังทำ</div>
-                            <strong>คิว ${currentlyDoing.queue}</strong>
-                        </div>
-                        <div style="background: #fff; padding: 10px; border-radius: 15px;">
-                            <div style="color: #aaa;">คิวถัดไป</div>
-                            <strong>คิว ${nextQueue.queue}</strong>
-                        </div>
-                        <div style="background: var(--secondary-pink); color: white; padding: 10px; border-radius: 15px;">
-                            <div style="color: white; opacity: 0.8;">คิวของคุณ</div>
-                            <strong>คิว ${o.queue}</strong>
-                        </div>
-                    </div>
+                    <small style="display:block; margin-top:10px; color:#aaa;">อัปเดตล่าสุด: ${o.updated}</small>
                 </div>
-            `;
+            `).join('');
         }
 
-        function renderClientView() {
-            const list = document.getElementById('allQueuesList');
-            const summary = document.getElementById('queueStatusSummary');
-            
-            if (orders.length === 0) {
-                list.innerHTML = '<p style="text-align:center;">ยังไม่มีรายการคิวในขณะนี้</p>';
-                summary.innerHTML = 'ยังไม่มีงานในระบบ';
-            } else {
-                list.innerHTML = orders.map(o => `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
-                        <span><strong>#${o.id}</strong> ${o.name}</span>
-                        <span style="color: var(--primary-pink); font-weight: bold;">คิว ${o.queue}</span>
-                        <span style="font-size: 0.8rem; background: ${getStatusColor(o.status)}; color:white; padding: 2px 8px; border-radius: 10px;">${o.status}</span>
-                    </div>
-                `).join('');
-                
-                const cur = orders.find(x => x.status === 'กำลังทำ');
-                summary.innerHTML = `ขณะนี้กำลังดำเนินการถึง <strong>คิวที่ ${cur ? cur.queue : '-'}</strong>`;
-            }
-            renderChatHistory();
+        function getStatusColor(s) {
+            const colors = {'รอเริ่มงาน':'#ccc', 'กำลังทำ':'#cdb4db', 'ใกล้เสร็จ':'#ffafcc', 'เสร็จแล้ว':'#a2d2ff', 'ส่งงานแล้ว':'#bde0fe'};
+            return colors[s] || '#ffafcc';
         }
 
-        /* --- Chat System logic --- */
         function sendChatMessage() {
-            const orderId = document.getElementById('chatOrderId').value;
+            const id = document.getElementById('chatOrderId').value;
             const msg = document.getElementById('chatMessage').value;
+            if(!id) return alert('กรุณาระบุ Order ID ก่อนนะคะ 🎀');
+            if(!msg) return;
 
-            if (!orderId) {
-                alert('กรุณาใส่รหัสออเดอร์ก่อนติดต่อแอดมิน 🎀');
-                return;
-            }
-            if (!msg) return;
-
-            const chat = {
-                orderId: orderId,
-                text: msg,
-                sender: 'user',
-                time: new Date().toLocaleTimeString()
-            };
-
-            messages.push(chat);
+            messages.push({id, text: msg, sender: 'user', time: new Date().toLocaleTimeString()});
             document.getElementById('chatMessage').value = '';
             
-            // Auto response
             setTimeout(() => {
-                messages.push({
-                    orderId: orderId,
-                    text: 'ข้อความของคุณถูกส่งแล้ว กรุณารอแอดมินตอบกลับภายใน 1-5 นาทีค่ะ 🌸',
-                    sender: 'admin',
-                    time: new Date().toLocaleTimeString()
-                });
+                messages.push({id, text: 'รับทราบค่ะ! แอดมินจะรีบตอบกลับภายใน 1-5 นาทีนะค๊าาา ✨', sender: 'admin', time: new Date().toLocaleTimeString()});
                 saveData();
-                renderChatHistory();
             }, 1000);
-
             saveData();
-            renderChatHistory();
         }
 
         function renderChatHistory() {
             const display = document.getElementById('chatDisplay');
-            if (!display) return;
-            display.innerHTML = messages.slice(-5).map(m => `
-                <div class="chat-bubble ${m.sender === 'user' ? 'chat-user' : 'chat-admin'}">
-                    <small style="display:block; font-size: 0.6rem; opacity: 0.7;">${m.orderId} - ${m.time}</small>
+            display.innerHTML = messages.slice(-15).map(m => `
+                <div class="chat-bubble ${m.sender==='user'?'chat-user':'chat-admin'}">
+                    <small style="font-size:0.6rem; opacity:0.6; display:block;">${m.id} - ${m.time}</small>
                     ${m.text}
                 </div>
             `).join('');
             display.scrollTop = display.scrollHeight;
         }
 
-        function replyChat(orderId) {
-            const msg = prompt(`ตอบกลับออเดอร์ ${orderId}:`);
-            if (msg) {
-                messages.push({
-                    orderId: orderId,
-                    text: msg,
-                    sender: 'admin',
-                    time: new Date().toLocaleTimeString()
-                });
+        function renderClientView() {
+            const list = document.getElementById('allQueuesList');
+            if (orders.length === 0) { list.innerHTML = '<p style="text-align:center; color:#ccc;">ยังไม่มีคิวงาน</p>'; return; }
+            
+            list.innerHTML = orders.map(o => `
+                <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px dashed #eee; align-items:center;">
+                    <span><strong>#${o.id}</strong> ${o.name}</span>
+                    <span style="font-weight:bold; color:var(--primary-pink);">คิว ${o.queue}</span>
+                    <span style="font-size:0.7rem; background:${getStatusColor(o.status)}; color:white; padding:2px 8px; border-radius:10px;">${o.status}</span>
+                </div>
+            `).join('');
+            
+            const active = orders.find(o => o.status === 'กำลังทำ');
+            document.getElementById('queueStatusSummary').innerHTML = active ? `ขณะนี้แอดมินกำลังทำ <strong>คิวที่ ${active.queue}</strong> อยู่ค่ะ ✨` : 'ยังไม่มีคิวที่กำลังดำเนินการ';
+        }
+
+        function renderAdminView() {
+            const list = document.getElementById('adminOrderList');
+            const stats = document.getElementById('adminStats');
+            
+            const total = orders.length;
+            const doing = orders.filter(o => o.status === 'กำลังทำ' || o.status === 'ใกล้เสร็จ').length;
+            const done = orders.filter(o => o.status === 'เสร็จแล้ว' || o.status === 'ส่งงานแล้ว').length;
+
+            stats.innerHTML = `
+                <div class="stat-card"><div>งานทั้งหมด</div><div class="stat-val">${total}</div></div>
+                <div class="stat-card"><div>กำลังทำ</div><div class="stat-val" style="color:#cdb4db">${doing}</div></div>
+                <div class="stat-card"><div>เสร็จแล้ว</div><div class="stat-val" style="color:#a2d2ff">${done}</div></div>
+            `;
+
+            list.innerHTML = orders.map((o, i) => {
+                const fullInfo = `ออเดอร์: ${o.id}\nลูกค้า: ${o.name}\nรายละเอียด: ${o.detail}\nสถานะ: ${o.status} (${o.percent}%)`;
+                const customerMsg = `เลขออเดอร์ของคุณคือ ${o.id}\nสามารถตรวจสอบสถานะงานได้ที่นี่: ${window.location.href}`;
+                
+                return `
+                <div class="card" style="padding:15px; border-left:5px solid ${getStatusColor(o.status)}">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>#${o.id} (คิว ${o.queue})</strong>
+                        <span class="status-pill" style="background:${getStatusColor(o.status)}">${o.status}</span>
+                    </div>
+                    <div style="font-size: 0.9rem; margin-top: 5px;">ลูกค้า: ${o.name} | ${o.percent}%</div>
+                    
+                    <div style="margin-top:10px; display: flex; gap: 5px; flex-wrap: wrap;">
+                        <button class="btn-gradient" onclick="editOrder(${i})" style="padding:5px 12px; font-size:0.75rem;">แก้ไข</button>
+                        <button class="btn-gradient btn-copy" onclick="copyText('${o.id}')" style="padding:5px 12px; font-size:0.75rem;">คัดลอก ID</button>
+                        <button class="btn-gradient btn-copy" onclick="copyText('${o.name}')" style="padding:5px 12px; font-size:0.75rem;">คัดลอกชื่อ</button>
+                        <button class="btn-gradient btn-copy" onclick="copyText('${customerMsg}')" style="padding:5px 12px; font-size:0.75rem; background: var(--primary-purple); color:white;">คัดลอกข้อความส่งลูกค้า</button>
+                        <button class="btn-gradient" onclick="replyAdmin('${o.id}')" style="padding:5px 12px; font-size:0.75rem; background: #a2d2ff;">ตอบแชท</button>
+                        <button class="btn-gradient" onclick="deleteOrder(${i})" style="padding:5px 12px; font-size:0.75rem; background:#ff758c;">ลบ</button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function replyAdmin(id) {
+            const msg = prompt(`ตอบกลับออเดอร์ ${id}:`);
+            if(msg) {
+                messages.push({id, text: msg, sender: 'admin', time: new Date().toLocaleTimeString()});
                 saveData();
-                alert('ส่งคำตอบแล้ว!');
             }
         }
 
-        /* --- Init --- */
-        window.onload = () => {
-            createParticles();
-            renderClientView();
-            // Initial data for demo if empty
-            if (orders.length === 0) {
-                orders = [
-                    {id: 'A102', queue: 1, name: 'คุณแนน', line: 'nan_cute', fb: 'Nan Smith', detail: 'เว็บไซต์ร้านค้า', status: 'กำลังทำ', percent: 60, note: 'กำลังลงสินค้าในหน้าเว็บให้นะคะ', updated: new Date().toLocaleString('th-TH')},
-                    {id: 'A105', queue: 2, name: 'คุณกิ๊ฟ', line: 'gift_line', fb: 'Gift Gift', detail: 'ออกแบบโลโก้', status: 'รอเริ่มงาน', percent: 0, note: '', updated: new Date().toLocaleString('th-TH')}
-                ];
-                saveData();
-            }
-        };
+        function createParticles() {
+            const container = document.getElementById('floatingParticles');
+            const emojis = ['🌸', '✨', '💗', '⭐', '🎀', '🫧', '💫'];
+            setInterval(() => {
+                const el = document.createElement('div');
+                el.className = 'emoji-particle';
+                el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                container.appendChild(el);
+                setTimeout(() => el.remove(), 10000);
+            }, 800);
+        }
+
+        function openLogin() { document.getElementById('loginOverlay').style.display = 'flex'; }
+        function closeLogin() { document.getElementById('loginOverlay').style.display = 'none'; }
+
+        document.getElementById('workPercent').oninput = function() {
+            document.getElementById('percentVal').innerText = this.value + '%';
+        }
+
+        window.onload = () => { createParticles(); renderAll(); };
     </script>
 </body>
 </html>

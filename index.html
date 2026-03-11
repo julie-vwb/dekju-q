@@ -2,8 +2,8 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>🎀 Kawaii Order Queue ✨</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎀 PJ Kawaii Queue ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -14,45 +14,49 @@
             min-height: 100vh;
             color: #4a4a4a;
         }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px 12px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px 15px; }
 
-        /* Header & Nav */
-        .header { text-align: center; margin: 20px 0; }
-        .header h1 { font-size: 2rem; background: linear-gradient(135deg, #ff85b3, #d8c5e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
-        .toggle-btn { padding: 10px 20px; border: none; border-radius: 50px; background: white; color: #ff85b3; font-weight: 500; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .toggle-btn.active { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; }
+        /* Navigation */
+        .nav-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
+        .toggle-btn { padding: 12px 24px; border: none; border-radius: 50px; background: white; color: #ff85b3; font-weight: 500; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        .toggle-btn.active { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; transform: scale(1.05); }
 
-        /* Card System */
-        .card { background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border-radius: 25px; padding: 20px; margin-bottom: 15px; box-shadow: 0 8px 20px rgba(255,179,217,0.2); border: 1px solid white; position: relative; }
+        /* Card & UI */
+        .card { background: rgba(255,255,255,0.8); backdrop-filter: blur(15px); border-radius: 25px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(255,179,217,0.2); border: 1px solid white; position: relative; }
+        .header h1 { text-align: center; font-size: 2.2rem; background: linear-gradient(135deg, #ff85b3, #d8c5e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; font-weight: 600; }
+
+        /* Category System (แยกหมวดหมู่) */
+        .category-title { color: #ff85b3; margin: 25px 0 10px 5px; font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .category-title::after { content: ""; flex: 1; height: 2px; background: linear-gradient(90deg, #ffb3d9, transparent); }
+
+        /* Input Styles */
+        label { display: block; margin: 10px 0 5px 8px; font-weight: 500; color: #ff85b3; font-size: 0.9rem; }
+        input, textarea { width: 100%; padding: 12px; border: 2px solid #fff; border-radius: 15px; background: white; font-size: 15px; margin-bottom: 10px; outline: none; }
         
-        /* Form Elements */
-        label { display: block; margin: 10px 0 5px 5px; font-weight: 500; color: #ff85b3; font-size: 0.9rem; }
-        input, textarea { width: 100%; padding: 12px; border: 2px solid #fff; border-radius: 15px; background: rgba(255,255,255,0.9); font-size: 15px; margin-bottom: 10px; outline: none; }
-        input:focus { border-color: #ffb3d9; }
-        
-        .btn { padding: 10px 20px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn-save { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; width: 100%; font-size: 1.1rem; margin-top: 10px; }
-        .btn-copy { background: #e5f4ff; color: #4a90e2; font-size: 0.8rem; padding: 5px 12px; }
-        .btn-del { background: #fff0f0; color: #ff6b6b; font-size: 0.8rem; padding: 5px 12px; }
-
-        /* Client Queue Card */
-        .queue-card { background: white; padding: 20px; border-radius: 20px; margin-bottom: 12px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 6px solid #ffb3d9; }
+        /* Queue Card Display */
+        .queue-card { background: white; padding: 18px; border-radius: 22px; margin-bottom: 12px; position: relative; border-left: 6px solid #ffb3d9; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .q-id { font-weight: 600; color: #ff85b3; font-size: 1.1rem; }
-        .q-name { font-weight: 500; margin: 4px 0; }
-        .q-detail { font-size: 0.85rem; color: #777; margin-bottom: 10px; }
-        
-        /* Progress & Pill */
+        .q-name { font-weight: 500; color: #333; margin: 2px 0; }
+        .q-detail { font-size: 0.85rem; color: #777; margin-bottom: 10px; width: 70%; }
+
+        /* Fixed Status Pill (มุมขวาล่าง) */
+        .status-pill-fixed { position: absolute; bottom: 15px; right: 15px; padding: 6px 15px; border-radius: 50px; background: #fff0f7; color: #ff85b3; font-weight: 600; font-size: 0.8rem; border: 1.5px solid #ffb3d9; }
+
+        /* Progress Bar */
         .progress-bar { height: 8px; background: #f0f0f0; border-radius: 10px; overflow: hidden; width: 60%; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #ffb3d9, #d8c5e8); }
-        .status-pill-fixed { position: absolute; bottom: 15px; right: 15px; padding: 6px 14px; border-radius: 50px; background: #fff0f7; color: #ff85b3; font-weight: 600; font-size: 0.8rem; border: 1.5px solid #ffb3d9; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #ffb3d9, #d8c5e8); transition: 0.8s; }
 
-        .pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-        .pill { padding: 6px 12px; background: white; border: 1px solid #eee; border-radius: 10px; font-size: 0.8rem; cursor: pointer; }
+        /* Admin Controls */
+        .pill-group { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
+        .pill { padding: 6px 12px; background: white; border: 1.5px solid #eee; border-radius: 12px; font-size: 0.8rem; cursor: pointer; }
         .pill.active { background: #ffb3d9; color: white; border-color: #ffb3d9; }
+        
+        .btn { padding: 12px; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-save { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; width: 100%; font-size: 1.1rem; }
+        .btn-copy { background: #eef7ff; color: #4a90e2; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; }
+        .btn-del { background: #fff0f0; color: #ff6b6b; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; }
 
-        .category-title { color: #ff85b3; margin: 20px 0 10px 5px; font-weight: 600; font-size: 1.1rem; }
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ff85b3; color: white; padding: 10px 20px; border-radius: 50px; z-index: 9999; display: none; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ff85b3; color: white; padding: 10px 20px; border-radius: 50px; z-index: 9999; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
@@ -60,26 +64,28 @@
 
     <div class="container">
         <div class="nav-group">
-            <button class="toggle-btn active" id="nav-client" onclick="showView('client')">🔎 เช็คคิว</button>
-            <button class="toggle-btn" id="nav-admin" onclick="tryAdmin()">⚙️ จัดการ</button>
+            <button class="toggle-btn active" id="tab-client" onclick="showView('client')">🔎 ตรวจสอบคิว</button>
+            <button class="toggle-btn" id="tab-admin" onclick="tryAdmin()">⚙️ แอดมิน</button>
         </div>
 
         <div id="clientView">
             <div class="header"><h1>PJ Kawaii Queue</h1></div>
             <div class="card">
-                <input type="text" id="clientSearch" placeholder="ค้นหา Order ID / ชื่อของคุณ..." oninput="renderClient()">
+                <input type="text" id="clientSearch" placeholder="พิมพ์ชื่อหรือเลข Order ID ของคุณ..." oninput="renderClient()">
             </div>
-            <div id="clientList"></div>
+            <div id="clientQueueCategorized"></div>
         </div>
 
         <div id="adminView" style="display:none;">
             <div class="card">
-                <h3>เพิ่ม/แก้ไขคิว</h3>
-                <label>Order ID</label>
+                <h3>จัดการออเดอร์</h3>
+                <label>Order ID (เว้นว่างเพื่อรันอัตโนมัติ)</label>
                 <input type="text" id="orderId" placeholder="เช่น PJ-001">
                 <label>ชื่อลูกค้า</label>
                 <input type="text" id="custName">
-                <label>รายละเอียด</label>
+                <label>ช่องทางติดต่อ</label>
+                <input type="text" id="custContact">
+                <label>รายละเอียดงาน</label>
                 <textarea id="workDetail" rows="2"></textarea>
                 
                 <label>ความคืบหน้า: <span id="pText">0%</span></label>
@@ -96,104 +102,120 @@
         </div>
     </div>
 
-    <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
-        <div class="card" style="width:280px; text-align:center;">
-            <h3>แอดมินเข้าสู่ระบบ</h3>
+    <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+        <div class="card" style="width:300px; text-align:center;">
+            <h3>🔐 Admin Login</h3>
             <input type="password" id="adminPass" style="margin-top:10px; text-align:center;">
-            <button class="btn btn-save" onclick="login()">ตกลง</button>
+            <button class="btn btn-save" onclick="login()">เข้าสู่ระบบ</button>
+            <p onclick="document.getElementById('loginModal').style.display='none'" style="margin-top:10px; font-size:0.8rem; color:#aaa; cursor:pointer;">ยกเลิก</p>
         </div>
     </div>
 
     <script>
         let orders = JSON.parse(localStorage.getItem('orders')) || [];
         let counter = parseInt(localStorage.getItem('counter')) || 1;
-        let isAdmin = false;
+        let isAdminMode = false;
 
         function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
 
         function showView(v) {
             document.getElementById('clientView').style.display = v==='client'?'block':'none';
             document.getElementById('adminView').style.display = v==='admin'?'block':'none';
-            document.getElementById('nav-client').classList.toggle('active', v==='client');
-            document.getElementById('nav-admin').classList.toggle('active', v==='admin');
+            document.getElementById('tab-client').classList.toggle('active', v==='client');
+            document.getElementById('tab-admin').classList.toggle('active', v==='admin');
             v==='client' ? renderClient() : renderAdmin();
         }
 
-        function tryAdmin() { if(isAdmin) showView('admin'); else document.getElementById('loginModal').style.display='flex'; }
-        function login() { if(document.getElementById('adminPass').value==='admin123'){ isAdmin=true; document.getElementById('loginModal').style.display='none'; showView('admin'); } else showToast('รหัสผิด!'); }
+        function tryAdmin() { if(isAdminMode) showView('admin'); else document.getElementById('loginModal').style.display='flex'; }
+        function login() { if(document.getElementById('adminPass').value==='admin123'){ isAdminMode=true; document.getElementById('loginModal').style.display='none'; showView('admin'); } else showToast('รหัสผ่านไม่ถูกต้อง!'); }
 
         function initForm() {
             const pp=document.getElementById('pPills'); pp.innerHTML='';
             [0,25,50,75,100].forEach(v=>{
-                const b=document.createElement('div'); b.className='pill'; b.textContent=v+'%';
+                const b=document.createElement('div'); b.className='pill' + (v===0?' active':''); b.textContent=v+'%';
                 b.onclick=()=>{ document.getElementById('vPercent').value=v; document.getElementById('pText').textContent=v+'%'; pp.querySelectorAll('.pill').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
                 pp.appendChild(b);
             });
             const sp=document.getElementById('sPills'); sp.innerHTML='';
-            ['รอเริ่มงาน','กำลังทำ','ใกล้เสร็จ','เสร็จแล้ว'].forEach(s=>{
-                const b=document.createElement('div'); b.className='pill'; b.textContent=s;
+            ['รอเริ่มงาน','กำลังทำ','ใกล้เสร็จ','เสร็จแล้ว','ส่งงานแล้ว'].forEach(s=>{
+                const b=document.createElement('div'); b.className='pill' + (s==='รอเริ่มงาน'?' active':''); b.textContent=s;
                 b.onclick=()=>{ document.getElementById('vStatus').value=s; sp.querySelectorAll('.pill').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
                 sp.appendChild(b);
             });
         }
 
         function saveOrder() {
-            const name = document.getElementById('custName').value;
-            if(!name) return showToast('ใส่ชื่อด้วย!');
-            const order = {
-                id: document.getElementById('orderId').value || `PJ-${String(counter++).padStart(3,'0')}`,
+            const name = document.getElementById('custName').value.trim();
+            if(!name) return showToast('⚠️ ใส่ชื่อลูกค้าด้วย');
+            const o = {
+                id: document.getElementById('orderId').value.trim() || `PJ-${String(counter++).padStart(3,'0')}`,
                 name: name,
-                detail: document.getElementById('workDetail').value,
+                contact: document.getElementById('custContact').value.trim(),
+                detail: document.getElementById('workDetail').value.trim(),
                 percent: document.getElementById('vPercent').value,
                 status: document.getElementById('vStatus').value,
-                date: new Date().toLocaleDateString('th-TH')
+                date: new Date().toLocaleDateString('th-TH'),
+                time: new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})
             };
-            orders.unshift(order);
+            orders.unshift(o);
             localStorage.setItem('orders', JSON.stringify(orders));
             localStorage.setItem('counter', counter);
-            showToast('บันทึกแล้ว ✨');
+            showToast('✅ บันทึกแล้ว');
             showView('admin');
             document.querySelectorAll('input, textarea').forEach(i=>i.value='');
+            initForm();
         }
 
         function copy(id) {
             const o = orders.find(x=>x.id===id);
-            const text = `🎀 ออเดอร์ของคุณได้ถูกรับเข้าระบบแล้ว! ✨\n\n📌 เลขออเดอร์: ${o.id}\n👤 ชื่อ: ${o.name}\n📋 รายละเอียดงาน: ${o.detail}\n\n📅 วันที่รับงาน: ${o.date}\n✅ สถานะ: ${o.status}\n📊 ความคืบหน้า: ${o.percent}%\n\n🔗 ตรวจสอบคิวของคุณได้ที่นี่:\n${window.location.href}\n\nหรือค้นหาด้วยเลขออเดอร์ ${o.id}\nขอบคุณที่ใช้บริการค่ะ! 💗`;
-            navigator.clipboard.writeText(text).then(()=>showToast('คัดลอกแล้ว!'));
+            const text = `🎀 ออเดอร์ของคุณได้ถูกรับเข้าระบบแล้ว! ✨\n\n📌 เลขออเดอร์: ${o.id}\n👤 ชื่อ: ${o.name}\n📞 ติดต่อ: ${o.contact}\n📋 รายละเอียดงาน: ${o.detail}\n\n📅 วันที่รับงาน: ${o.date}\n🕒 เวลา: ${o.time}\n\n✅ สถานะ: ${o.status}\n📊 ความคืบหน้า: ${o.percent}%\n\n🔗 ตรวจสอบคิวของคุณได้ที่นี่:\n${window.location.href}\n\nหรือค้นหาด้วยเลขออเดอร์ ${o.id}\nขอบคุณที่ใช้บริการค่ะ! 💗`;
+            navigator.clipboard.writeText(text).then(()=>showToast('📋 คัดลอกสำเร็จ!'));
         }
 
         function renderClient() {
-            const list = document.getElementById('clientList'); list.innerHTML='';
+            const list = document.getElementById('clientQueueCategorized');
             const search = document.getElementById('clientSearch').value.toLowerCase();
-            const filtered = orders.filter(o => o.id.toLowerCase().includes(search) || o.name.toLowerCase().includes(search));
+            list.innerHTML = '';
             
-            if(filtered.length === 0) { list.innerHTML='<center style="margin-top:20px; color:#aaa;">ไม่พบข้อมูล</center>'; return; }
+            const filtered = orders.filter(o => o.id.toLowerCase().includes(search) || o.name.toLowerCase().includes(search));
+            const cats = ['กำลังทำ', 'รอเริ่มงาน', 'เสร็จแล้ว', 'ส่งงานแล้ว'];
 
-            filtered.forEach(o => {
-                list.innerHTML += `
-                    <div class="queue-card">
-                        <div class="q-id">${o.id}</div>
-                        <div class="q-name">คุณ ${o.name}</div>
-                        <div class="q-detail">${o.detail}</div>
-                        <div class="progress-bar"><div class="progress-fill" style="width:${o.percent}%"></div></div>
-                        <div class="status-pill-fixed">${o.status}</div>
-                    </div>`;
+            cats.forEach(cat => {
+                const group = filtered.filter(o => cat === 'กำลังทำ' ? (o.status === 'กำลังทำ' || o.status === 'ใกล้เสร็จ') : o.status === cat);
+                if(group.length > 0) {
+                    list.innerHTML += `<div class="category-title">✨ ${cat}</div>`;
+                    group.forEach(o => {
+                        list.innerHTML += `
+                            <div class="queue-card">
+                                <span class="q-id">${o.id}</span>
+                                <div class="q-name">คุณ ${o.name}</div>
+                                <div class="q-detail">${o.detail || 'รอดำเนินการ'}</div>
+                                <div class="progress-bar"><div class="progress-fill" style="width:${o.percent}%"></div></div>
+                                <div class="status-pill-fixed">${o.status}</div>
+                                <p style="font-size:0.7rem; color:#ccc; margin-top:5px;">📅 ${o.date} | ${o.time}</p>
+                            </div>`;
+                    });
+                }
             });
+            if(filtered.length === 0) list.innerHTML = '<center style="padding:40px; color:#aaa;">ไม่พบข้อมูล</center>';
         }
 
         function renderAdmin() {
-            const list = document.getElementById('adminList'); list.innerHTML='<div class="category-title">รายการทั้งหมด</div>';
+            const list = document.getElementById('adminList');
+            list.innerHTML = '<div class="category-title">รายการคิวทั้งหมด</div>';
             orders.forEach((o, i) => {
                 list.innerHTML += `
-                    <div class="card">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <strong>${o.id} - ${o.name}</strong>
+                    <div class="card" style="padding:15px; border-left:5px solid #ffb3d9;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div>
+                                <strong>${o.id} - คุณ ${o.name}</strong>
+                                <p style="font-size:0.8rem; color:#777;">${o.status} (${o.percent}%)</p>
+                            </div>
                             <div style="display:flex; gap:5px;">
-                                <button class="btn btn-copy" onclick="copy('${o.id}')">คัดลอก</button>
-                                <button class="btn btn-del" onclick="orders.splice(${i},1); localStorage.setItem('orders', JSON.stringify(orders)); renderAdmin();">ลบ</button>
+                                <button class="btn-copy" onclick="copy('${o.id}')">คัดลอก</button>
+                                <button class="btn-del" onclick="if(confirm('ลบ?')){orders.splice(${i},1); localStorage.setItem('orders',JSON.stringify(orders)); renderAdmin();}">ลบ</button>
                             </div>
                         </div>
-                        <p style="font-size:0.8rem; color:#777;">${o.status} (${o.percent}%)</p>
                     </div>`;
             });
         }

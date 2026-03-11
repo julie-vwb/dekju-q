@@ -7,63 +7,48 @@
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* CSS เดิมทั้งหมดคงไว้เพื่อความสวยงาม */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mitr', sans-serif !important; }
         body { background: linear-gradient(135deg, #ffe4f5 0%, #f3e5ff 50%, #e5f4ff 100%); background-attachment: fixed; min-height: 100vh; color: #4a4a4a; overflow-x: hidden; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px 15px; padding-bottom: 100px; }
-        
-        /* Navigation */
         .nav-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
         .toggle-btn { padding: 12px 24px; border: none; border-radius: 50px; background: white; color: #ff85b3; font-weight: 500; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
         .toggle-btn.active { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; transform: scale(1.05); }
-        
         .card { background: rgba(255,255,255,0.8); backdrop-filter: blur(15px); border-radius: 25px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(255,179,217,0.2); border: 1px solid white; position: relative; }
         .category-title { color: #ff85b3; margin: 25px 0 10px 5px; font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .category-title::after { content: ""; flex: 1; height: 2px; background: linear-gradient(90deg, #ffb3d9, transparent); }
-        
         input, textarea { width: 100%; padding: 12px; border: 2px solid #fff; border-radius: 15px; background: white; font-size: 15px; margin-bottom: 10px; outline: none; transition: 0.3s; }
         label { display: block; margin: 10px 0 5px 8px; font-weight: 500; color: #ff85b3; font-size: 0.9rem; }
-
         .queue-card { background: white; padding: 18px; border-radius: 22px; margin-bottom: 12px; position: relative; border-left: 6px solid #ffb3d9; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .date-info { font-size: 0.7rem; color: #999; margin-top: 8px; display: flex; flex-direction: column; gap: 2px; }
+        .date-info { font-size: 0.7rem; color: #999; margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
         .status-pill-fixed { position: absolute; bottom: 15px; right: 15px; padding: 6px 15px; border-radius: 50px; background: #fff0f7; color: #ff85b3; font-weight: 600; font-size: 0.8rem; border: 1.5px solid #ffb3d9; }
-        
         .progress-bar { height: 8px; background: #f0f0f0; border-radius: 10px; overflow: hidden; width: 60%; margin-top: 10px;}
         .progress-fill { height: 100%; background: linear-gradient(90deg, #ffb3d9, #d8c5e8); transition: 0.8s; }
-        
         .pill-group { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
         .pill { padding: 6px 12px; background: white; border: 1.5px solid #eee; border-radius: 12px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
         .pill.active { background: #ffb3d9; color: white; border-color: #ffb3d9; box-shadow: 0 3px 10px rgba(255,179,217,0.4); }
-        
         .btn { padding: 12px; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .btn-save { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; width: 100%; font-size: 1.1rem; }
-        
-        /* ปุ่มแอดมิน */
         .admin-controls { display: flex; gap: 5px; margin-top: 10px; }
-        .btn-copy-full { background: #eef7ff; color: #4a90e2; font-size: 0.75rem; padding: 6px 12px; border-radius: 10px; border:none; cursor:pointer; font-weight: 500;}
-        .btn-edit-tool { background: #fdf6e3; color: #b58900; font-size: 0.75rem; padding: 6px 12px; border-radius: 10px; border:none; cursor:pointer; font-weight: 500;}
-        .btn-del-tool { background: #fff0f0; color: #ff6b6b; font-size: 0.75rem; padding: 6px 12px; border-radius: 10px; border:none; cursor:pointer; font-weight: 500;}
-
+        .btn-tool { font-size: 0.75rem; padding: 6px 12px; border-radius: 10px; border:none; cursor:pointer; font-weight: 500; }
+        .btn-copy { background: #eef7ff; color: #4a90e2; }
+        .btn-edit { background: #fdf6e3; color: #b58900; }
+        .btn-del { background: #fff0f0; color: #ff6b6b; }
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ff85b3; color: white; padding: 10px 20px; border-radius: 50px; z-index: 9999; display: none; }
-
-        /* ระบบแชท */
         #chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
         #chat-btn { width: 60px; height: 60px; border-radius: 30px; background: linear-gradient(135deg, #ffb3d9, #d8c5e8); border: none; color: white; font-size: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255,133,179,0.4); }
         #chat-window { position: fixed; bottom: 90px; right: 20px; width: 320px; height: 450px; background: white; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; flex-direction: column; overflow: hidden; border: 1px solid #fce4ec; }
         .chat-header { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; padding: 15px; text-align: center; font-weight: 600; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #fff9fb; display: flex; flex-direction: column; gap: 10px; }
         .chat-footer { padding: 10px; display: flex; gap: 8px; background: white; border-top: 1px solid #eee; }
-        
-        /* การแบ่งฝั่งแชท */
-        .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
-        /* ข้อความจากลูกค้า (อยู่ซ้าย) */
-        .msg.user { align-self: flex-start; background: white; border: 1px solid #ffe4f5; border-bottom-left-radius: 2px; color: #4a4a4a; }
-        /* ข้อความจากแอดมิน (อยู่ขวา) */
-        .msg.admin { align-self: flex-end; background: #ffb3d9; color: white; border-bottom-right-radius: 2px; }
-
-        /* Admin Chat Console */
+        .msg { max-width: 85%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
+        /* สไตล์แชทหน้าเช็คคิว */
+        .chat-body .msg.admin { align-self: flex-start; background: white; border: 1px solid #ffe4f5; border-bottom-left-radius: 2px; }
+        .chat-body .msg.user { align-self: flex-end; background: #ffb3d9; color: white; border-bottom-right-radius: 2px; }
+        /* Admin Console */
         .admin-chat-preview { height: 180px; background: #fff; border: 2px solid #fff0f7; border-radius: 20px; margin-bottom: 10px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-
-        /* Modal */
+        .admin-chat-preview .msg.user { align-self: flex-start; background: #f0f0f0; color: #333; border-bottom-left-radius: 2px; }
+        .admin-chat-preview .msg.admin { align-self: flex-end; background: #ffb3d9; color: white; border-bottom-right-radius: 2px; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 10000; }
         .modal-content { background: white; padding: 25px; border-radius: 30px; width: 85%; max-width: 320px; text-align: center; }
     </style>
@@ -96,13 +81,13 @@
 
         <div id="adminView" style="display:none;">
             <div class="card" style="border: 2px solid #ffb3d9;">
-                <h3 style="color:#ff85b3; font-size:1rem; margin-bottom:10px;">💬 ระบบแชทกับลูกค้า</h3>
+                <h3 style="color:#ff85b3; font-size:1rem; margin-bottom:10px;">💬 Admin Chat Console</h3>
                 <div id="adminChatPreview" class="admin-chat-preview">
-                    <p style="text-align:center; color:#ccc; font-size:12px; margin-top:70px;">รอการเชื่อมต่อจากเลขออเดอร์ลูกค้า...</p>
+                    <p id="chatPlaceholder" style="text-align:center; color:#ccc; font-size:12px; margin-top:70px;">รอข้อความจากลูกค้า...</p>
                 </div>
-                <p id="activeChatTarget" style="font-size:0.8rem; color:#888; margin-bottom:10px; font-weight:500;">ยังไม่มีลูกค้าล็อกอินเข้ามา</p>
+                <p id="activeChatTarget" style="font-size:0.8rem; color:#888; margin-bottom:10px; font-weight:500;">คุยกับ: -</p>
                 <div style="display:flex; gap:8px;">
-                    <input type="text" id="adminReplyInput" placeholder="พิมพ์ข้อความตอบกลับ..." style="margin-bottom:0;" onkeypress="if(event.key==='Enter') adminSendMsg()">
+                    <input type="text" id="adminReplyInput" placeholder="ตอบแชทลูกค้าที่นี่..." style="margin-bottom:0;" onkeypress="if(event.key==='Enter') adminSendMsg()">
                     <button onclick="adminSendMsg()" style="background:#ffb3d9; border:none; border-radius:15px; padding:0 20px; color:white; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -110,18 +95,15 @@
             <div class="card">
                 <h3 id="formTitle">จัดการออเดอร์</h3>
                 <input type="hidden" id="editIndex" value="-1">
-                <label>เลขออเดอร์ (Order ID)</label><input type="text" id="orderId" placeholder="ตัวอย่าง: PJ-001">
-                <label>ชื่อลูกค้า</label><input type="text" id="custName" placeholder="ชื่อเล่นหรือชื่อลูกค้า">
-                <label>รายละเอียดงาน</label><textarea id="workDetail" rows="2" placeholder="รายละเอียดงานที่สั่ง..."></textarea>
-                
+                <label>Order ID</label><input type="text" id="orderId" placeholder="PJ-XXX">
+                <label>ชื่อลูกค้า</label><input type="text" id="custName">
+                <label>รายละเอียด</label><textarea id="workDetail" rows="2"></textarea>
                 <label>ความคืบหน้า: <span id="pText">0%</span></label>
                 <div class="pill-group" id="pPills"></div><input type="hidden" id="vPercent" value="0">
-                
-                <label>สถานะงาน</label>
+                <label>สถานะ</label>
                 <div class="pill-group" id="sPills"></div><input type="hidden" id="vStatus" value="รอเริ่มงาน">
-                
                 <button class="btn btn-save" onclick="saveOrder()">บันทึกข้อมูล ✨</button>
-                <button id="cancelBtn" class="btn" style="display:none; width:100%; margin-top:5px; background:#eee;" onclick="resetForm()">ยกเลิกการแก้ไข</button>
+                <button id="cancelBtn" class="btn" style="display:none; width:100%; margin-top:5px; background:#eee;" onclick="resetForm()">ยกเลิกแก้ไข</button>
             </div>
             <div id="adminList"></div>
         </div>
@@ -153,7 +135,6 @@
         let deleteIdx = -1;
 
         function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
-        
         function showView(v) {
             document.getElementById('clientView').style.display = v==='client'?'block':'none';
             document.getElementById('adminView').style.display = v==='admin'?'block':'none';
@@ -161,10 +142,9 @@
             document.getElementById('tab-admin').classList.toggle('active', v==='admin');
             v==='client' ? renderClient() : renderAdmin();
         }
-
         function tryAdmin() { if(isAdminMode) showView('admin'); else document.getElementById('loginModal').style.display='flex'; }
         function login() { if(document.getElementById('adminPass').value==='admin123'){ isAdminMode=true; document.getElementById('loginModal').style.display='none'; showView('admin'); } else showToast('รหัสผ่านไม่ถูกต้อง!'); }
-
+        
         function initForm() {
             const pp=document.getElementById('pPills'); pp.innerHTML='';
             [0,25,50,75,100].forEach(v=>{
@@ -179,42 +159,37 @@
                 sp.appendChild(b);
             });
         }
-
         function updateActivePill(c, b) { c.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); b.classList.add('active'); }
 
         function saveOrder() {
             const name = document.getElementById('custName').value.trim();
             const idx = parseInt(document.getElementById('editIndex').value);
             if(!name) return showToast('⚠️ กรุณาใส่ชื่อลูกค้า');
-            
-            const now = new Date().toLocaleString('th-TH');
+            const now = new Date().toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' });
             const o = {
                 id: document.getElementById('orderId').value || `PJ-${String(counter++).padStart(3,'0')}`,
                 name: name, detail: document.getElementById('workDetail').value,
                 percent: document.getElementById('vPercent').value, status: document.getElementById('vStatus').value,
-                created: idx === -1 ? now : orders[idx].created,
+                created: idx === -1 ? now : (orders[idx].created || now),
                 updated: now
             };
             if(idx === -1) orders.unshift(o); else orders[idx] = o;
             localStorage.setItem('orders', JSON.stringify(orders));
             localStorage.setItem('counter', counter);
-            showToast('✅ บันทึกข้อมูลสำเร็จ'); resetForm(); renderAdmin();
+            showToast('✅ บันทึกแล้ว'); resetForm(); renderAdmin();
         }
 
         function renderAdmin() {
-            const list = document.getElementById('adminList'); list.innerHTML = '<div class="category-title">รายการคิวทั้งหมด</div>';
+            const list = document.getElementById('adminList'); list.innerHTML = '<div class="category-title">รายการคิว</div>';
             orders.forEach((o, i) => {
                 list.innerHTML += `
                 <div class="card" style="padding:15px; border-left:5px solid #ffb3d9;">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div>
-                            <strong>${o.id} - ${o.name}</strong>
-                            <p style="font-size:0.75rem; color:#666;">${o.status} (${o.percent}%)</p>
-                        </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><strong>${o.id} - ${o.name}</strong><p style="font-size:0.7rem;">${o.status} (${o.percent}%)</p></div>
                         <div class="admin-controls">
-                            <button class="btn-copy-full" onclick="copyFullInfo(${i})">คัดลอกข้อมูล</button>
-                            <button class="btn-edit-tool" onclick="editOrder(${i})">แก้ไข</button>
-                            <button class="btn-del-tool" onclick="askDelete(${i})">ลบ</button>
+                            <button class="btn-tool btn-copy" onclick="copyFullInfo(${i})">คัดลอกข้อมูล</button>
+                            <button class="btn-tool btn-edit" onclick="editOrder(${i})">แก้ไข</button>
+                            <button class="btn-tool btn-del" onclick="askDelete(${i})">ลบ</button>
                         </div>
                     </div>
                 </div>`;
@@ -231,17 +206,27 @@
                 if(group.length > 0) {
                     list.innerHTML += `<div class="category-title">✨ ${cat}</div>`;
                     group.forEach(o => {
-                        list.innerHTML += `<div class="queue-card"><span style="color:#ffb3d9; font-weight:600;">${o.id}</span><div style="font-weight:500;">คุณ ${o.name}</div><div style="font-size:0.8rem; color:#666;">${o.detail}</div><div class="progress-bar"><div class="progress-fill" style="width:${o.percent}%"></div></div><div class="date-info"><span>📅 วันที่รับออเดอร์: ${o.created}</span><span>🔄 อัปเดตล่าสุด: ${o.updated}</span></div><div class="status-pill-fixed">${o.status}</div></div>`;
+                        list.innerHTML += `
+                        <div class="queue-card">
+                            <span style="color:#ffb3d9; font-weight:600;">${o.id}</span>
+                            <div style="font-weight:500;">คุณ ${o.name}</div>
+                            <div style="font-size:0.8rem; color:#666;">${o.detail}</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:${o.percent}%"></div></div>
+                            <div class="date-info">
+                                <span>📅 เริ่ม: ${o.created || '-'}</span>
+                                <span>🔄 อัปเดต: ${o.updated || '-'}</span>
+                            </div>
+                            <div class="status-pill-fixed">${o.status}</div>
+                        </div>`;
                     });
                 }
             });
         }
 
-        // คัดลอกข้อมูลแบบจัดเต็ม
         function copyFullInfo(idx) {
             const o = orders[idx];
-            const text = `🎀 ข้อมูลออเดอร์ PJ Kawaii ✨\n--------------------------\n🆔 เลขออเดอร์: ${o.id}\n👤 ชื่อลูกค้า: ${o.name}\n📝 รายละเอียด: ${o.detail || '-'}\n✨ สถานะ: ${o.status}\n📊 ความคืบหน้า: ${o.percent}%\n📅 เริ่มออเดอร์: ${o.created}\n🔄 อัปเดตล่าสุด: ${o.updated}\n--------------------------\nขอบคุณที่ใช้บริการนะคะ 💖`;
-            navigator.clipboard.writeText(text).then(() => showToast('📋 คัดลอกข้อมูลลง Clipboard แล้ว'));
+            const text = `🎀 ข้อมูลออเดอร์ PJ Kawaii ✨\n🆔 เลขออเดอร์: ${o.id}\n👤 ชื่อลูกค้า: ${o.name}\n✨ สถานะ: ${o.status}\n📊 ความคืบหน้า: ${o.percent}%\n📅 เริ่มออเดอร์: ${o.created}\n🔄 อัปเดตล่าสุด: ${o.updated}`;
+            navigator.clipboard.writeText(text).then(() => showToast('📋 คัดลอกข้อมูลแล้ว'));
         }
 
         function askDelete(idx) { deleteIdx = idx; document.getElementById('deleteModal').style.display = 'flex'; }
@@ -249,41 +234,40 @@
         document.getElementById('confirmDelBtn').onclick = () => {
             orders.splice(deleteIdx, 1);
             localStorage.setItem('orders', JSON.stringify(orders));
-            closeDelModal(); renderAdmin(); showToast('🗑️ ลบรายการเรียบร้อย');
+            closeDelModal(); renderAdmin(); showToast('🗑️ ลบรายการแล้ว');
         };
 
-        // ระบบแชทแบ่งฝั่ง
         function addMsg(text, type) {
             const body = document.getElementById('chat-content');
-            const preview = document.getElementById('adminChatPreview');
-            
-            // สร้าง Element สำหรับลูกค้าเห็น
-            const div = document.createElement('div');
-            div.className = `msg ${type}`;
-            div.textContent = text;
-            body.appendChild(div);
-            body.scrollTop = body.scrollHeight;
+            const d1 = document.createElement('div'); d1.className = `msg ${type}`; d1.textContent = text;
+            body.appendChild(d1); body.scrollTop = body.scrollHeight;
 
-            // สร้าง Element สำหรับแอดมินเห็นใน Console (ต้องใช้คนละก้อนเพื่อกันการงงฝั่ง)
-            const adminDiv = document.createElement('div');
-            adminDiv.className = `msg ${type}`;
-            adminDiv.textContent = text;
-            preview.appendChild(adminDiv);
-            preview.scrollTop = preview.scrollHeight;
+            const preview = document.getElementById('adminChatPreview');
+            const placeholder = document.getElementById('chatPlaceholder');
+            if(placeholder) placeholder.remove();
+            const d2 = document.createElement('div'); d2.className = `msg ${type}`; d2.textContent = text;
+            preview.appendChild(d2); preview.scrollTop = preview.scrollHeight;
         }
 
         function sendMsg() {
             const input = document.getElementById('chat-input');
-            const val = input.value.trim();
+            let val = input.value.trim();
             if(!val) return;
-            addMsg(val, 'user'); // ลูกค้าพิมพ์อยู่ฝั่งซ้าย
+            addMsg(val, 'user');
             input.value = '';
+
             if(!currentChatOrder) {
-                const found = orders.find(o => o.id.toLowerCase() === val.toLowerCase());
+                // ระบบตรวจเช็ค: พิมพ์แค่ตัวเลข (เช่น 006) หรือพิมพ์เต็ม (PJ-006) ก็ได้
+                let searchId = val.toUpperCase();
+                if(!searchId.startsWith('PJ-') && !isNaN(val)) {
+                    searchId = 'PJ-' + val.padStart(3, '0');
+                }
+
+                const found = orders.find(o => o.id.toUpperCase() === searchId);
                 if(found) {
                     currentChatOrder = found;
-                    document.getElementById('activeChatTarget').textContent = `กำลังคุยกับ: คุณ ${found.name} (${found.id})`;
-                    setTimeout(() => addMsg(`ยืนยันตัวตนสำเร็จ! สวัสดีค่ะคุณ ${found.name} แอดมินรับทราบแล้วค่ะ ✨`, 'admin'), 800);
+                    document.getElementById('activeChatTarget').textContent = `คุยกับ: คุณ ${found.name} (${found.id})`;
+                    setTimeout(() => addMsg(`สวัสดีค่ะคุณ ${found.name} มีอะไรสอบถามทิ้งไว้ได้เลยนะคะ ✨`, 'admin'), 800);
                 } else {
                     setTimeout(() => addMsg("ไม่พบเลขออเดอร์นี้ค่ะ ลองเช็คอีกทีนะ", 'admin'), 800);
                 }
@@ -293,16 +277,16 @@
         function adminSendMsg() {
             const input = document.getElementById('adminReplyInput');
             const val = input.value.trim();
-            if(!val || !currentChatOrder) return showToast('⚠️ กรุณาเลือกลูกค้าผ่านระบบล็อกอินแชทก่อน');
-            addMsg(val, 'admin'); // แอดมินตอบอยู่ฝั่งขวา
+            if(!val || !currentChatOrder) return showToast('⚠️ เลือกลูกค้าก่อนตอบ');
+            addMsg(val, 'admin');
             input.value = '';
         }
 
         function toggleChat() {
             const win = document.getElementById('chat-window');
             win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
-            if(win.style.display === 'flex' && !currentChatOrder) {
-                addMsg("พิมพ์เลขออเดอร์เพื่อเริ่มการสนทนาค่ะ", 'admin');
+            if(win.style.display === 'flex' && document.getElementById('chat-content').innerHTML === '') {
+                addMsg("สวัสดีดีค่ะ! กรุณาพิมพ์ **เลขออเดอร์ 3 หลัก** (เช่น 001) เพื่อเริ่มคุยนะคะ", 'admin');
             }
         }
 

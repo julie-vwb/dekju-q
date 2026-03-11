@@ -39,27 +39,29 @@
         .btn-del { background: #fff0f0; color: #ff6b6b; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; }
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ff85b3; color: white; padding: 10px 20px; border-radius: 50px; z-index: 9999; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
-        /* --- ใหม่: ระบบ Chat --- */
+        /* --- ระบบ Chat --- */
         #chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
-        #chat-btn { width: 60px; height: 60px; border-radius: 30px; background: linear-gradient(135deg, #ffb3d9, #d8c5e8); border: none; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 5px 20px rgba(255,133,179,0.4); display: flex; align-items: center; justify-content: center; }
+        #chat-btn { width: 60px; height: 60px; border-radius: 30px; background: linear-gradient(135deg, #ffb3d9, #d8c5e8); border: none; color: white; font-size: 30px; cursor: pointer; box-shadow: 0 5px 20px rgba(255,133,179,0.4); display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        #chat-btn:active { transform: scale(0.9); }
         
         #chat-window { position: fixed; bottom: 90px; right: 20px; width: 320px; height: 450px; background: white; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; flex-direction: column; overflow: hidden; border: 1px solid #fce4ec; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
         .chat-header { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; padding: 15px; text-align: center; font-weight: 600; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #fff9fb; display: flex; flex-direction: column; gap: 10px; }
-        .chat-footer { padding: 10px; display: flex; gap: 5px; background: white; border-top: 1px solid #eee; }
-        .chat-footer input { margin-bottom: 0; border-radius: 20px; padding: 8px 15px; font-size: 14px; }
+        .chat-footer { padding: 10px; display: flex; gap: 8px; background: white; border-top: 1px solid #eee; align-items: center; }
+        .chat-footer input { margin-bottom: 0; border-radius: 20px; padding: 8px 15px; font-size: 14px; border: 1px solid #ffe4f5; }
         
         .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.4; }
-        .msg.admin { align-self: flex-start; background: #f1f1f1; border-bottom-left-radius: 2px; }
+        .msg.admin { align-self: flex-start; background: white; border: 1px solid #ffe4f5; border-bottom-left-radius: 2px; }
         .msg.user { align-self: flex-end; background: #ffb3d9; color: white; border-bottom-right-radius: 2px; }
 
-        /* --- ใหม่: Custom Delete Modal --- */
+        /* --- Custom Delete Modal --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 10000; }
-        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 85%; max-width: 320px; text-align: center; }
+        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 85%; max-width: 320px; text-align: center; border: 2px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-modal { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; }
+        .btn-modal { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-modal:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -71,8 +73,8 @@
             <h3 style="color:#ff85b3">🗑️ ลบออเดอร์?</h3>
             <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">รายการนี้จะหายไปตลอดกาลเลยน้า~</p>
             <div class="modal-btns">
-                <button class="btn-modal" onclick="closeDelModal()" style="background:#eee;">ยกเลิก</button>
-                <button id="confirmDelBtn" class="btn-modal" style="background:#ff6b6b; color:white;">ตกลง ลบเลย</button>
+                <button class="btn-modal" onclick="closeDelModal()" style="background:#f5f5f5; color:#888;">ยกเลิก</button>
+                <button id="confirmDelBtn" class="btn-modal" style="background:linear-gradient(135deg, #ff9999, #ff6b6b); color:white;">ตกลง ลบเลย</button>
             </div>
         </div>
     </div>
@@ -121,10 +123,10 @@
             </div>
             <div class="chat-footer">
                 <input type="text" id="chat-input" placeholder="พิมพ์เลขออเดอร์..." onkeypress="if(event.key==='Enter') sendMsg()">
-                <button onclick="sendMsg()" style="background:none; border:none; color:#ff85b3; font-size:20px; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i></button>
+                <button onclick="sendMsg()" style="background:none; border:none; font-size:24px; cursor:pointer; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">✈️</button>
             </div>
         </div>
-        <button id="chat-btn" onclick="toggleChat()"><i class="fa-solid fa-comment-dots"></i></button>
+        <button id="chat-btn" onclick="toggleChat()">💬</button>
     </div>
 
     <script>
@@ -236,7 +238,6 @@
             });
         }
 
-        // --- ฟังก์ชันใหม่: ลบแบบละมุน ---
         function askDelete(idx) {
             deleteIdx = idx;
             document.getElementById('deleteModal').style.display = 'flex';
@@ -250,7 +251,6 @@
             showToast('🗑️ ลบรายการแล้ว');
         };
 
-        // --- ฟังก์ชันใหม่: แชท ---
         function toggleChat() {
             const win = document.getElementById('chat-window');
             win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
@@ -280,20 +280,19 @@
                     currentOrder = found;
                     input.placeholder = "พิมพ์ข้อความ...";
                     setTimeout(() => {
-                        addMsg(`ยืนยันตัวตนสำเร็จ! คุณ ${found.name} ใช่ไหมคะ? มีอะไรให้แอดมินช่วยเกี่ยวกับออเดอร์ ${found.id} ดีคะ?`, 'admin');
+                        addMsg(`ยืนยันตัวตนสำเร็จ! คุณ ${found.name} ใช่ไหมคะ? มีอะไรให้แอดมินช่วยเกี่ยวกับออเดอร์ ${found.id} ดีคะ? ✨`, 'admin');
                     }, 800);
                 } else {
                     setTimeout(() => addMsg("ไม่พบเลขคิวนี้ในระบบเลยค่ะ ลองเช็คอีกทีน้า 🥺", 'admin'), 800);
                 }
             } else {
-                // ระบบตอบกลับอัตโนมัติ (Bot)
                 setTimeout(() => {
                     let reply = "รับทราบค่ะ! เดี๋ยวแอดมินรีบเช็คให้นะคะ 💖";
                     const lowVal = val.toLowerCase();
                     if(lowVal.includes("สถานะ") || lowVal.includes("ถึงไหน")) {
-                        reply = `ออเดอร์ ${currentOrder.id} ตอนนี้สถานะคือ "${currentOrder.status}" (${currentOrder.percent}%) ค่ะ อดใจรออีกนิดน้า ✨`;
+                        reply = `ออเดอร์ ${currentOrder.id} ของคุณ ${currentOrder.name} ตอนนี้สถานะคือ "${currentOrder.status}" (${currentOrder.percent}%) ค่ะ อดใจรออีกนิดน้า ✨`;
                     } else if(lowVal.includes("ขอบคุณ")) {
-                        reply = "ยินดีให้บริการเสมอเลยค่าาา ~ ✨";
+                        reply = "ยินดีให้บริการเสมอเลยค่าาา ~ รักนะคะ! 🎀";
                     }
                     addMsg(reply, 'admin');
                 }, 1000);

@@ -201,7 +201,7 @@
             <div class="chat-body" id="chat-content"></div>
             <div class="chat-footer">
                 <input type="text" id="chat-input" placeholder="พิมพ์ข้อความ..." onkeypress="if(event.key==='Enter') sendMsg()">
-                <button onclick="sendMsg()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#ffb3d9;">🚀</button>
+                <button onclick="sendMsg()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#ffb3d9;">✈️</button>
             </div>
         </div>
         <button id="chat-btn" onclick="toggleChat()">💬</button>
@@ -348,7 +348,7 @@
 
         function copyFullInfo(idx) {
             const o = orders[idx];
-            const text = `🎀 ข้อมูลออเดอร์ PJ Kawaii ✨\n🆔 เลขออเดอร์: ${o.id}\n👤 ชื่อลูกค้า: ${o.name}\n✨ สถานะ: ${o.status}\n📊 ความคืบหน้า: ${o.percent}%\n📅 เริ่มออเดอร์: ${o.created}\n🔄 อัปเดตล่าสุด: ${o.updated}`;
+            const text = `🎀 ข้อมูลออเดอร์ PJ Kawaii ✨\n เลขออเดอร์: ${o.id}\n👤 ชื่อลูกค้า: ${o.name}\n✨ สถานะ: ${o.status}\nความคืบหน้า: ${o.percent}%\n📅 เริ่มออเดอร์: ${o.created}\n🔄 อัปเดตล่าสุด: ${o.updated}`;
             navigator.clipboard.writeText(text).then(() => showToast('📋 คัดลอกข้อมูลแล้ว'));
         }
 

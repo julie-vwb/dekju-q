@@ -20,7 +20,6 @@
         .category-title::after { content: ""; flex: 1; height: 2px; background: linear-gradient(90deg, #ffb3d9, transparent); }
         
         input, textarea { width: 100%; padding: 12px; border: 2px solid #fff; border-radius: 15px; background: white; font-size: 15px; margin-bottom: 10px; outline: none; transition: 0.3s; }
-        input:focus { border-color: #ffb3d9; }
         label { display: block; margin: 10px 0 5px 8px; font-weight: 500; color: #ff85b3; font-size: 0.9rem; }
 
         .queue-card { background: white; padding: 18px; border-radius: 22px; margin-bottom: 12px; position: relative; border-left: 6px solid #ffb3d9; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
@@ -53,9 +52,13 @@
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #fff9fb; display: flex; flex-direction: column; gap: 10px; }
         .chat-footer { padding: 10px; display: flex; gap: 8px; background: white; border-top: 1px solid #eee; }
         .chat-footer input { margin-bottom: 0; border-radius: 20px; }
-        .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.4; }
+        .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
         .msg.admin { align-self: flex-start; background: white; border: 1px solid #ffe4f5; border-bottom-left-radius: 2px; }
         .msg.user { align-self: flex-end; background: #ffb3d9; color: white; border-bottom-right-radius: 2px; }
+
+        /* Admin Chat Console UI */
+        .admin-chat-preview { height: 150px; background: #fff; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+        .admin-chat-preview .msg { font-size: 12px; padding: 6px 10px; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 10000; }
         .modal-content { background: white; padding: 25px; border-radius: 30px; width: 85%; max-width: 320px; text-align: center; }
@@ -64,6 +67,17 @@
 <body>
 
     <div id="toast" class="toast"></div>
+
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="color:#ff85b3">🗑️ ลบออเดอร์?</h3>
+            <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">รายการนี้จะหายไปตลอดกาลเลยน้า~</p>
+            <div class="pill-group" style="justify-content:center; margin-top:20px;">
+                <button class="pill" onclick="closeDelModal()">ยกเลิก</button>
+                <button id="confirmDelBtn" class="pill active" style="background:#ff6b6b; border-color:#ff6b6b;">ตกลง ลบเลย</button>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <div class="nav-group">
@@ -79,9 +93,12 @@
         <div id="adminView" style="display:none;">
             <div class="card" style="border: 2px solid #ffb3d9;">
                 <h3 style="color:#ff85b3; font-size:1rem; margin-bottom:10px;">💬 Admin Chat Console</h3>
-                <p id="activeChatTarget" style="font-size:0.8rem; color:#888; margin-bottom:5px;">ยังไม่มีลูกค้าทักแชท...</p>
+                <div id="adminChatPreview" class="admin-chat-preview">
+                    <p style="text-align:center; color:#ccc; font-size:11px; margin-top:50px;">รอการสนทนา...</p>
+                </div>
+                <p id="activeChatTarget" style="font-size:0.8rem; color:#888; margin-bottom:5px;">ยังไม่มีลูกค้าล็อกอิน...</p>
                 <div style="display:flex; gap:5px;">
-                    <input type="text" id="adminReplyInput" placeholder="ตอบแชทลูกค้าที่นี่..." style="margin-bottom:0;">
+                    <input type="text" id="adminReplyInput" placeholder="ตอบลูกค้าที่นี่..." style="margin-bottom:0;" onkeypress="if(event.key==='Enter') adminSendMsg()">
                     <button onclick="adminSendMsg()" style="background:#ffb3d9; border:none; border-radius:15px; padding:0 15px; color:white; cursor:pointer;">✈️</button>
                 </div>
             </div>
@@ -129,7 +146,8 @@
         let orders = JSON.parse(localStorage.getItem('orders')) || [];
         let counter = parseInt(localStorage.getItem('counter')) || 1;
         let isAdminMode = false;
-        let currentChatOrder = null; // เก็บออเดอร์ที่คุยอยู่ในแชทปัจจุบัน
+        let currentChatOrder = null;
+        let deleteIdx = -1;
 
         function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
         
@@ -174,21 +192,35 @@
             if(!name) return showToast('⚠️ ใส่ชื่อด้วย');
             
             const now = new Date().toLocaleString('th-TH');
-            const checkItems = document.getElementById('checklistInput').value.split(',').filter(i=>i.trim()).map(i => ({text: i.trim(), done: false}));
-
             const o = {
                 id: document.getElementById('orderId').value || `PJ-${String(counter++).padStart(3,'0')}`,
                 name: name, detail: document.getElementById('workDetail').value,
-                checklist: idx === -1 ? checkItems : orders[idx].checklist,
+                checklist: idx === -1 ? document.getElementById('checklistInput').value.split(',').filter(i=>i.trim()).map(i=>({text:i.trim(),done:false})) : orders[idx].checklist,
                 percent: document.getElementById('vPercent').value, status: document.getElementById('vStatus').value,
                 created: idx === -1 ? now : orders[idx].created,
-                updated: now // อัปเดตวันที่ล่าสุด
+                updated: now
             };
-
             if(idx === -1) orders.unshift(o); else orders[idx] = o;
             localStorage.setItem('orders', JSON.stringify(orders));
             localStorage.setItem('counter', counter);
             showToast('✅ บันทึกแล้ว'); resetForm(); renderAdmin();
+        }
+
+        function renderAdmin() {
+            const list = document.getElementById('adminList'); list.innerHTML = '<div class="category-title">รายการทั้งหมด</div>';
+            orders.forEach((o, i) => {
+                list.innerHTML += `
+                <div class="card" style="padding:15px; border-left:5px solid #ffb3d9;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><strong>${o.id} - ${o.name}</strong><p style="font-size:0.7rem;">${o.status}</p></div>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-copy" onclick="copyOrder(${i})">ก๊อป</button>
+                            <button class="btn-edit" onclick="editOrder(${i})">แก้</button>
+                            <button class="btn-del" onclick="askDelete(${i})">ลบ</button>
+                        </div>
+                    </div>
+                </div>`;
+            });
         }
 
         function renderClient() {
@@ -196,106 +228,66 @@
             const search = document.getElementById('clientSearch').value.toLowerCase();
             list.innerHTML = '';
             const filtered = orders.filter(o => o.id.toLowerCase().includes(search) || o.name.toLowerCase().includes(search));
-            
             ['กำลังทำ','รอเริ่มงาน','เสร็จแล้ว','ส่งงานแล้ว'].forEach(cat => {
                 const group = filtered.filter(o => cat === 'กำลังทำ' ? (o.status === 'กำลังทำ' || o.status === 'ใกล้เสร็จ') : o.status === cat);
                 if(group.length > 0) {
                     list.innerHTML += `<div class="category-title">✨ ${cat}</div>`;
                     group.forEach(o => {
-                        let checks = (o.checklist || []).map(c => `
-                            <div class="check-item">
-                                <input type="checkbox" ${isAdminMode ? '' : 'disabled'} ${c.done ? 'checked' : ''} onchange="toggleCheck(${orders.indexOf(o)}, '${c.text}')"> 
-                                <span style="${c.done ? 'text-decoration:line-through; color:#ccc;' : ''}">${c.text}</span>
-                            </div>`).join('');
-                        
-                        list.innerHTML += `
-                        <div class="queue-card">
-                            <span style="color:#ffb3d9; font-weight:600;">${o.id}</span>
-                            <div style="font-weight:500;">คุณ ${o.name}</div>
-                            <div style="font-size:0.8rem; color:#666;">${o.detail}</div>
-                            <div style="margin:10px 0;">${checks}</div>
-                            <div class="progress-bar"><div class="progress-fill" style="width:${o.percent}%"></div></div>
-                            <div class="date-info">
-                                <span>📅 เริ่ม: ${o.created}</span>
-                                <span>🔄 อัปเดต: ${o.updated}</span>
-                            </div>
-                            <div class="status-pill-fixed">${o.status}</div>
-                        </div>`;
+                        list.innerHTML += `<div class="queue-card"><span style="color:#ffb3d9; font-weight:600;">${o.id}</span><div style="font-weight:500;">คุณ ${o.name}</div><div style="font-size:0.8rem; color:#666;">${o.detail}</div><div class="progress-bar"><div class="progress-fill" style="width:${o.percent}%"></div></div><div class="date-info"><span>📅 เริ่ม: ${o.created}</span><span>🔄 อัปเดต: ${o.updated}</span></div><div class="status-pill-fixed">${o.status}</div></div>`;
                     });
                 }
             });
         }
 
-        function toggleCheck(idx, text) {
-            const item = orders[idx].checklist.find(c => c.text === text);
-            if(item) {
-                item.done = !item.done;
-                orders[idx].updated = new Date().toLocaleString('th-TH'); // อัปเดตวันที่เมื่อติ๊ก
-                localStorage.setItem('orders', JSON.stringify(orders));
-                renderClient();
-            }
-        }
-
-        function renderAdmin() {
-            const list = document.getElementById('adminList'); list.innerHTML = '<div class="category-title">รายการทั้งหมด</div>';
-            orders.forEach((o, i) => {
-                list.innerHTML += `<div class="card" style="padding:15px; border-left:5px solid #ffb3d9;"><div style="display:flex; justify-content:space-between; align-items:center;"><div><strong>${o.id} - ${o.name}</strong><p style="font-size:0.7rem;">${o.status}</p></div><div style="display:flex; gap:5px;"><button class="btn-copy" onclick="copyOrder(${i})">ก๊อป</button><button class="btn-edit" onclick="editOrder(${i})">แก้</button></div></div></div>`;
-            });
-        }
-
-        function resetForm() {
-            document.getElementById('editIndex').value = "-1";
-            document.querySelectorAll('input, textarea').forEach(i=>i.value='');
-            document.getElementById('checklistPreview').innerHTML = '';
-            initForm();
-        }
-
-        function toggleChat() {
-            const win = document.getElementById('chat-window');
-            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
-            if(win.style.display === 'flex' && !currentChatOrder) {
-                addMsg("สวัสดีค่ะ! กรุณาพิมพ์ **เลขออเดอร์** เพื่อเริ่มคุยนะคะ", 'admin');
-            }
-        }
+        function askDelete(idx) { deleteIdx = idx; document.getElementById('deleteModal').style.display = 'flex'; }
+        function closeDelModal() { document.getElementById('deleteModal').style.display = 'none'; }
+        document.getElementById('confirmDelBtn').onclick = () => {
+            orders.splice(deleteIdx, 1);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            closeDelModal(); renderAdmin(); showToast('🗑️ ลบรายการแล้ว');
+        };
 
         function addMsg(text, type) {
             const body = document.getElementById('chat-content');
+            const preview = document.getElementById('adminChatPreview');
             const div = document.createElement('div');
             div.className = `msg ${type}`;
             div.textContent = text;
-            body.appendChild(div);
+            body.appendChild(div.cloneNode(true));
+            preview.appendChild(div);
             body.scrollTop = body.scrollHeight;
+            preview.scrollTop = preview.scrollHeight;
         }
 
-        // --- ระบบแชทใหม่: ลูกค้าส่ง ---
         function sendMsg() {
             const input = document.getElementById('chat-input');
             const val = input.value.trim();
             if(!val) return;
             addMsg(val, 'user');
             input.value = '';
-
             if(!currentChatOrder) {
                 const found = orders.find(o => o.id.toLowerCase() === val.toLowerCase());
                 if(found) {
                     currentChatOrder = found;
-                    document.getElementById('activeChatTarget').textContent = `กำลังคุยกับ: คุณ ${found.name} (${found.id})`;
-                    setTimeout(() => addMsg(`ยืนยันตัวตนสำเร็จ! คุณ ${found.name} รอแอดมินสักครู่นะคะ หรือพิมพ์คำถามทิ้งไว้ได้เลย ✨`, 'admin'), 800);
+                    document.getElementById('activeChatTarget').textContent = `คุยกับ: ${found.name} (${found.id})`;
+                    setTimeout(() => addMsg(`สวัสดีคุณ ${found.name} มีอะไรสอบถามทิ้งไว้ได้เลยค่ะ ✨`, 'admin'), 800);
                 } else {
-                    setTimeout(() => addMsg("ไม่พบเลขออเดอร์นี้ค่ะ ลองเช็คอีกทีนะ", 'admin'), 800);
+                    setTimeout(() => addMsg("ไม่พบเลขนี้ค่ะ", 'admin'), 800);
                 }
             }
         }
 
-        // --- ระบบแชทใหม่: แอดมินส่ง (จากหน้า Admin Console) ---
         function adminSendMsg() {
             const input = document.getElementById('adminReplyInput');
             const val = input.value.trim();
-            if(!val || !currentChatOrder) return showToast('⚠️ เลือกออเดอร์ลูกค้าก่อนตอบนะ');
-            
-            addMsg(val, 'admin'); // ข้อความจากแอดมินจะไปโผล่ในแชทลูกค้า
+            if(!val || !currentChatOrder) return showToast('เลือกลูกค้าก่อน!');
+            addMsg(val, 'admin');
             input.value = '';
-            showToast('✈️ ส่งข้อความแล้ว');
+        }
+
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
         }
 
         function editOrder(idx) {
@@ -304,18 +296,23 @@
             document.getElementById('orderId').value = o.id;
             document.getElementById('custName').value = o.name;
             document.getElementById('workDetail').value = o.detail;
-            document.getElementById('checklistInput').value = (o.checklist || []).map(c=>c.text).join(',');
             document.getElementById('vPercent').value = o.percent;
             document.getElementById('vStatus').value = o.status;
-            document.getElementById('pText').textContent = o.percent + '%';
-            updateChecklistPreview();
+            document.getElementById('cancelBtn').style.display = "block";
             window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function resetForm() {
+            document.getElementById('editIndex').value = "-1";
+            document.querySelectorAll('input, textarea').forEach(i=>i.value='');
+            document.getElementById('cancelBtn').style.display = "none";
+            initForm();
         }
 
         function copyOrder(idx) {
             const o = orders[idx];
-            const text = `🎀 ออเดอร์: ${o.id}\n✨ สถานะ: ${o.status}\n🔄 อัปเดตล่าสุด: ${o.updated}`;
-            navigator.clipboard.writeText(text).then(() => showToast('📋 คัดลอกแล้ว'));
+            const text = `🎀 ออเดอร์: ${o.id}\nคุณ: ${o.name}\nสถานะ: ${o.status}`;
+            navigator.clipboard.writeText(text).then(() => showToast('📋 ก๊อปแล้ว'));
         }
 
         window.onload = () => { initForm(); renderClient(); };

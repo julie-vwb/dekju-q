@@ -1,457 +1,965 @@
 <!DOCTYPE html>
+
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎀 PJ Kawaii Queue ✨</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mitr', sans-serif !important; }
-        body { background: linear-gradient(135deg, #ffe4f5 0%, #f3e5ff 50%, #e5f4ff 100%); background-attachment: fixed; min-height: 100vh; color: #4a4a4a; overflow-x: hidden; position: relative; }
-        
-        /* เพิ่มอิโมจิพื้นหลัง */
-        body::before { content: "✨ 🎀 🪄 ☁️ 💖 🍭 ✨ 🎀"; position: fixed; top: 0; left: 0; width: 100%; height: 100%; font-size: 2rem; opacity: 0.1; pointer-events: none; display: flex; flex-wrap: wrap; gap: 50px; padding: 20px; z-index: -1; line-height: 2; }
-
-        .top-navbar { background: white; padding: 10px 20px; display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(255,179,217,0.2); }
-        .menu-btn { font-size: 24px; color: #ff85b3; cursor: pointer; width: 40px; border:none; background:none; text-align: left; flex-shrink: 0; }
-        
-        .brand-group { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-        .shop-name-title { font-weight: 600; color: #ff85b3; font-size: 1.1rem; }
-        .shop-logo-top { width: 35px; height: 35px; border-radius: 50%; background: #ffb3d9; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .shop-logo-top img { width: 100%; height: 100%; object-fit: cover; }
-
-        .broadcast-container { background: #fff0f7; border: 2px solid #ffb3d9; border-radius: 20px; margin: 15px 0; padding: 12px 15px; display: none; align-items: flex-start; gap: 10px; box-shadow: 0 4px 12px rgba(255,179,217,0.1); }
-        .broadcast-label { background: #ffb3d9; color: white; padding: 2px 8px; border-radius: 8px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; margin-top: 2px; }
-        .broadcast-text-fixed { color: #ff5da2; font-weight: 500; font-size: 0.85rem; line-height: 1.4; }
-
-        .guide-section { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
-        .guide-card { background: #fff0f7; padding: 12px 8px; border-radius: 20px; border: 1px solid #ffb3d9; text-align: center; }
-        .guide-emoji { font-size: 1.5rem; margin-bottom: 5px; display: block; }
-        .guide-card h4 { font-size: 0.75rem; color: #ff85b3; margin-bottom: 2px; }
-        .guide-card p { font-size: 0.6rem; color: #888; line-height: 1.2; }
-
-        .side-drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 2001; transition: 0.3s; padding: 30px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
-        .side-drawer.active { left: 0; }
-        .drawer-item { padding: 15px; border-radius: 12px; margin-bottom: 5px; cursor: pointer; color: #666; display: flex; align-items: center; gap: 10px; text-decoration: none; border: none; background: none; width: 100%; font-size: 1rem; }
-        .drawer-item:hover { background: #fff0f7; color: #ff85b3; }
-        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2000; display: none; }
-        
-        .container { max-width: 600px; margin: 0 auto; padding: 20px 15px; padding-bottom: 100px; }
-        .nav-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
-        .toggle-btn { padding: 12px 24px; border: none; border-radius: 50px; background: white; color: #ff85b3; font-weight: 500; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
-        .toggle-btn.active { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; transform: scale(1.05); }
-        .card { background: rgba(255,255,255,0.8); backdrop-filter: blur(15px); border-radius: 25px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(255,179,217,0.2); border: 1px solid white; position: relative; }
-        .category-title { color: #ff85b3; margin: 25px 0 10px 5px; font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-        .category-title::after { content: ""; flex: 1; height: 2px; background: linear-gradient(90deg, #ffb3d9, transparent); }
-        input, textarea { width: 100%; padding: 12px; border: 2px solid #fff; border-radius: 15px; background: white; font-size: 15px; margin-bottom: 10px; outline: none; transition: 0.3s; }
-        label { display: block; margin: 10px 0 5px 8px; font-weight: 500; color: #ff85b3; font-size: 0.9rem; }
-        .queue-card { background: white; padding: 18px; border-radius: 22px; margin-bottom: 12px; position: relative; border-left: 6px solid #ffb3d9; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .date-info { font-size: 0.7rem; color: #999; margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
-        .status-pill-fixed { position: absolute; bottom: 15px; right: 15px; padding: 6px 15px; border-radius: 50px; background: #fff0f7; color: #ff85b3; font-weight: 600; font-size: 0.8rem; border: 1.5px solid #ffb3d9; }
-        .progress-bar { height: 8px; background: #f0f0f0; border-radius: 10px; overflow: hidden; width: 60%; margin-top: 10px;}
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #ffb3d9, #d8c5e8); transition: 0.8s; }
-        .pill-group { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
-        .pill { padding: 6px 12px; background: white; border: 1.5px solid #eee; border-radius: 12px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
-        .pill.active { background: #ffb3d9; color: white; border-color: #ffb3d9; box-shadow: 0 3px 10px rgba(255,179,217,0.4); }
-        .btn { padding: 12px; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn-save { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; width: 100%; font-size: 1.1rem; }
-        .admin-controls { display: flex; gap: 5px; margin-top: 10px; }
-        .btn-tool { font-size: 0.75rem; padding: 6px 12px; border-radius: 10px; border:none; cursor:pointer; font-weight: 500; }
-        .btn-copy { background: #eef7ff; color: #4a90e2; }
-        .btn-edit { background: #fdf6e3; color: #b58900; }
-        .btn-del { background: #fff0f0; color: #ff6b6b; }
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ff85b3; color: white; padding: 10px 20px; border-radius: 50px; z-index: 9999; display: none; }
-        
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 10000; }
-        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 90%; max-width: 380px; text-align: center; position: relative; }
-
-        #chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
-        #chat-btn { width: 60px; height: 60px; border-radius: 30px; background: linear-gradient(135deg, #ffb3d9, #d8c5e8); border: none; color: white; font-size: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255,133,179,0.4); }
-        #chat-window { position: fixed; bottom: 90px; right: 20px; width: 320px; height: 450px; background: white; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; flex-direction: column; overflow: hidden; border: 1px solid #fce4ec; }
-        .chat-header { background: linear-gradient(135deg, #ffb3d9, #d8c5e8); color: white; padding: 15px; text-align: center; font-weight: 600; }
-        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #fff9fb; display: flex; flex-direction: column; gap: 10px; }
-        .chat-footer { padding: 10px; display: flex; gap: 8px; background: white; border-top: 1px solid #eee; }
-        .msg { max-width: 85%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
-        
-        .msg.admin { align-self: flex-start; background: white; border: 1px solid #ffe4f5; border-bottom-left-radius: 2px; color: #4a4a4a; }
-        .msg.user { align-self: flex-end; background: #ffb3d9; color: white; border-bottom-right-radius: 2px; }
-
-        .admin-chat-preview { height: 220px; background: #fff; border: 2px solid #fff0f7; border-radius: 20px; margin-bottom: 10px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .admin-chat-preview .msg.user { align-self: flex-start; background: #eee; color: #4a4a4a; border-radius: 18px; border-bottom-left-radius: 2px; }
-        .admin-chat-preview .msg.admin { align-self: flex-end; background: #ffb3d9; color: white; border: none; border-radius: 18px; border-bottom-right-radius: 2px; }
-
-        /* ปุ่มปิดหน้าต่างล็อกอิน */
-        .close-login { position: absolute; top: 15px; right: 15px; background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; color: #888; font-weight: bold; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pinkjulieland 🎀</title>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --p1:#F3E8FF;--p2:#E9D5FF;--p3:#C084FC;--p4:#A855F7;--p5:#7C3AED;
+  --pk1:#FDF2F8;--pk2:#FBCFE8;--pk3:#F472B6;--pk4:#EC4899;
+  --cy1:#ECFEFF;--cy2:#A5F3FC;--cy3:#22D3EE;
+  --bg:linear-gradient(145deg,#FDF4FF 0%,#FFF0FB 35%,#F0F9FF 70%,#F5F3FF 100%);
+  --card:#fff;--brd:#E9D5FF;--brd2:#FBCFE8;
+  --txt:#581C87;--txtl:#7C3AED;--txts:#A855F7;--txtsm:#C084FC;
+  --sh:0 4px 20px rgba(168,85,247,.12);--sh2:0 2px 10px rgba(236,72,153,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Mitr',sans-serif;background:var(--bg);min-height:100vh;color:var(--txt);overflow-x:hidden;}
+.sp{position:fixed;pointer-events:none;z-index:0;animation:fl 5s ease-in-out infinite;opacity:.25;}
+.sp:nth-child(1){top:3%;left:4%;font-size:18px;}
+.sp:nth-child(2){top:10%;right:6%;font-size:12px;animation-delay:1s;}
+.sp:nth-child(3){top:35%;left:2%;font-size:10px;animation-delay:2s;}
+.sp:nth-child(4){top:52%;right:3%;font-size:16px;animation-delay:.5s;}
+.sp:nth-child(5){top:22%;left:12%;font-size:14px;animation-delay:1.5s;}
+.sp:nth-child(6){top:68%;left:6%;font-size:12px;animation-delay:2.5s;}
+.sp:nth-child(7){top:82%;right:10%;font-size:18px;animation-delay:.2s;}
+.sp:nth-child(8){top:42%;right:13%;font-size:10px;animation-delay:3s;}
+@keyframes fl{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-12px) rotate(8deg);}}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:2px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:9px 14px;box-shadow:0 2px 12px rgba(168,85,247,.1);}
+.hamburger{background:none;border:none;cursor:pointer;font-size:1.25rem;color:var(--txtl);padding:4px 6px;}
+.shop-status-pill{padding:5px 13px;border-radius:20px;font-size:.72rem;font-weight:700;border:2px solid;}
+.shop-status-pill.open{background:#F0FDF4;color:#16A34A;border-color:#BBF7D0;}
+.shop-status-pill.closed{background:#FEF2F2;color:#DC2626;border-color:#FECACA;}
+.drw-ov{display:none;position:fixed;inset:0;background:rgba(88,28,135,.25);z-index:200;backdrop-filter:blur(2px);}
+.drw-ov.open{display:block;}
+.drawer{position:fixed;left:0;top:0;bottom:0;width:272px;background:#fff;z-index:201;transform:translateX(-100%);transition:transform .3s ease;border-right:2px solid var(--brd);display:flex;flex-direction:column;overflow-y:auto;}
+.drawer.open{transform:translateX(0);}
+.drw-hdr{background:linear-gradient(135deg,var(--p1),var(--pk1));padding:26px 16px 16px;border-bottom:2px solid var(--brd);position:relative;}
+.drw-logo{font-size:1.9rem;margin-bottom:4px;}
+.drw-ttl{font-size:1.05rem;font-weight:700;color:var(--p5);}
+.drw-sub{font-size:.76rem;color:var(--txts);margin-top:3px;line-height:1.5;}
+.drw-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--p4);}
+.drw-sec{padding:12px 13px 5px;}
+.drw-sec-ttl{font-size:.69rem;font-weight:700;color:var(--txts);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.drw-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:13px;font-size:.85rem;font-weight:500;color:var(--txt);margin-bottom:3px;cursor:pointer;transition:.2s;border:1.5px solid transparent;}
+.drw-item:hover{background:var(--p1);border-color:var(--p2);color:var(--p5);}
+.drw-div{height:1px;background:var(--brd);margin:5px 13px;}
+.wrap{max-width:480px;margin:0 auto;padding:13px 12px 88px;position:relative;z-index:1;}
+.page{display:none;animation:fadeUp .4s ease both;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.hdr{text-align:center;padding:16px 0 12px;}
+.shop-name{font-size:1.9rem;font-weight:700;color:var(--p5);}
+.shop-sub{font-size:.85rem;color:var(--txts);margin-top:5px;}
+.badges{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin-top:10px;}
+.badge{background:#fff;border:1.5px solid var(--p2);border-radius:20px;padding:3px 11px;font-size:.71rem;color:var(--p5);font-weight:500;}
+.status-bar{margin:12px auto;padding:8px 14px;width:92%;border:2px dashed var(--p3);border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,.7);font-weight:500;font-size:.85rem;color:var(--txtl);}
+.sdot{width:9px;height:9px;background:#4ADE80;border-radius:50%;box-shadow:0 0 8px #4ADE80;animation:pulse 1.5s infinite;flex-shrink:0;}
+.sdot.red{background:#EF4444;box-shadow:0 0 8px #EF4444;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;border:2px solid var(--brd);box-shadow:var(--sh);}
+.card.pk{border-color:var(--brd2);}
+.card.cy{border-color:var(--cy2);}
+.ct{font-size:.92rem;font-weight:700;color:var(--p5);margin-bottom:10px;display:flex;align-items:center;gap:7px;}
+.pi{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1.5px dashed var(--p2);font-size:.83rem;}
+.pi:last-child{border-bottom:none;}
+.ptag{background:linear-gradient(135deg,var(--p3),var(--pk3));color:#fff;padding:3px 11px;border-radius:14px;font-weight:700;font-size:.8rem;white-space:nowrap;}
+.si{display:flex;gap:10px;margin-bottom:9px;align-items:flex-start;font-size:.84rem;}
+.snum{width:23px;height:23px;background:linear-gradient(135deg,var(--p3),var(--pk3));color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:700;flex-shrink:0;}
+.lnk{display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid var(--p2);border-radius:12px;padding:9px 11px;text-decoration:none;color:var(--txt);font-size:.82rem;margin-bottom:6px;transition:.2s;}
+.lnk:hover{transform:scale(1.01);border-color:var(--p3);background:var(--p1);}
+.bcopy{background:linear-gradient(135deg,var(--p4),var(--pk4));color:#fff;border:none;padding:10px;border-radius:12px;cursor:pointer;font-family:'Mitr';font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:7px;transition:.2s;font-weight:500;box-shadow:0 3px 10px rgba(168,85,247,.25);}
+.bcopy:active{transform:scale(.96);}
+.cpa{display:flex;flex-direction:column;gap:8px;margin-top:9px;}
+.notice{background:#fff;border:2px solid var(--brd2);border-radius:17px;padding:15px;margin-bottom:12px;}
+.notice h3{color:var(--p5);font-size:.95rem;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.notice ul{list-style:none;padding:0;}
+.notice li{font-size:.81rem;color:var(--txtl);line-height:1.6;margin-bottom:8px;padding-left:16px;position:relative;}
+.notice li::before{content:"•";color:var(--pk3);font-weight:bold;position:absolute;left:0;}
+.cta{display:block;width:100%;text-align:center;background:linear-gradient(135deg,var(--p4),var(--pk4));color:#fff;padding:13px;border-radius:50px;text-decoration:none;font-weight:700;font-size:.92rem;box-shadow:0 5px 18px rgba(168,85,247,.35);margin-top:15px;transition:.25s;}
+.pill-links{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:13px;}
+.pill{padding:5px 14px;border-radius:20px;background:#fff;border:1.5px solid var(--p2);color:var(--p5);text-decoration:none;font-size:.73rem;font-weight:500;}
+.footer{text-align:center;padding:22px 0;font-size:.71rem;color:var(--txtsm);line-height:1.7;}
+.ann{background:linear-gradient(135deg,#FDF4FF,#FFF0FB);border:2px solid var(--p2);border-radius:16px;padding:13px 14px;margin-bottom:12px;display:none;}
+.ann.on{display:block;}
+.ann-h{font-weight:700;color:var(--p5);font-size:.88rem;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.ann-b{font-size:.82rem;color:var(--txtl);line-height:1.6;white-space:pre-line;}
+.sbox{background:#fff;border:2px solid var(--p2);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:var(--sh);}
+.sinp{width:100%;border:2px solid var(--p2);border-radius:12px;padding:10px 12px;font-family:'Mitr';font-size:.88rem;color:var(--txt);outline:none;background:#fff;transition:.2s;}
+.sinp:focus{border-color:var(--p3);box-shadow:0 0 0 3px rgba(192,132,252,.18);}
+.sbtn{width:100%;margin-top:7px;background:linear-gradient(135deg,var(--p3),var(--pk3));color:#fff;border:none;padding:10px;border-radius:12px;font-family:'Mitr';font-size:.88rem;font-weight:600;cursor:pointer;}
+.sbtn:active{transform:scale(.97);}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.sc{background:#fff;border:2px solid var(--brd);border-radius:15px;padding:10px 7px;text-align:center;box-shadow:var(--sh2);}
+.sc .sn{font-size:1.45rem;font-weight:700;}
+.sc .sl{font-size:.66rem;color:var(--txts);margin-top:2px;}
+.sc.wt{border-color:#FDE68A;}.sc.wt .sn{color:#D97706;}
+.sc.do{border-color:var(--cy2);}.sc.do .sn{color:#0891B2;}
+.sc.dn{border-color:#BBF7D0;}.sc.dn .sn{color:#16A34A;}
+.osec{font-size:.77rem;font-weight:700;color:var(--txts);text-transform:uppercase;letter-spacing:.8px;margin:12px 0 6px;display:flex;align-items:center;gap:5px;}
+.oc{background:#fff;border:2px solid var(--brd);border-radius:16px;padding:13px;margin-bottom:8px;box-shadow:var(--sh2);cursor:pointer;transition:.2s;}
+.oc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(168,85,247,.15);}
+.oc.doing{border-color:var(--cy2);}
+.oc.done{border-color:#BBF7D0;}
+.oc.waiting{border-color:#FDE68A;}
+.oc.cancelled{border-color:#FECACA;opacity:.7;}
+.oc-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.onum{font-weight:700;font-size:.96rem;color:var(--p5);}
+.oname{font-size:.79rem;color:var(--txtl);margin-top:1px;}
+.spill{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;white-space:nowrap;}
+.spill.waiting{background:#FEF3C7;color:#D97706;border:1.5px solid #FDE68A;}
+.spill.doing{background:#ECFEFF;color:#0891B2;border:1.5px solid var(--cy2);}
+.spill.done{background:#F0FDF4;color:#16A34A;border:1.5px solid #BBF7D0;}
+.spill.cancelled{background:#FEF2F2;color:#DC2626;border:1.5px solid #FECACA;}
+.odesc{font-size:.79rem;color:var(--txtl);line-height:1.5;margin-bottom:6px;}
+.ometa{display:flex;flex-wrap:wrap;gap:4px;font-size:.7rem;color:var(--txtsm);}
+.ometa span{background:var(--p1);border:1px solid var(--p2);border-radius:7px;padding:2px 7px;}
+.oprog{margin-top:8px;}
+.pb-wrap{height:6px;background:var(--p1);border-radius:10px;overflow:hidden;border:1px solid var(--p2);}
+.pb{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--p3),var(--pk3));transition:width .6s ease;position:relative;overflow:hidden;}
+.pb::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:shim 1.5s infinite;}
+@keyframes shim{0%{transform:translateX(-100%);}100%{transform:translateX(200%);}}
+.pb.dn{background:linear-gradient(90deg,#4ADE80,#22D3EE);}
+.pb.dy{background:linear-gradient(90deg,var(--cy3),var(--p3));}
+.prog-pct{font-size:.7rem;color:var(--txtsm);margin-top:3px;text-align:right;}
+.oadm{margin-top:7px;padding:7px 10px;background:linear-gradient(135deg,var(--p1),var(--pk1));border-radius:10px;border-left:3px solid var(--p3);font-size:.78rem;color:var(--txtl);}
+.oadm .aml{font-weight:700;color:var(--p5);font-size:.72rem;margin-bottom:2px;}
+.cmsgbdg{display:inline-flex;align-items:center;gap:3px;background:#F0FDF4;border:1.5px solid #86EFAC;color:#16A34A;font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:20px;margin-top:5px;animation:bpulse 1.5s infinite;}
+@keyframes bpulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.4);}50%{box-shadow:0 0 0 5px rgba(74,222,128,0);}}
+.abg{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.ab{flex:1;min-width:36px;padding:8px 5px;border:none;border-radius:11px;font-family:'Mitr';font-size:.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;transition:.2s;}
+.ab:active{transform:scale(.94);}
+.ab-ca{background:linear-gradient(135deg,var(--p3),var(--pk3));color:#fff;}
+.ab-wt{background:#FEF3C7;color:#D97706;border:1.5px solid #FDE68A;}
+.ab-do{background:var(--cy1);color:#0891B2;border:1.5px solid var(--cy2);}
+.ab-dn{background:#F0FDF4;color:#16A34A;border:1.5px solid #BBF7D0;}
+.ab-dl{background:#FEF2F2;color:#DC2626;border:1.5px solid #FECACA;}
+.prog-ctrl{display:flex;align-items:center;gap:6px;margin-top:7px;background:var(--p1);border-radius:10px;padding:6px 10px;border:1.5px solid var(--p2);}
+.prog-ctrl span{font-size:.78rem;color:var(--txtl);font-weight:600;flex:1;text-align:center;}
+.prog-btn{background:#fff;border:1.5px solid var(--p2);color:var(--p5);border-radius:8px;width:28px;height:28px;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;}
+.prog-btn:active{transform:scale(.9);}
+.mover{display:none;position:fixed;inset:0;background:rgba(88,28,135,.3);z-index:300;backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;}
+.mover.open{display:flex;}
+.modal{background:#fff;border-radius:24px 24px 0 0;padding:18px 16px 26px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;border-top:3px solid var(--brd);box-shadow:0 -8px 30px rgba(168,85,247,.2);animation:slideUp .35s ease both;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.mhdl{width:38px;height:4px;background:var(--p2);border-radius:10px;margin:0 auto 15px;}
+.mttl{font-size:1rem;font-weight:700;color:var(--p5);margin-bottom:13px;display:flex;align-items:center;justify-content:space-between;}
+.mclose{background:none;border:none;font-size:1.15rem;cursor:pointer;color:var(--txts);}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1.5px dashed var(--p2);font-size:.84rem;}
+.mrow:last-of-type{border-bottom:none;}
+.mlbl{color:var(--txts);font-weight:500;}
+.mval{color:var(--txt);font-weight:600;text-align:right;max-width:64%;}
+.ari{width:100%;border:2px solid var(--p2);border-radius:11px;padding:9px 11px;font-family:'Mitr';font-size:.83rem;min-height:62px;resize:none;color:var(--txt);outline:none;transition:.2s;margin-top:8px;}
+.ari:focus{border-color:var(--p3);}
+.bsr{width:100%;margin-top:7px;background:linear-gradient(135deg,var(--p4),var(--pk4));color:#fff;border:none;padding:9px;border-radius:11px;font-family:'Mitr';font-size:.86rem;font-weight:600;cursor:pointer;}
+/* CENTER MODALS */
+.cmod-ov{display:none;position:fixed;inset:0;background:rgba(88,28,135,.35);z-index:500;backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+.cmod-ov.open{display:flex;}
+.cmod-box{background:#fff;border-radius:20px;padding:22px 18px;width:calc(100% - 40px);max-width:340px;border:2px solid var(--brd2);box-shadow:0 8px 30px rgba(168,85,247,.25);animation:fadeUp .3s ease both;text-align:center;}
+/* CONFIRM DELETE */
+.conf-icon{font-size:2.2rem;margin-bottom:8px;}
+.conf-ttl{font-size:1rem;font-weight:700;color:var(--p5);margin-bottom:5px;}
+.conf-sub{font-size:.82rem;color:var(--txtl);margin-bottom:16px;line-height:1.5;}
+.conf-btns{display:flex;gap:8px;}
+.conf-yes{flex:1;background:linear-gradient(135deg,#F87171,#EF4444);color:#fff;border:none;padding:11px;border-radius:12px;font-family:'Mitr';font-size:.88rem;font-weight:700;cursor:pointer;}
+.conf-no{flex:1;background:var(--p1);color:var(--p5);border:1.5px solid var(--p2);padding:11px;border-radius:12px;font-family:'Mitr';font-size:.88rem;font-weight:600;cursor:pointer;}
+/* SHOP MODAL */
+.shop-box-ttl{font-size:1.05rem;font-weight:700;color:var(--p5);margin-bottom:14px;}
+.shop-btn-row{display:flex;gap:9px;margin-bottom:12px;}
+.sbtn-open{flex:1;background:linear-gradient(135deg,#4ADE80,#22D3EE);color:#fff;border:none;padding:12px;border-radius:13px;font-family:'Mitr';font-size:.9rem;font-weight:700;cursor:pointer;}
+.sbtn-close{flex:1;background:linear-gradient(135deg,#F87171,#EF4444);color:#fff;border:none;padding:12px;border-radius:13px;font-family:'Mitr';font-size:.9rem;font-weight:700;cursor:pointer;}
+.shop-timer-sec{background:var(--p1);border:1.5px solid var(--p2);border-radius:13px;padding:12px;margin-bottom:10px;}
+.shop-timer-ttl{font-size:.8rem;font-weight:700;color:var(--p5);margin-bottom:8px;}
+.timer-row{display:flex;gap:7px;align-items:center;margin-bottom:7px;}
+.timer-inp{flex:1;border:2px solid var(--p2);border-radius:10px;padding:7px 10px;font-family:'Mitr';font-size:.83rem;color:var(--txt);outline:none;background:#fff;}
+.timer-inp:focus{border-color:var(--p3);}
+.timer-set-btn{background:linear-gradient(135deg,var(--p3),var(--pk3));color:#fff;border:none;padding:7px 12px;border-radius:10px;font-family:'Mitr';font-size:.79rem;font-weight:600;cursor:pointer;white-space:nowrap;}
+.timer-status{font-size:.76rem;color:var(--txtl);margin-top:4px;}
+.shop-close-btn{width:100%;background:var(--p1);color:var(--p5);border:1.5px solid var(--p2);padding:9px;border-radius:12px;font-family:'Mitr';font-size:.86rem;font-weight:600;cursor:pointer;}
+/* CHAT FLOAT */
+.chat-fl{position:fixed;bottom:76px;right:14px;z-index:150;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--p3),var(--pk3));color:#fff;font-size:1.35rem;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(168,85,247,.35);cursor:pointer;transition:.25s;border:none;position:fixed;}
+.chat-fl:hover{transform:scale(1.08);}
+.cnotif{position:absolute;top:-4px;right:-4px;width:17px;height:17px;background:#EF4444;border-radius:50%;border:2px solid #fff;font-size:.63rem;font-weight:700;color:#fff;display:none;align-items:center;justify-content:center;}
+.cnotif.on{display:flex;animation:bpulse 1.5s infinite;}
+.chat-win{display:none;position:fixed;bottom:138px;right:12px;width:292px;background:#fff;border-radius:20px;border:2px solid var(--brd);box-shadow:0 8px 30px rgba(168,85,247,.2);z-index:151;overflow:hidden;}
+.chat-win.open{display:block;animation:fadeUp .3s ease both;}
+.ch-hdr{background:linear-gradient(135deg,var(--p4),var(--pk4));padding:11px 13px;display:flex;align-items:center;justify-content:space-between;}
+.ch-ttl{color:#fff;font-weight:700;font-size:.87rem;}
+.ch-sub{color:rgba(255,255,255,.8);font-size:.69rem;margin-top:1px;}
+.ch-close{background:none;border:none;color:#fff;font-size:1.05rem;cursor:pointer;}
+.ch-body{padding:11px;max-height:255px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;}
+.cm2{border-radius:13px;padding:8px 10px;font-size:.8rem;line-height:1.5;}
+.cm2.bot{background:linear-gradient(135deg,var(--p1),var(--pk1));border:1.5px solid var(--p2);color:var(--txt);border-radius:13px 13px 13px 3px;white-space:pre-line;}
+.cm2.usr{background:linear-gradient(135deg,var(--p4),var(--pk4));color:#fff;border-radius:13px 13px 3px 13px;}
+.ch-inp-area{padding:8px 10px;border-top:1.5px solid var(--p2);display:flex;gap:5px;}
+.ch-inp{flex:1;border:1.5px solid var(--p2);border-radius:20px;padding:7px 10px;font-family:'Mitr';font-size:.8rem;color:var(--txt);outline:none;background:#fff;}
+.ch-inp:focus{border-color:var(--p3);}
+.ch-send{background:linear-gradient(135deg,var(--p3),var(--pk3));color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:.85rem;flex-shrink:0;}
+/* ADMIN */
+.login-card{background:#fff;border:2px solid var(--brd);border-radius:20px;padding:24px 18px;margin-top:18px;box-shadow:var(--sh);text-align:center;}
+.lin-ttl{font-size:1.05rem;font-weight:700;color:var(--p5);margin-bottom:4px;}
+.lin-sub{font-size:.8rem;color:var(--txts);margin-bottom:14px;}
+.lin-inp{width:100%;border:2px solid var(--p2);border-radius:12px;padding:11px;font-family:'Mitr';font-size:.92rem;color:var(--txt);outline:none;text-align:center;letter-spacing:4px;background:#fff;transition:.2s;margin-bottom:10px;}
+.lin-inp:focus{border-color:var(--p3);}
+.lin-btn{width:100%;background:linear-gradient(135deg,var(--p4),var(--pk4));color:#fff;border:none;padding:12px;border-radius:12px;font-family:'Mitr';font-size:.92rem;font-weight:700;cursor:pointer;}
+.lin-err{color:#DC2626;font-size:.8rem;margin-top:5px;display:none;}
+.adm-tb{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;}
+.adm-ttl{font-size:1rem;font-weight:700;color:var(--p5);}
+.logout{background:var(--p1);border:1.5px solid var(--p2);color:var(--p5);padding:6px 12px;border-radius:20px;font-family:'Mitr';font-size:.75rem;font-weight:600;cursor:pointer;}
+.ann-form{background:#fff;border:2px solid var(--p2);border-radius:16px;padding:13px;margin-bottom:12px;box-shadow:var(--sh);}
+.ann-ta{width:100%;border:2px solid var(--p2);border-radius:11px;padding:9px 11px;font-family:'Mitr';font-size:.83rem;min-height:55px;resize:none;color:var(--txt);outline:none;transition:.2s;}
+.ann-ta:focus{border-color:var(--p3);}
+.ann-save{width:100%;margin-top:6px;background:linear-gradient(135deg,var(--cy3),var(--p3));color:#fff;border:none;padding:9px;border-radius:11px;font-family:'Mitr';font-size:.85rem;font-weight:600;cursor:pointer;}
+.add-form{background:#fff;border:2px solid var(--brd2);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:var(--sh2);}
+.flbl{font-size:.78rem;font-weight:700;color:var(--p5);margin-bottom:4px;display:block;}
+.finp{width:100%;border:2px solid var(--p2);border-radius:11px;padding:9px 11px;font-family:'Mitr';font-size:.85rem;color:var(--txt);outline:none;background:#fff;transition:.2s;margin-bottom:8px;}
+.finp:focus{border-color:var(--p3);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.add-btn{width:100%;background:linear-gradient(135deg,var(--p4),var(--pk4));color:#fff;border:none;padding:11px;border-radius:12px;font-family:'Mitr';font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(168,85,247,.28);}
+.shop-toggle-btn{width:100%;background:linear-gradient(135deg,var(--p1),var(--pk1));border:2px solid var(--p2);color:var(--p5);padding:11px;border-radius:12px;font-family:'Mitr';font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:12px;}
+/* CHAT PANEL */
+.chat-panel{background:#fff;border:2px solid var(--p2);border-radius:17px;padding:15px;margin-bottom:13px;box-shadow:var(--sh);}
+.chat-thread{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:10px;padding:2px;}
+.ct-msg{border-radius:12px;padding:8px 11px;font-size:.8rem;line-height:1.5;}
+.ct-msg.cust{background:var(--p1);border:1.5px solid var(--p2);color:var(--txt);}
+.ct-msg.adm-r{background:linear-gradient(135deg,#F0FDF4,#ECFEFF);border:1.5px solid #BBF7D0;color:#166534;margin-left:16px;}
+.ct-msg-hdr{display:flex;justify-content:space-between;margin-bottom:3px;}
+.ct-msg-name{font-size:.72rem;font-weight:700;}
+.ct-msg-time{font-size:.68rem;color:var(--txtsm);}
+.chat-order-sel{width:100%;border:2px solid var(--p2);border-radius:11px;padding:8px 11px;font-family:'Mitr';font-size:.83rem;color:var(--txt);outline:none;background:#fff;margin-bottom:8px;}
+.chat-order-sel:focus{border-color:var(--p3);}
+.admin-reply-inp{width:100%;border:2px solid var(--p2);border-radius:11px;padding:8px 11px;font-family:'Mitr';font-size:.83rem;min-height:58px;resize:none;color:var(--txt);outline:none;transition:.2s;margin-bottom:7px;}
+.admin-reply-inp:focus{border-color:var(--p3);}
+.admin-send-btn{width:100%;background:linear-gradient(135deg,var(--p4),var(--pk4));color:#fff;border:none;padding:9px;border-radius:11px;font-family:'Mitr';font-size:.86rem;font-weight:700;cursor:pointer;}
+/* SUCCESS MODAL */
+.smod-ov{display:none;position:fixed;inset:0;background:rgba(88,28,135,.3);z-index:400;backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+.smod-ov.open{display:flex;}
+.smod{background:#fff;border-radius:22px;padding:20px 17px;width:calc(100% - 36px);max-width:380px;border:2px solid var(--brd2);box-shadow:0 8px 30px rgba(168,85,247,.2);animation:fadeUp .3s ease both;}
+.smod-ttl{text-align:center;font-size:1rem;font-weight:700;color:var(--p5);margin-bottom:10px;}
+.smsgbox{background:var(--p1);border:1.5px dashed var(--p3);border-radius:12px;padding:12px;font-size:.8rem;color:var(--txtl);line-height:1.7;white-space:pre-line;margin-bottom:10px;}
+.scopy{width:100%;background:linear-gradient(135deg,var(--p4),var(--pk4));color:#fff;border:none;padding:11px;border-radius:12px;font-family:'Mitr';font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:7px;}
+.sclose{width:100%;background:var(--p1);color:var(--p5);border:1.5px solid var(--p2);padding:9px;border-radius:12px;font-family:'Mitr';font-size:.86rem;font-weight:600;cursor:pointer;}
+/* BOTTOM BAR */
+.bbar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:2px solid var(--brd);display:flex;align-items:center;justify-content:space-around;padding:7px 0 calc(7px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(168,85,247,.1);}
+.bbb{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;font-family:'Mitr';color:var(--txts);font-size:.63rem;padding:5px 13px;border-radius:12px;transition:.2s;}
+.bbb.active{color:var(--p5);font-weight:600;}
+.bbb .bi{font-size:1.22rem;}
+.bbb-home{background:linear-gradient(135deg,var(--p4),var(--pk4));color:#fff!important;width:52px;height:52px;border-radius:50%;margin-top:-18px;box-shadow:0 4px 16px rgba(168,85,247,.4);font-size:1.5rem;padding:0;display:flex;align-items:center;justify-content:center;}
+/* TOAST */
+#toast{visibility:hidden;min-width:185px;background:linear-gradient(135deg,var(--p1),var(--pk1));color:var(--p5);text-align:center;border-radius:50px;padding:9px 16px;position:fixed;z-index:999;left:50%;top:24px;transform:translateX(-50%);font-size:.86rem;font-weight:600;box-shadow:0 4px 18px rgba(168,85,247,.2);border:1.5px solid var(--p2);}
+#toast.show{visibility:visible;animation:ta 2.5s;}
+@keyframes ta{0%{top:0;opacity:0;}20%{top:24px;opacity:1;}80%{top:24px;opacity:1;}100%{top:0;opacity:0;}}
+.empty{text-align:center;padding:36px 16px;color:var(--txtsm);font-size:.86rem;}
+</style>
 </head>
 <body>
+<div class="sp">💜</div><div class="sp">✨</div><div class="sp">🌸</div><div class="sp">💎</div>
+<div class="sp">🎀</div><div class="sp">🌟</div><div class="sp">🎈</div><div class="sp">☁️</div>
 
-    <nav class="top-navbar">
-        <div class="menu-btn" onclick="toggleDrawer()">📂</div>
-        <div class="brand-group">
-            <div class="shop-name-title">PJ Kawaii Queue ✨</div>
-            <div class="shop-logo-top">
-                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=PJ" alt="Logo">
-            </div>
-        </div>
-    </nav>
+<div class="topbar">
+  <button class="hamburger" onclick="openDrawer()">☰</button>
+  <div style="flex:1;"></div>
+  <span class="shop-status-pill open" id="statusPill">🟢 เปิดรับคิว</span>
+</div>
 
-    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
-    <div class="side-drawer" id="sideDrawer">
-        <h3 style="color:#ff85b3; margin-bottom:20px; padding-left:15px;">เมนู</h3>
-        <button class="drawer-item" onclick="toggleDrawer(); showView('client')">🔎 ตรวจสอบคิว</button>
-        <button class="drawer-item" onclick="toggleDrawer(); openHowToModal()">📖 วิธีการใช้งานเว็บ</button>
-        <a href="https://lin.ee/a5pIvAMe" target="_blank" class="drawer-item" style="text-decoration:none;">💬 ติดต่อแอดมิน</a>
+<div class="drw-ov" id="dov" onclick="closeDrawer()"></div>
+<div class="drawer" id="drw">
+  <button class="drw-close" onclick="closeDrawer()">✕</button>
+  <div class="drw-hdr">
+    <div class="drw-logo">🎀</div>
+    <div class="drw-ttl">pinkjulieland</div>
+    <div class="drw-sub">ระบบเช็คคิวออนไลน์<br>สำหรับลูกค้าร้านจูค่ะ</div>
+  </div>
+  <div class="drw-sec">
+    <div class="drw-sec-ttl">เมนูหลัก</div>
+    <div class="drw-item" onclick="goPage('home');closeDrawer()">🏠 หน้าหลัก / ราคางาน</div>
+    <div class="drw-item" onclick="goPage('queue');closeDrawer()">🔍 เช็คสถานะคิว</div>
+  </div>
+  <div class="drw-div"></div>
+  <div class="drw-sec">
+    <div class="drw-sec-ttl">ข้อมูล</div>
+    <div class="drw-item" onclick="showHowTo();closeDrawer()">📖 วิธีใช้งานเว็บนี้</div>
+    <div class="drw-item" onclick="window.open('https://line.me/ti/p/@298djtan','_blank');closeDrawer()">💬 ติดต่อ LINE</div>
+  </div>
+  <div class="drw-div"></div>
+  <div class="drw-sec">
+    <div style="background:var(--p1);border:1.5px solid var(--p2);border-radius:12px;padding:10px;font-size:.77rem;color:var(--txtl);line-height:1.6;">
+      💡 <b>วิธีเช็คคิว</b><br>กดปุ่ม 🔍 ด้านล่าง แล้วพิมพ์เลขออเดอร์ เช่น <b>A001</b> หรือชื่อค่ะ
     </div>
+  </div>
+</div>
 
-    <div id="howToModal" class="modal-overlay" onclick="closeHowToModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h3 style="color:#ff85b3">📖 วิธีการใช้งาน</h3>
-            <div class="guide-section">
-                <div class="guide-card">
-                    <span class="guide-emoji">🔍</span>
-                    <h4>ค้นหาคิว</h4>
-                    <p>ใส่เลข PJ หรือชื่อ</p>
-                </div>
-                <div class="guide-card">
-                    <span class="guide-emoji">💬</span>
-                    <h4>คุยกับเรา</h4>
-                    <p>แชทสดมุมขวาล่าง</p>
-                </div>
-                <div class="guide-card">
-                    <span class="guide-emoji">🪄</span>
-                    <h4>สถานะงาน</h4>
-                    <p>อัปเดตแบบเรียลไทม์</p>
-                </div>
-                <div class="guide-card">
-                    <span class="guide-emoji">📢</span>
-                    <h4>ข่าวด่วน</h4>
-                    <p>ติดตามประกาศร้าน</p>
-                </div>
-            </div>
-            <button class="btn btn-save" style="margin-top: 20px;" onclick="closeHowToModal()">รับทราบค่ะ ✨</button>
-        </div>
+<div class="wrap">
+  <!-- HOME PAGE -->
+  <div class="page active" id="page-home">
+    <div class="hdr">
+      <div class="shop-name">⭐️ pinkjulieland ⭐️</div>
+      <div class="shop-sub">ยินดีต้อนรับเข้าสู่โลกของจูนะคะ</div>
+      <div class="badges">
+        <span class="badge">🌐 รับสร้างเว็บร้านค้า</span>
+        <span class="badge">🎨 รับออกแบบป้าย</span>
+        <span class="badge">🧸 ลงสีของตกแต่ง</span>
+      </div>
     </div>
-
-    <div id="toast" class="toast"></div>
-
-    <div id="deleteModal" class="modal-overlay">
-        <div class="modal-content">
-            <h3 style="color:#ff85b3">🗑️ ลบออเดอร์?</h3>
-            <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">รายการนี้จะหายไปตลอดกาลเลยน้า~</p>
-            <div class="pill-group" style="justify-content:center; margin-top:20px;">
-                <button class="pill" onclick="closeDelModal()">ยกเลิก</button>
-                <button id="confirmDelBtn" class="pill active" style="background:#ff6b6b; border-color:#ff6b6b;">ตกลง ลบเลย</button>
-            </div>
-        </div>
+    <div class="status-bar" id="homeStatusBar"><div class="sdot" id="homeStatusDot"></div><span id="homeStatusTxt">ทักมาสอบถามคิวก่อนได้ค่ะ</span></div>
+    <div class="ann" id="annBox"><div class="ann-h">📣 ประกาศจากแอดมิน</div><div class="ann-b" id="annTxt"></div></div>
+    <div class="card">
+      <div class="ct">📦 หมวดหมู่สินค้า</div>
+      <div class="lnk">✨ รับสร้างเว็บร้านขายแอพพรีเมียม สตกไลน์ ธีมไลน์</div>
+      <div class="lnk">🪼 รับสร้างเว็บร้านขายแอพเกมส์ รับเติมเกมส์</div>
+      <div class="lnk">🫧 รับสร้างเว็บขายกลุ่ม รับออกแบบป้าย</div>
+      <div class="lnk">🌐 อื่นๆสอบถามเพิ่มเติมได้ค่ะ</div>
     </div>
-
-    <div class="container">
-        <div class="nav-group">
-            <button class="toggle-btn active" id="tab-client" onclick="showView('client')">🔎 ตรวจสอบคิว</button>
-            <button class="toggle-btn" id="tab-admin" onclick="tryAdmin()">⚙️ แอดมิน</button>
-        </div>
-
-        <div id="clientView">
-            <div id="broadcastArea" class="broadcast-container">
-                <div class="broadcast-label">NOTICE</div>
-                <div class="broadcast-text-fixed" id="broadcastText"></div>
-            </div>
-
-            <div class="card"><input type="text" id="clientSearch" placeholder="🔍 ค้นหาเลขออเดอร์หรือชื่อ..." oninput="renderClient()"></div>
-            <div id="clientQueueCategorized"></div>
-        </div>
-
-        <div id="adminView" style="display:none;">
-            <div class="card" style="border: 2px solid #ffb3d9;">
-                <h3 style="color:#ff85b3; font-size:1rem; margin-bottom:10px;">📢 จัดการประกาศ</h3>
-                <textarea id="adminNoticeInput" rows="2" placeholder="พิมพ์ข้อความประกาศสำคัญที่นี่..."></textarea>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn btn-save" style="font-size:0.9rem;" onclick="saveNotice()">บันทึกประกาศ</button>
-                    <button class="btn" style="background:#eee; width:40%; font-size:0.9rem;" onclick="clearNotice()">ล้าง</button>
-                </div>
-            </div>
-
-            <div class="card" style="border: 2px solid #ffb3d9;">
-                <h3 style="color:#ff85b3; font-size:1rem; margin-bottom:10px;">💬 Admin Chat Console</h3>
-                <div id="adminChatPreview" class="admin-chat-preview">
-                    <p id="chatPlaceholder" style="text-align:center; color:#ccc; font-size:12px; margin-top:70px;">รอข้อความจากลูกค้า...</p>
-                </div>
-                <p id="activeChatTarget" style="font-size:0.8rem; color:#888; margin-bottom:10px; font-weight:500;">คุยกับ: -</p>
-                <div style="display:flex; gap:8px;">
-                    <input type="text" id="adminReplyInput" placeholder="ตอบแชทลูกค้าที่นี่..." style="margin-bottom:0;" onkeypress="if(event.key==='Enter') adminSendMsg()">
-                    <button onclick="adminSendMsg()" style="background:#ffb3d9; border:none; border-radius:15px; padding:0 15px; color:white; cursor:pointer; font-size: 20px;">🚀</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3 id="formTitle">จัดการออเดอร์</h3>
-                <input type="hidden" id="editIndex" value="-1">
-                <label>Order ID</label><input type="text" id="orderId" placeholder="PJ-XXX">
-                <label>ชื่อลูกค้า</label><input type="text" id="custName">
-                <label>รายละเอียด</label><textarea id="workDetail" rows="2"></textarea>
-                <label>ความคืบหน้า: <span id="pText">0%</span></label>
-                <div class="pill-group" id="pPills"></div><input type="hidden" id="vPercent" value="0">
-                <label>สถานะ</label>
-                <div class="pill-group" id="sPills"></div><input type="hidden" id="vStatus" value="รอเริ่มงาน">
-                <button class="btn btn-save" onclick="saveOrder()">บันทึกข้อมูล ✨</button>
-                <button id="cancelBtn" class="btn" style="display:none; width:100%; margin-top:5px; background:#eee;" onclick="resetForm()">ยกเลิกแก้ไข</button>
-            </div>
-            <div id="adminList"></div>
-        </div>
+    <div class="card pk">
+      <div class="ct">🌸 ตัวอย่างงาน</div>
+      <a href="https://julie-vwb.github.io/erin-shop/" class="lnk" target="_blank">🔗 Erin Shop</a>
+      <a href="https://julie-vwb.github.io/mahatep-shop/" class="lnk" target="_blank">🔗 Mahatep Shop</a>
+      <a href="https://julie-vwb.github.io/cxllmestore-shop/" class="lnk" target="_blank">🔗 Cxllmestore Shop</a>
+      <a href="https://julie-vwb.github.io/cooper-shop/" class="lnk" target="_blank">🔗 Cooper Shop</a>
+      <a href="https://julie-vwb.github.io/babybear-design/" class="lnk" target="_blank">🔗 Babybear Design</a>
+      <a href="https://julie-vwb.github.io/tanewcutie-design/" class="lnk" target="_blank">🔗 Tanewcutie Design</a>
+      <a href="https://julie-vwb.github.io/meow-font/" class="lnk" target="_blank">🔗 Meow Font</a>
+      <a href="https://julie-vwb.github.io/waray-design/" class="lnk" target="_blank">🔗 Waray Design</a>
+      <a href="https://julie-vwb.github.io/luna-webstudio/" class="lnk" target="_blank">🔗 Luna Webstudio</a>
     </div>
-
-    <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
-        <div class="card" style="width:300px; text-align:center; position: relative;">
-            <button class="close-login" onclick="closeLogin()">×</button>
-            <h3>🔐 แอดมินล็อกอิน</h3><input type="password" id="adminPass" style="text-align:center; margin-top:15px;"><button class="btn btn-save" onclick="login()">เข้าสู่ระบบ</button>
-        </div>
+    <div class="card">
+      <div class="ct">💰 รายละเอียดราคา</div>
+      <div class="pi"><span>เริ่มต้น (โลโก้ + ข้อมูล &lt; 200 lines)</span><span class="ptag">109 ฿</span></div>
+      <div class="pi"><span>มีโลโก้ + ข้อมูล &gt; 400 lines</span><span class="ptag">129 ฿</span></div>
+      <div class="pi"><span>มีโลโก้ + ข้อมูล &gt; 600 lines</span><span class="ptag">149 ฿</span></div>
+      <div class="pi"><span>มีโลโก้ + ข้อมูล &gt; 800 lines</span><span class="ptag">169 ฿</span></div>
     </div>
-
-    <div id="chat-widget">
-        <div id="chat-window">
-            <div class="chat-header">🎀 คุยกับแอดมิน ✨</div>
-            <div class="chat-body" id="chat-content"></div>
-            <div class="chat-footer">
-                <input type="text" id="chat-input" placeholder="พิมพ์ข้อความ..." onkeypress="if(event.key==='Enter') sendMsg()">
-                <button onclick="sendMsg()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#ffb3d9;">✈️</button>
-            </div>
-        </div>
-        <button id="chat-btn" onclick="toggleChat()">💬</button>
+    <div class="card cy">
+      <div class="ct">📝 ขั้นตอนการสั่งซื้อ</div>
+      <div class="si"><div class="snum">1</div><div>ทักแชทสอบถาม</div></div>
+      <div class="si"><div class="snum">2</div><div>เลือกแบบฟอร์มที่ตรงกับประเภทร้าน</div></div>
+      <div class="si"><div class="snum">3</div><div>คัดลอกแบบฟอร์มแล้วกรอกข้อมูล</div></div>
+      <div class="si"><div class="snum">4</div><div>ส่งข้อมูลมาทางแชท รอเค้าสรุปยอด</div></div>
+      <div class="si"><div class="snum">5</div><div>รอรับงานได้เลยค่ะ</div></div>
     </div>
+    <div class="card pk">
+      <div class="ct">📨 แบบฟอร์มร้านจู (คลิกเพื่อคัดลอก)</div>
+      <div class="cpa">
+        <button class="bcopy" onclick="copyForm(1)">🌟 ฟอร์มที่ 1 ข้อมูลร้านพื้นฐาน สำคัญ</button>
+        <button class="bcopy" onclick="copyForm(2)">🌟 ราคางาน ป้าย/เรทสติกเกอร์</button>
+        <button class="bcopy" onclick="copyForm(3)">🌟 ราคาแอพพรีเมียม</button>
+        <button class="bcopy" onclick="copyForm(4)">🌟 ผลงานร้าน/ตัวอย่างกลุ่ม</button>
+      </div>
+      <div style="font-size:.78rem;color:var(--txtl);margin-top:12px;background:var(--p1);padding:10px;border-radius:11px;border-left:4px solid var(--p3);line-height:1.5;">🔔 <b>หมายเหตุ:</b> ตำแหน่งเลข 1–6 และ 12 ไม่สามารถขยับตำแหน่งได้ ส่วน 7-11 วางได้ฟรีสไตล์ค่ะ</div>
+    </div>
+    <div class="card">
+      <div class="ct">⏱ ระยะเวลาดำเนินการ</div>
+      <div style="font-weight:700;color:var(--p5);">ไม่มีคิว 1-3 วัน | มีคิว 1-7 วันโดยประมาณ</div>
+      <div style="font-size:.78rem;margin-top:5px;color:var(--txts);">โดยส่วนมากไม่เกิน 1-2 วันหลังจากสั่งค่ะ</div>
+    </div>
+    <div class="notice">
+      <h3>📌 หมายเหตุสำคัญ</h3>
+      <ul>
+        <li>เริ่มงานหลังจากที่ได้รับบรีฟแล้วเท่านั้นนะคะ หากไม่ได้รับบรีฟ จะทำของลูกค้าที่แจ้งบรีฟก่อนค่ะ</li>
+        <li>แจ้งทีหลังก็จะทำตามลำดับคิว ขออนุญาตยึดคิวลูกค้าที่ส่งบรีฟก่อนเป็นหลักค่ะ</li>
+        <li>ตัวอย่างงานเป็นเพียงสไตล์งานเท่านั้น ไม่สามารถทำให้เหมือน 100% ขึ้นอยู่กับข้อมูลลูกค้าค่ะ</li>
+      </ul>
+    </div>
+    <a href="https://line.me/ti/p/@298djtan" class="cta" target="_blank">💬 ติดต่อสอบถาม (@298djtan)</a>
+    <div class="pill-links">
+      <a href="https://www.facebook.com/share/1NJrRLL41c/?mibextid=wwXIfr" class="pill" target="_blank">Facebook</a>
+      <a href="https://www.instagram.com/pinkjulie.land" class="pill" target="_blank">Instagram</a>
+      <a href="https://lin.ee/WLFjXLR" class="pill" target="_blank">LINE</a>
+    </div>
+    <div class="footer">© 2026 pinkjulieland • ขอบคุณที่ไว้วางใจจูยินดีให้บริการค่ะ 💜</div>
+  </div>
 
-    <script>
-        let orders = JSON.parse(localStorage.getItem('orders')) || [];
-        let counter = parseInt(localStorage.getItem('counter')) || 1;
-        let isAdminMode = false;
-        let currentChatOrder = null;
-        let deleteIdx = -1;
-        let globalNotice = localStorage.getItem('pjNotice') || "";
+  <!-- QUEUE PAGE -->
 
-        function toggleDrawer() {
-            const d = document.getElementById('sideDrawer');
-            const o = document.getElementById('drawerOverlay');
-            d.classList.toggle('active');
-            o.style.display = d.classList.contains('active') ? 'block' : 'none';
-        }
+  <div class="page" id="page-queue">
+    <div style="padding:12px 0 7px;">
+      <div style="font-size:1.05rem;font-weight:700;color:var(--p5);">🔍 ตรวจสอบสถานะคิว</div>
+      <div style="font-size:.8rem;color:var(--txts);margin-top:3px;">ค้นหาด้วยเลขออเดอร์ (A001) หรือชื่อลูกค้า</div>
+    </div>
+    <div class="sbox">
+      <input class="sinp" id="sinp" type="text" placeholder="พิมพ์เลขออเดอร์ เช่น A001 หรือชื่อ...">
+      <button class="sbtn" onclick="doSearch()">🔍 ค้นหา</button>
+    </div>
+    <div class="stats">
+      <div class="sc wt"><div class="sn" id="stW">0</div><div class="sl">⏳ รอทำ</div></div>
+      <div class="sc do"><div class="sn" id="stD">0</div><div class="sl">🔥 กำลังทำ</div></div>
+      <div class="sc dn"><div class="sn" id="stDn">0</div><div class="sl">✅ เสร็จแล้ว</div></div>
+    </div>
+    <div id="nextBox" style="display:none;" class="card cy"></div>
+    <div id="searchOut"></div>
+    <div id="orderOut"></div>
+  </div>
 
-        function openHowToModal() {
-            document.getElementById('howToModal').style.display = 'flex';
-        }
+  <!-- ADMIN PAGE -->
 
-        function closeHowToModal() {
-            document.getElementById('howToModal').style.display = 'none';
-        }
+  <div class="page" id="page-admin">
+    <div id="adminLogin">
+      <div class="login-card">
+        <div style="font-size:2.3rem;margin-bottom:8px;">🔐</div>
+        <div class="lin-ttl">แอดมิน pinkjulieland</div>
+        <div class="lin-sub">กรุณาใส่รหัสผ่านเพื่อเข้าระบบค่ะ</div>
+        <input class="lin-inp" type="password" id="pwInp" placeholder="รหัสผ่าน" maxlength="10" onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="lin-err" id="linErr">❌ รหัสผ่านไม่ถูกต้องค่ะ</div>
+        <button class="lin-btn" onclick="doLogin()">🔓 เข้าสู่ระบบ</button>
+      </div>
+    </div>
+    <div id="adminPanel" style="display:none;">
+      <div class="adm-tb">
+        <div class="adm-ttl">🛠 จัดการออเดอร์</div>
+        <button class="logout" onclick="doLogout()">ออกจากระบบ</button>
+      </div>
+      <button class="shop-toggle-btn" onclick="openShopMod()"><span id="shopBtnIcon">🏪</span><span id="shopBtnTxt">ตั้งค่าเปิด/ปิดร้าน</span></button>
+      <div class="ann-form">
+        <div class="ct" style="margin-bottom:7px;">📣 ประกาศหน้าหลัก</div>
+        <textarea class="ann-ta" id="annInp" placeholder="พิมพ์ข้อความประกาศ... (ว่างเปล่า = ไม่แสดง)"></textarea>
+        <button class="ann-save" onclick="saveAnn()">💾 บันทึกประกาศ</button>
+      </div>
+      <div class="chat-panel">
+        <div class="ct" style="margin-bottom:9px;">💬 ข้อความจากลูกค้า <span id="chatBadge" style="background:#EF4444;color:#fff;font-size:.7rem;padding:2px 7px;border-radius:20px;display:none;">ใหม่!</span></div>
+        <select class="chat-order-sel" id="chatOrderSel" onchange="loadChatThread()">
+          <option value="">-- เลือกออเดอร์เพื่อดูข้อความ --</option>
+        </select>
+        <div class="chat-thread" id="chatThread"><div style="text-align:center;color:var(--txtsm);font-size:.8rem;padding:10px;">เลือกออเดอร์เพื่อดูข้อความค่ะ</div></div>
+        <textarea class="admin-reply-inp" id="adminRepInp" placeholder="พิมพ์ข้อความตอบกลับลูกค้า..."></textarea>
+        <button class="admin-send-btn" onclick="sendAdminReply()">💜 ส่งข้อความตอบกลับ</button>
+      </div>
+      <div class="add-form">
+        <div class="ct" style="margin-bottom:10px;">➕ เพิ่มออเดอร์ใหม่</div>
+        <label class="flbl">ชื่อลูกค้า</label>
+        <input class="finp" id="fn" type="text" placeholder="เช่น คุณจูน">
+        <label class="flbl">รายละเอียดงาน</label>
+        <input class="finp" id="fd" type="text" placeholder="เช่น เว็บร้านขายแอพ + โลโก้">
+        <label class="flbl">ช่องทางติดต่อ</label>
+        <input class="finp" id="fc" type="text" placeholder="LINE: @xxx">
+        <label class="flbl">ประเภทคิว</label>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <button type="button" id="urgBtn" onclick="setUrgency('urgent')" style="flex:1;padding:10px;border-radius:12px;border:2px solid #FECACA;background:#FEF2F2;color:#DC2626;font-family:'Mitr';font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s;">🔥 เร่งด่วน</button>
+          <button type="button" id="normBtn" onclick="setUrgency('normal')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--p3);background:var(--p4);color:#fff;font-family:'Mitr';font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s;">✨ ปกติ</button>
+        </div>
+        <button class="add-btn" onclick="addOrder()">✨ เพิ่มออเดอร์ใหม่</button>
+      </div>
+      <div id="admList"></div>
+    </div>
+  </div>
+</div>
 
-        function saveNotice() {
-            globalNotice = document.getElementById('adminNoticeInput').value.trim();
-            localStorage.setItem('pjNotice', globalNotice);
-            showToast('📢 บันทึกประกาศแล้ว');
-            renderClient();
-        }
+<!-- CHAT FLOAT -->
 
-        function clearNotice() {
-            globalNotice = "";
-            document.getElementById('adminNoticeInput').value = "";
-            localStorage.setItem('pjNotice', "");
-            showToast('🗑️ ล้างประกาศแล้ว');
-            renderClient();
-        }
+<button class="chat-fl" onclick="toggleChat()" style="position:fixed;bottom:76px;right:14px;">💬<div class="cnotif" id="cnotif"></div></button>
 
-        function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
-        
-        function showView(v) {
-            document.getElementById('clientView').style.display = v==='client'?'block':'none';
-            document.getElementById('adminView').style.display = v==='admin'?'block':'none';
-            document.getElementById('tab-client').classList.toggle('active', v==='client');
-            document.getElementById('tab-admin').classList.toggle('active', v==='admin');
-            v==='client' ? renderClient() : renderAdmin();
-        }
+<!-- CHAT WINDOW -->
 
-        function tryAdmin() { if(isAdminMode) { showView('admin'); document.getElementById('adminNoticeInput').value = globalNotice; } else document.getElementById('loginModal').style.display='flex'; }
-        
-        function closeLogin() { document.getElementById('loginModal').style.display='none'; }
+<div class="chat-win" id="chatWin">
+  <div class="ch-hdr">
+    <div><div class="ch-ttl">💬 ติดต่อแอดมิน</div><div class="ch-sub">ใส่เลขออเดอร์เพื่อดูสถานะอัตโนมัติ</div></div>
+    <button class="ch-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="ch-body" id="chBody"></div>
+  <div class="ch-inp-area">
+    <input class="ch-inp" id="chInp" placeholder="เลขออเดอร์ หรือข้อความ..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="ch-send" onclick="sendChat()">➤</button>
+  </div>
+</div>
 
-        function login() { if(document.getElementById('adminPass').value==='admin123'){ isAdminMode=true; document.getElementById('loginModal').style.display='none'; showView('admin'); document.getElementById('adminNoticeInput').value = globalNotice; } else showToast('รหัสผ่านไม่ถูกต้อง!'); }
-        
-        function initForm() {
-            const pp=document.getElementById('pPills'); pp.innerHTML='';
-            [0,25,50,75,100].forEach(v=>{
-                const b=document.createElement('div'); b.className='pill'; b.textContent=v+'%';
-                b.onclick=()=>{ document.getElementById('vPercent').value=v; document.getElementById('pText').textContent=v+'%'; updateActivePill(pp, b); };
-                pp.appendChild(b);
-            });
-            const sp=document.getElementById('sPills'); sp.innerHTML='';
-            ['รอเริ่มงาน','กำลังทำ','ใกล้เสร็จ','เสร็จแล้ว','ส่งงานแล้ว'].forEach(s=>{
-                const b=document.createElement('div'); b.className='pill'; b.textContent=s;
-                b.onclick=()=>{ document.getElementById('vStatus').value=s; updateActivePill(sp, b); };
-                sp.appendChild(b);
-            });
-        }
+<!-- HOW TO MODAL -->
 
-        function updateActivePill(c, b) { c.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); b.classList.add('active'); }
+<div class="mover" id="howMod">
+  <div class="modal">
+    <div class="mhdl"></div>
+    <div class="mttl">📖 วิธีใช้งานเว็บนี้ <button class="mclose" onclick="closeMod('howMod')">✕</button></div>
+    <div style="font-size:.83rem;color:var(--txtl);line-height:1.8;">
+      <div style="margin-bottom:8px;">🏠 <b>หน้าหลัก</b> — ดูราคางาน ตัวอย่างงาน และแบบฟอร์มสั่งซื้อ</div>
+      <div style="margin-bottom:8px;">🔍 <b>เช็คคิว</b> — กดปุ่ม 🔍 พิมพ์เลข <b>A001</b> หรือชื่อ ระบบแสดงสถานะทันทีค่ะ</div>
+      <div style="margin-bottom:8px;">💬 <b>แชท</b> — กดปุ่ม 💬 มุมขวาล่าง ใส่เลขออเดอร์แล้วระบบดึงข้อมูลให้อัตโนมัติค่ะ</div>
+      <div style="background:var(--p1);border-radius:11px;padding:9px;border:1.5px solid var(--p2);font-size:.78rem;">💡 เลขออเดอร์รูปแบบ A001, A011... จะส่งให้อัตโนมัติเมื่อแอดมินลงออเดอร์ค่ะ</div>
+    </div>
+  </div>
+</div>
 
-        function saveOrder() {
-            const name = document.getElementById('custName').value.trim();
-            const idx = parseInt(document.getElementById('editIndex').value);
-            if(!name) return showToast('⚠️ กรุณาใส่ชื่อลูกค้า');
-            const now = new Date().toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' });
-            const o = {
-                id: document.getElementById('orderId').value || `PJ-${String(counter++).padStart(3,'0')}`,
-                name: name, detail: document.getElementById('workDetail').value,
-                percent: document.getElementById('vPercent').value, status: document.getElementById('vStatus').value,
-                created: idx === -1 ? now : (orders[idx].created || now),
-                updated: now
-            };
-            if(idx === -1) orders.unshift(o); else orders[idx] = o;
-            localStorage.setItem('orders', JSON.stringify(orders));
-            localStorage.setItem('counter', counter);
-            showToast('✅ บันทึกแล้ว'); resetForm(); renderAdmin();
-        }
+<!-- ORDER DETAIL MODAL -->
 
-        function renderAdmin() {
-            const list = document.getElementById('adminList'); list.innerHTML = '<div class="category-title">รายการคิว</div>';
-            orders.forEach((o, i) => {
-                list.innerHTML += `
-                <div class="card" style="padding:15px; border-left:5px solid #ffb3d9;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div><strong>${o.id} - ${o.name}</strong><p style="font-size:0.7rem;">${o.status} (${o.percent}%)</p></div>
-                        <div class="admin-controls">
-                            <button class="btn-tool btn-copy" onclick="copyFullInfo(${i})">คัดลอกข้อมูล</button>
-                            <button class="btn-tool btn-edit" onclick="editOrder(${i})">แก้ไข</button>
-                            <button class="btn-tool btn-del" onclick="askDelete(${i})">ลบ</button>
-                        </div>
-                    </div>
-                </div>`;
-            });
-        }
+<div class="mover" id="ordMod">
+  <div class="modal">
+    <div class="mhdl"></div>
+    <div class="mttl" id="ordModTtl">รายละเอียด <button class="mclose" onclick="closeMod('ordMod')">✕</button></div>
+    <div id="ordModCnt"></div>
+  </div>
+</div>
 
-        function renderClient() {
-            const list = document.getElementById('clientQueueCategorized');
-            const search = document.getElementById('clientSearch').value.toLowerCase();
-            
-            const bArea = document.getElementById('broadcastArea');
-            if(globalNotice) { 
-                bArea.style.display = 'flex'; 
-                document.getElementById('broadcastText').textContent = globalNotice; 
-            } else { bArea.style.display = 'none'; }
+<!-- CONFIRM DELETE -->
 
-            list.innerHTML = '';
-            const filtered = orders.filter(o => o.id.toLowerCase().includes(search) || o.name.toLowerCase().includes(search));
-            ['กำลังทำ','รอเริ่มงาน','เสร็จแล้ว','ส่งงานแล้ว'].forEach(cat => {
-                const group = filtered.filter(o => cat === 'กำลังทำ' ? (o.status === 'กำลังทำ' || o.status === 'ใกล้เสร็จ') : o.status === cat);
-                if(group.length > 0) {
-                    list.innerHTML += `<div class="category-title">✨ ${cat}</div>`;
-                    group.forEach(o => {
-                        list.innerHTML += `
-                        <div class="queue-card">
-                            <span style="color:#ffb3d9; font-weight:600;">${o.id}</span>
-                            <div style="font-weight:500;">คุณ ${o.name}</div>
-                            <div style="font-size:0.8rem; color:#666;">${o.detail}</div>
-                            <div class="progress-bar"><div class="progress-fill" style="width:${o.percent}%"></div></div>
-                            <div class="date-info">
-                                <span>📅 เริ่ม: ${o.created || '-'}</span>
-                                <span>🔄 อัปเดต: ${o.updated || '-'}</span>
-                            </div>
-                            <div class="status-pill-fixed">${o.status}</div>
-                        </div>`;
-                    });
-                }
-            });
-        }
+<div class="cmod-ov" id="confMod">
+  <div class="cmod-box">
+    <div class="conf-icon">🗑️</div>
+    <div class="conf-ttl">ยืนยันการลบออเดอร์?</div>
+    <div class="conf-sub" id="confSub">คุณต้องการลบออเดอร์นี้จริงๆ ใช่ไหมคะ?</div>
+    <div class="conf-btns">
+      <button class="conf-no" onclick="closeConf()">ยกเลิก</button>
+      <button class="conf-yes" onclick="doDelete()">ลบเลย 🗑️</button>
+    </div>
+  </div>
+</div>
 
-        function copyFullInfo(idx) {
-            const o = orders[idx];
-            const text = `🎀 แอดมินอัปเดตข้อมูลออเดอร์เข้าระบบแล้ว ✨\n เลขออเดอร์: ${o.id}\n👤 ชื่อลูกค้า: ${o.name}\n✨ สถานะ: ${o.status}\nความคืบหน้า: ${o.percent}%\n📅 เริ่มออเดอร์: ${o.created}\n🔄 อัปเดตล่าสุด: ${o.updated}`;
-            navigator.clipboard.writeText(text).then(() => showToast('📋 คัดลอกข้อมูลแล้ว'));
-        }
+<!-- SHOP MODAL -->
 
-        function askDelete(idx) { deleteIdx = idx; document.getElementById('deleteModal').style.display = 'flex'; }
-        function closeDelModal() { document.getElementById('deleteModal').style.display = 'none'; }
-        document.getElementById('confirmDelBtn').onclick = () => {
-            orders.splice(deleteIdx, 1);
-            localStorage.setItem('orders', JSON.stringify(orders));
-            closeDelModal(); renderAdmin(); showToast('🗑️ ลบรายการแล้ว');
-        };
+<div class="cmod-ov" id="shopMod">
+  <div class="cmod-box">
+    <div class="shop-box-ttl">🏪 ตั้งค่าสถานะร้าน</div>
+    <div class="shop-btn-row">
+      <button class="sbtn-open" onclick="setShop(true)">🟢 เปิดร้าน</button>
+      <button class="sbtn-close" onclick="setShop(false)">🔴 ปิดร้าน</button>
+    </div>
+    <div class="shop-timer-sec">
+      <div class="shop-timer-ttl">⏰ ตั้งเวลาอัตโนมัติ</div>
+      <div class="timer-row">
+        <span style="font-size:.79rem;color:var(--txtl);white-space:nowrap;">เปิดเวลา</span>
+        <input class="timer-inp" type="time" id="timerOpen">
+        <button class="timer-set-btn" onclick="setTimer('open')">ตั้ง</button>
+      </div>
+      <div class="timer-row">
+        <span style="font-size:.79rem;color:var(--txtl);white-space:nowrap;">ปิดเวลา</span>
+        <input class="timer-inp" type="time" id="timerClose">
+        <button class="timer-set-btn" onclick="setTimer('close')">ตั้ง</button>
+      </div>
+      <div class="timer-status" id="timerStatus">ยังไม่ได้ตั้งเวลาค่ะ</div>
+    </div>
+    <button class="shop-close-btn" style="margin-top:10px;" onclick="closeMod('shopMod')">ปิดหน้าต่าง</button>
+  </div>
+</div>
 
-        function addMsg(text, type) {
-            const body = document.getElementById('chat-content');
-            const d1 = document.createElement('div'); 
-            d1.className = `msg ${type}`; 
-            d1.textContent = text;
-            body.appendChild(d1); 
-            body.scrollTop = body.scrollHeight;
+<!-- SUCCESS MODAL -->
 
-            const preview = document.getElementById('adminChatPreview');
-            const placeholder = document.getElementById('chatPlaceholder');
-            if(placeholder) placeholder.remove();
-            
-            const d2 = document.createElement('div'); 
-            d2.className = `msg ${type}`; 
-            d2.textContent = text;
-            preview.appendChild(d2); 
-            preview.scrollTop = preview.scrollHeight;
-        }
+<div class="smod-ov" id="sucMod">
+  <div class="smod">
+    <div class="smod-ttl">🎉 เพิ่มออเดอร์สำเร็จ!</div>
+    <div class="smsgbox" id="sucTxt"></div>
+    <button class="scopy" onclick="copySuc()">📋 คัดลอกข้อความแจ้งลูกค้า</button>
+    <button class="sclose" onclick="document.getElementById('sucMod').classList.remove('open')">ปิด</button>
+  </div>
+</div>
 
-        function sendMsg() {
-            const input = document.getElementById('chat-input');
-            let val = input.value.trim();
-            if(!val) return;
-            addMsg(val, 'user');
-            input.value = '';
+<div class="bbar">
+  <button class="bbb" id="bb-queue" onclick="goPage('queue')"><span class="bi">🔍</span><span>เช็คคิว</span></button>
+  <button class="bbb bbb-home" id="bb-home" onclick="goPage('home')">🏠</button>
+  <button class="bbb" id="bb-admin" onclick="goPage('admin')"><span class="bi">🔐</span><span>แอดมิน</span></button>
+</div>
 
-            if(!currentChatOrder) {
-                let searchId = val.toUpperCase();
-                if(!searchId.startsWith('PJ-') && !isNaN(val)) {
-                    searchId = 'PJ-' + val.padStart(3, '0');
-                }
-                const found = orders.find(o => o.id.toUpperCase() === searchId);
-                if(found) {
-                    currentChatOrder = found;
-                    document.getElementById('activeChatTarget').textContent = `คุยกับ: คุณ ${found.name} (${found.id})`;
-                    setTimeout(() => addMsg(`สวัสดีค่ะคุณ ${found.name} มีอะไรสอบถามทิ้งไว้ได้เลยนะคะ ✨`, 'admin'), 800);
-                } else {
-                    setTimeout(() => addMsg("ไม่พบเลขออเดอร์นี้ค่ะ ลองเช็คอีกทีนะ", 'admin'), 800);
-                }
-            }
-        }
+<div id="toast"></div>
 
-        function adminSendMsg() {
-            const input = document.getElementById('adminReplyInput');
-            const val = input.value.trim();
-            if(!val || !currentChatOrder) return showToast('⚠️ เลือกลูกค้าก่อนตอบ');
-            addMsg(val, 'admin');
-            input.value = '';
-        }
+<script>
+var orders = JSON.parse(localStorage.getItem('pjl_o') || '[]');
+var ann = localStorage.getItem('pjl_ann') || '';
+var shopOpen = localStorage.getItem('pjl_shop') !== 'false';
+var timerOpenVal = localStorage.getItem('pjl_to') || '';
+var timerCloseVal = localStorage.getItem('pjl_tc') || '';
+var isAdmin = false;
+var sucMsg = '';
+var pendingDelId = null;
+var chats = JSON.parse(localStorage.getItem('pjl_chats') || '{}');
 
-        function toggleChat() {
-            const win = document.getElementById('chat-window');
-            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
-            if(win.style.display === 'flex' && document.getElementById('chat-content').innerHTML === '') {
-                addMsg("สวัสดีดีค่ะ! กรุณาพิมพ์ **เลขออเดอร์ 3 หลัก** (เช่น 001) เพื่อเริ่มคุยนะคะ", 'admin');
-            }
-        }
+function saveO(){ localStorage.setItem('pjl_o', JSON.stringify(orders)); }
+function saveC(){ localStorage.setItem('pjl_chats', JSON.stringify(chats)); }
 
-        function editOrder(idx) {
-            const o = orders[idx];
-            document.getElementById('editIndex').value = idx;
-            document.getElementById('orderId').value = o.id;
-            document.getElementById('custName').value = o.name;
-            document.getElementById('workDetail').value = o.detail;
-            document.getElementById('vPercent').value = o.percent;
-            document.getElementById('vStatus').value = o.status;
-            document.getElementById('cancelBtn').style.display = "block";
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
+function genNum(){
+  if(!orders.length) return 'A001';
+  var mx = Math.max.apply(null, orders.map(function(o){ return parseInt(o.id.replace('A','')) || 0; }));
+  return 'A' + (mx+10).toString().padStart(3,'0');
+}
 
-        function resetForm() {
-            document.getElementById('editIndex').value = "-1";
-            document.querySelectorAll('input, textarea').forEach(i=>i.value='');
-            document.getElementById('cancelBtn').style.display = "none";
-            initForm();
-        }
+function fd(ts){
+  var d = new Date(ts);
+  return d.toLocaleDateString('th-TH',{day:'2-digit',month:'2-digit',year:'2-digit'}) + ' ' + d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+}
 
-        window.onload = () => { initForm(); renderClient(); };
-    </script>
+var SL = {waiting:'⏳ รอทำ', doing:'🔥 กำลังทำ', done:'✅ เสร็จแล้ว', cancelled:'❌ ยกเลิก'};
+
+function toast(m){
+  var t = document.getElementById('toast');
+  t.textContent = m || 'เรียบร้อยค่ะ';
+  t.className = 'show';
+  setTimeout(function(){ t.className = ''; }, 2600);
+}
+
+function goPage(id){
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.bbb').forEach(function(b){ b.classList.remove('active'); });
+  var bb = document.getElementById('bb-'+id);
+  if(bb) bb.classList.add('active');
+  if(id==='queue') renderQueue();
+  if(id==='admin') renderAdmin();
+  if(id==='home'){ renderAnn(); updateShopUI(); }
+  window.scrollTo(0,0);
+}
+
+function openDrawer(){ document.getElementById('drw').classList.add('open'); document.getElementById('dov').classList.add('open'); }
+function closeDrawer(){ document.getElementById('drw').classList.remove('open'); document.getElementById('dov').classList.remove('open'); }
+function closeMod(id){ document.getElementById(id).classList.remove('open'); }
+function showHowTo(){ document.getElementById('howMod').classList.add('open'); }
+
+function askDelete(id){
+  pendingDelId = id;
+  var o = orders.find(function(x){ return x.id===id; });
+  document.getElementById('confSub').textContent = 'ลบออเดอร์ "'+id+' — '+(o?o.name:'')+'" จริงๆ ใช่ไหมคะ? ไม่สามารถกู้คืนได้นะคะ';
+  document.getElementById('confMod').classList.add('open');
+}
+function closeConf(){ document.getElementById('confMod').classList.remove('open'); pendingDelId = null; }
+function doDelete(){
+  if(!pendingDelId) return;
+  orders = orders.filter(function(x){ return x.id!==pendingDelId; });
+  delete chats[pendingDelId];
+  saveO(); saveC();
+  closeConf(); closeMod('ordMod');
+  renderAdmin(); renderStats();
+  toast('ลบออเดอร์แล้วค่ะ 🗑️');
+}
+
+function updateShopUI(){
+  var pill = document.getElementById('statusPill');
+  var dot = document.getElementById('homeStatusDot');
+  var txt = document.getElementById('homeStatusTxt');
+  if(shopOpen){
+    pill.className='shop-status-pill open'; pill.textContent='🟢 เปิดรับคิว';
+    dot.className='sdot'; txt.textContent='ทักมาสอบถามคิวก่อนได้ค่ะ';
+  } else {
+    pill.className='shop-status-pill closed'; pill.textContent='🔴 ปิดร้านชั่วคราว';
+    dot.className='sdot red'; txt.textContent='ปิดร้านชั่วคราว รอเปิดใหม่เร็วๆนี้ค่ะ';
+  }
+  var bt = document.getElementById('shopBtnTxt');
+  if(bt) bt.textContent = shopOpen ? '🟢 ร้านเปิดอยู่ — กดเพื่อจัดการ' : '🔴 ร้านปิดอยู่ — กดเพื่อจัดการ';
+}
+function setShop(open){
+  shopOpen = open;
+  localStorage.setItem('pjl_shop', open?'true':'false');
+  updateShopUI();
+  closeMod('shopMod');
+  toast(open ? '🟢 เปิดร้านแล้วค่ะ!' : '🔴 ปิดร้านแล้วค่ะ');
+}
+function openShopMod(){
+  document.getElementById('timerOpen').value = timerOpenVal;
+  document.getElementById('timerClose').value = timerCloseVal;
+  updateTimerStatus();
+  document.getElementById('shopMod').classList.add('open');
+}
+function setTimer(type){
+  var val = document.getElementById(type==='open'?'timerOpen':'timerClose').value;
+  if(!val){ toast('กรุณาเลือกเวลาก่อนค่ะ'); return; }
+  if(type==='open'){ timerOpenVal=val; localStorage.setItem('pjl_to',val); }
+  else { timerCloseVal=val; localStorage.setItem('pjl_tc',val); }
+  updateTimerStatus();
+  toast('✅ ตั้งเวลา'+(type==='open'?'เปิด':'ปิด')+'ร้าน '+val+' น. แล้วค่ะ');
+}
+function updateTimerStatus(){
+  var parts=[];
+  if(timerOpenVal) parts.push('เปิด '+timerOpenVal+' น.');
+  if(timerCloseVal) parts.push('ปิด '+timerCloseVal+' น.');
+  document.getElementById('timerStatus').textContent = parts.length ? '⏰ ตั้งเวลาไว้: '+parts.join(' | ') : 'ยังไม่ได้ตั้งเวลาค่ะ';
+}
+setInterval(function(){
+  if(!timerOpenVal && !timerCloseVal) return;
+  var d=new Date();
+  var hhmm=d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+  if(timerOpenVal && hhmm===timerOpenVal && !shopOpen){ shopOpen=true; localStorage.setItem('pjl_shop','true'); updateShopUI(); toast('⏰ ถึงเวลาเปิดร้านอัตโนมัติแล้วค่ะ 🟢'); }
+  if(timerCloseVal && hhmm===timerCloseVal && shopOpen){ shopOpen=false; localStorage.setItem('pjl_shop','false'); updateShopUI(); toast('⏰ ถึงเวลาปิดร้านอัตโนมัติแล้วค่ะ 🔴'); }
+}, 30000);
+
+function renderAnn(){
+  var b=document.getElementById('annBox'),t=document.getElementById('annTxt');
+  if(ann&&ann.trim()){ t.textContent=ann; b.classList.add('on'); } else b.classList.remove('on');
+}
+
+function renderStats(){
+  document.getElementById('stW').textContent=orders.filter(function(o){return o.status==='waiting';}).length;
+  document.getElementById('stD').textContent=orders.filter(function(o){return o.status==='doing';}).length;
+  document.getElementById('stDn').textContent=orders.filter(function(o){return o.status==='done';}).length;
+}
+
+function getPct(o){
+  if(o.progress!==undefined) return o.progress;
+  if(o.status==='done') return 100;
+  if(o.status==='doing') return 60;
+  return 20;
+}
+function pbClass(o){
+  if(o.status==='done') return 'dn';
+  if(o.status==='doing') return 'dy';
+  return '';
+}
+
+function oCard(o, isAdm){
+  var pct=getPct(o), bc=pbClass(o);
+  var am=o.adminMsg?'<div class="oadm"><div class="aml">📝 ข้อความจากแอดมิน</div>'+o.adminMsg+'</div>':'';
+  var urgBadge = o.urgency==='urgent' ? '<span style="background:#FEF2F2;color:#DC2626;border:1.5px solid #FECACA;border-radius:20px;padding:2px 8px;font-size:.69rem;font-weight:700;margin-left:4px;">🔥 เร่งด่วน</span>' : '';
+  var hasCM=chats[o.id]&&chats[o.id].some(function(m){return m.role==='customer';});
+  var cmBdg=hasCM&&isAdm?'<div class="cmsgbdg">💬 ลูกค้าส่งข้อความมา</div>':'';
+  var ctrl=isAdm?'<div class="prog-ctrl" onclick="event.stopPropagation()"><button class="prog-btn" onclick="adjProg(\''+o.id+'\',-10)">−</button><span>ความคืบหน้า '+pct+'%</span><button class="prog-btn" onclick="adjProg(\''+o.id+'\',10)">+</button></div><div class="abg" onclick="event.stopPropagation()"><button class="ab ab-wt" onclick="setS(\''+o.id+'\',\'waiting\')">⏳</button><button class="ab ab-do" onclick="setS(\''+o.id+'\',\'doing\')">🔥</button><button class="ab ab-dn" onclick="setS(\''+o.id+'\',\'done\')">✅</button><button class="ab ab-dl" onclick="askDelete(\''+o.id+'\')">🗑️ ลบ</button><button class="ab ab-ca" onclick="cpO(\''+o.id+'\')">📋</button></div>':'';
+  return '<div class="oc '+o.status+'" onclick="openOrd(\''+o.id+'\','+isAdm+')"><div class="oc-hdr"><div><div class="onum">'+o.id+urgBadge+'</div><div class="oname">👤 '+o.name+'</div></div><span class="spill '+o.status+'">'+(SL[o.status]||o.status)+'</span></div><div class="odesc">'+(o.desc||'-')+'</div><div class="ometa"><span>📅 ลงคิว: '+fd(o.createdAt)+'</span><span>🔄 อัปเดต: '+fd(o.updatedAt)+'</span></div><div class="oprog"><div class="pb-wrap"><div class="pb '+bc+'" style="width:'+pct+'%"></div></div><div class="prog-pct">'+pct+'%</div></div>'+am+cmBdg+ctrl+'</div>';
+}
+
+function adjProg(id, delta){
+  var o=orders.find(function(x){return x.id===id;});
+  if(!o) return;
+  if(o.progress===undefined) o.progress=getPct(o);
+  o.progress=Math.max(0,Math.min(100,o.progress+delta));
+  if(o.progress===100) o.status='done';
+  else if(o.progress>=30) o.status='doing';
+  else o.status='waiting';
+  o.updatedAt=Date.now();
+  saveO(); renderAdmin(); renderStats();
+}
+
+function setS(id, st){
+  var o=orders.find(function(x){return x.id===id;});
+  if(!o) return;
+  o.status=st;
+  if(st==='done') o.progress=100;
+  else if(st==='doing'){ if(!o.progress||o.progress<30) o.progress=60; }
+  else if(st==='waiting'){ if(!o.progress||o.progress>=30) o.progress=20; }
+  o.updatedAt=Date.now();
+  saveO(); renderAdmin(); renderStats();
+}
+
+function cpO(id){
+  var o=orders.find(function(x){return x.id===id;});
+  if(!o) return;
+  var pct=getPct(o);
+  navigator.clipboard.writeText('📦 ออเดอร์: '+o.id+'\n👤 ชื่อ: '+o.name+'\n📝 งาน: '+(o.desc||'-')+'\n💰 ราคา: '+(o.price||'-')+' ฿\n📊 สถานะ: '+SL[o.status]+' ('+pct+'%)\n📅 ลงคิว: '+fd(o.createdAt)+'\n🔄 อัปเดต: '+fd(o.updatedAt)).then(function(){ toast('คัดลอกข้อมูลออเดอร์แล้วค่ะ 📋'); });
+}
+
+function renderQueue(){
+  renderStats();
+  var doing=orders.filter(function(o){return o.status==='doing';});
+  var waiting=orders.filter(function(o){return o.status==='waiting';});
+  var done=orders.filter(function(o){return o.status==='done';});
+  var nb=document.getElementById('nextBox');
+  if(waiting.length){ nb.style.display='block'; nb.innerHTML='<div class="ct">⚡ คิวถัดไป</div><div style="font-size:.83rem;color:var(--txtl);">คิวถัดไปคือ <b style="color:var(--p5);">'+waiting[0].id+'</b> — '+waiting[0].name+'</div>'; }
+  else nb.style.display='none';
+  var h='';
+  if(doing.length){ h+='<div class="osec">🔥 กำลังทำอยู่ ('+doing.length+')</div>'; doing.forEach(function(o){ h+=oCard(o,false); }); }
+  if(waiting.length){ h+='<div class="osec">⏳ รอดำเนินการ ('+waiting.length+')</div>'; waiting.forEach(function(o){ h+=oCard(o,false); }); }
+  if(done.length){ h+='<div class="osec">✅ เสร็จแล้ว ('+done.length+')</div>'; done.forEach(function(o){ h+=oCard(o,false); }); }
+  if(!orders.length) h='<div class="empty">ยังไม่มีออเดอร์ในระบบค่ะ 🎀</div>';
+  document.getElementById('orderOut').innerHTML=h;
+  document.getElementById('searchOut').innerHTML='';
+}
+
+function doSearch(){
+  var q=document.getElementById('sinp').value.trim().toLowerCase();
+  if(!q){ renderQueue(); return; }
+  var res=orders.filter(function(o){ return o.id.toLowerCase().includes(q)||o.name.toLowerCase().includes(q)||(o.desc||'').toLowerCase().includes(q); });
+  var h='';
+  if(!res.length) h='<div class="empty">ไม่พบออเดอร์ที่ค้นหาค่ะ 🔍</div>';
+  else res.forEach(function(o){ h+=oCard(o,false); });
+  document.getElementById('searchOut').innerHTML=h;
+  document.getElementById('orderOut').innerHTML='';
+}
+document.getElementById('sinp').addEventListener('keydown',function(e){ if(e.key==='Enter') doSearch(); });
+
+function openOrd(id, isAdm){
+  var o=orders.find(function(x){return x.id===id;});
+  if(!o) return;
+  var pct=getPct(o), bc=pbClass(o);
+  document.getElementById('ordModTtl').innerHTML=o.id+' — '+o.name+' <button class="mclose" onclick="closeMod(\'ordMod\')">✕</button>';
+  var msgs=chats[o.id]||[];
+  var mh='';
+  if(msgs.length){
+    mh='<div style="margin-top:11px;"><div style="font-size:.79rem;font-weight:700;color:var(--p5);margin-bottom:5px;">💬 ประวัติข้อความ</div>';
+    msgs.forEach(function(m){ mh+='<div class="ct-msg '+(m.role==='admin'?'adm-r':'cust')+'"><div class="ct-msg-hdr"><span class="ct-msg-name">'+(m.role==='admin'?'👑 แอดมิน':'👤 '+m.name)+'</span><span class="ct-msg-time">'+fd(m.ts)+'</span></div><div>'+m.text+'</div></div>'; });
+    mh+='</div>';
+  }
+  var admSec=isAdm?mh+'<div style="margin-top:11px;"><div style="font-size:.79rem;font-weight:700;color:var(--p5);margin-bottom:5px;">📝 ข้อความอัปเดต</div><textarea class="ari" id="aRI">'+(o.adminMsg||'')+'</textarea><button class="bsr" onclick="saveMsg(\''+id+'\')">💾 บันทึก</button></div><div class="abg" style="margin-top:10px;"><button class="ab ab-wt" onclick="setS(\''+id+'\',\'waiting\');closeMod(\'ordMod\');renderAdmin()">⏳ รอทำ</button><button class="ab ab-do" onclick="setS(\''+id+'\',\'doing\');closeMod(\'ordMod\');renderAdmin()">🔥 ทำอยู่</button><button class="ab ab-dn" onclick="setS(\''+id+'\',\'done\');closeMod(\'ordMod\');renderAdmin()">✅ เสร็จ</button><button class="ab ab-dl" onclick="closeMod(\'ordMod\');askDelete(\''+id+'\')">🗑️ ลบ</button></div>':mh;
+
+document.getElementById(‘ordModCnt’).innerHTML=’<div class="mrow"><span class="mlbl">สถานะ</span><span class="mval"><span class="spill '+o.status+'">’+SL[o.status]+’</span></span></div><div class="mrow"><span class="mlbl">รายละเอียด</span><span class="mval">’+(o.desc||’-’)+’</span></div><div class="mrow"><span class="mlbl">ราคา</span><span class="mval">’+(o.price?o.price+’ ฿’:’-’)+’</span></div><div class="mrow"><span class="mlbl">ช่องทาง</span><span class="mval">’+(o.contact||’-’)+’</span></div><div class="mrow"><span class="mlbl">วันลงคิว</span><span class="mval">’+fd(o.createdAt)+’</span></div><div class="mrow"><span class="mlbl">อัปเดตล่าสุด</span><span class="mval">’+fd(o.updatedAt)+’</span></div><div class="oprog" style="margin-top:10px;"><div style="font-size:.72rem;color:var(--txtsm);margin-bottom:4px;">ความคืบหน้า ‘+pct+’%</div><div class="pb-wrap"><div class="pb '+bc+'" style="width:'+pct+'%"></div></div></div>’+(o.adminMsg?’<div class="oadm" style="margin-top:10px;"><div class="aml">📝 ข้อความจากแอดมิน</div>’+o.adminMsg+’</div>’:’’)+admSec+’<div class="abg" style="margin-top:10px;"><button class="ab ab-ca" onclick="cpO(\''+id+'\')" style="flex:1;">📋 คัดลอกข้อมูลออเดอร์</button></div>’;
+document.getElementById(‘ordMod’).classList.add(‘open’);
+}
+
+function saveMsg(id){
+var o=orders.find(function(x){return x.id===id;});
+if(!o) return;
+o.adminMsg=document.getElementById(‘aRI’).value;
+o.updatedAt=Date.now();
+saveO(); toast(‘บันทึกข้อความแล้วค่ะ ✅’);
+}
+
+var currentUrgency = ‘normal’;
+function setUrgency(type){
+currentUrgency = type;
+var urgBtn = document.getElementById(‘urgBtn’);
+var normBtn = document.getElementById(‘normBtn’);
+if(!urgBtn) return;
+if(type === ‘urgent’){
+urgBtn.style.background=’#DC2626’; urgBtn.style.color=’#fff’; urgBtn.style.borderColor=’#DC2626’;
+normBtn.style.background=‘var(–p1)’; normBtn.style.color=‘var(–p5)’; normBtn.style.borderColor=‘var(–p2)’;
+} else {
+normBtn.style.background=‘var(–p4)’; normBtn.style.color=’#fff’; normBtn.style.borderColor=‘var(–p3)’;
+urgBtn.style.background=’#FEF2F2’; urgBtn.style.color=’#DC2626’; urgBtn.style.borderColor=’#FECACA’;
+}
+}
+function addOrder(){
+var name=document.getElementById(‘fn’).value.trim();
+var desc=document.getElementById(‘fd’).value.trim();
+var contact=document.getElementById(‘fc’).value.trim();
+if(!name){ toast(‘กรุณาใส่ชื่อลูกค้าก่อนค่ะ’); return; }
+var now=Date.now(), id=genNum();
+var urgLabel = currentUrgency === ‘urgent’ ? ‘🔥 เร่งด่วน’ : ‘✨ ปกติ’;
+orders.push({id:id,name:name,desc:desc,contact:contact,urgency:currentUrgency,status:‘waiting’,progress:20,createdAt:now,updatedAt:now,adminMsg:’’});
+saveO();
+[‘fn’,‘fd’,‘fc’].forEach(function(f){ document.getElementById(f).value=’’; });
+currentUrgency = ‘normal’; setUrgency(‘normal’);
+var ds=fd(now);
+sucMsg=’ลงออเดอร์เรียบร้อยนะคะคุณ ‘+name+’ ✨\nเลขออเดอร์ของคุณคือ ‘+id+’ นะคะ 🎀\nประเภท: ‘+urgLabel+’\n\nขอบคุณที่ไว้วางใจให้ดูแลนะคะ รองานสวยๆ ได้เลย จะรีบปั่นให้สุดฝีมือเลยค่ะ! 🔥\n\n🔍 ตรวจสอบสถานะคิวได้ที่นี่น้า:\nhttps://julie-vwb.github.io/dekju-q/\n(ใส่หมายเลขออเดอร์ในช่องค้นหาได้เลยค่ะ)\n\n📅 วันที่ลงคิว: ‘+ds+’\n🔄 อัปเดตล่าสุด: ’+ds;
+document.getElementById(‘sucTxt’).textContent=sucMsg;
+document.getElementById(‘sucMod’).classList.add(‘open’);
+renderAdmin(); renderStats();
+toast(‘✨ เพิ่มออเดอร์ ‘+id+’ แล้วค่ะ’);
+}
+function copySuc(){ navigator.clipboard.writeText(sucMsg).then(function(){ toast(‘คัดลอกข้อความแล้วค่ะ 🎀’); }); }
+
+function renderAdmin(){
+if(!isAdmin) return;
+// populate chat select
+var sel=document.getElementById(‘chatOrderSel’);
+var prev=sel.value;
+sel.innerHTML=’<option value="">– เลือกออเดอร์เพื่อดูข้อความ –</option>’;
+var hasNew=false;
+orders.forEach(function(o){
+var hasCM=chats[o.id]&&chats[o.id].some(function(m){return m.role===‘customer’&&!m.read;});
+if(hasCM) hasNew=true;
+var opt=document.createElement(‘option’);
+opt.value=o.id;
+opt.textContent=o.id+’ — ‘+o.name+(chats[o.id]&&chats[o.id].some(function(m){return m.role===‘customer’;})?’ 💬’:’’);
+sel.appendChild(opt);
+});
+document.getElementById(‘chatBadge’).style.display=hasNew?‘inline’:‘none’;
+if(prev) sel.value=prev;
+loadChatThread();
+var sorted=[].concat(orders).reverse();
+var h=’’;
+sorted.forEach(function(o){ h+=oCard(o,true); });
+if(!sorted.length) h=’<div class="empty">ยังไม่มีออเดอร์ค่ะ 🎀</div>’;
+document.getElementById(‘admList’).innerHTML=h;
+document.getElementById(‘annInp’).value=ann;
+}
+
+function loadChatThread(){
+var selId=document.getElementById(‘chatOrderSel’).value;
+var thread=document.getElementById(‘chatThread’);
+if(!selId){ thread.innerHTML=’<div style="text-align:center;color:var(--txtsm);font-size:.8rem;padding:10px;">เลือกออเดอร์เพื่อดูข้อความค่ะ</div>’; return; }
+var msgs=chats[selId]||[];
+msgs.forEach(function(m){ if(m.role===‘customer’) m.read=true; });
+saveC();
+if(!msgs.length){ thread.innerHTML=’<div style="text-align:center;color:var(--txtsm);font-size:.8rem;padding:10px;">ยังไม่มีข้อความในออเดอร์นี้ค่ะ</div>’; return; }
+var h=’’;
+msgs.forEach(function(m){ h+=’<div class="ct-msg '+(m.role==='admin'?'adm-r':'cust')+'"><div class="ct-msg-hdr"><span class="ct-msg-name">’+(m.role===‘admin’?‘👑 แอดมิน’:‘👤 ‘+m.name)+’</span><span class="ct-msg-time">’+fd(m.ts)+’</span></div><div>’+m.text+’</div></div>’; });
+thread.innerHTML=h;
+thread.scrollTop=thread.scrollHeight;
+}
+
+function sendAdminReply(){
+var selId=document.getElementById(‘chatOrderSel’).value;
+var txt=document.getElementById(‘adminRepInp’).value.trim();
+if(!selId){ toast(‘กรุณาเลือกออเดอร์ก่อนค่ะ’); return; }
+if(!txt){ toast(‘กรุณาพิมพ์ข้อความก่อนค่ะ’); return; }
+if(!chats[selId]) chats[selId]=[];
+chats[selId].push({role:‘admin’,name:‘แอดมิน’,text:txt,ts:Date.now(),read:true});
+saveC();
+document.getElementById(‘adminRepInp’).value=’’;
+loadChatThread();
+toast(‘ส่งข้อความแล้วค่ะ 💜’);
+}
+
+function saveAnn(){
+ann=document.getElementById(‘annInp’).value;
+localStorage.setItem(‘pjl_ann’,ann);
+renderAnn(); toast(‘บันทึกประกาศแล้วค่ะ 📣’);
+}
+
+function doLogin(){
+if(document.getElementById(‘pwInp’).value===‘1234’){
+isAdmin=true;
+document.getElementById(‘adminLogin’).style.display=‘none’;
+document.getElementById(‘adminPanel’).style.display=‘block’;
+renderAdmin();
+} else {
+document.getElementById(‘linErr’).style.display=‘block’;
+setTimeout(function(){ document.getElementById(‘linErr’).style.display=‘none’; },2500);
+}
+}
+function doLogout(){
+isAdmin=false;
+document.getElementById(‘adminLogin’).style.display=‘block’;
+document.getElementById(‘adminPanel’).style.display=‘none’;
+document.getElementById(‘pwInp’).value=’’;
+}
+
+function toggleChat(){
+var w=document.getElementById(‘chatWin’);
+var opening=!w.classList.contains(‘open’);
+w.classList.toggle(‘open’);
+document.getElementById(‘cnotif’).classList.remove(‘on’);
+if(opening && !document.getElementById(‘chBody’).children.length){
+addCM(‘สวัสดีค่า! 🎀 ใส่เลขออเดอร์เพื่อดูสถานะ หรือพิมพ์ข้อความถามแอดมินได้เลยนะคะ รอตอบ 5-10 นาทีค่ะ หรือทักไลน์ @298djtan ได้เลยค่ะ’,‘bot’);
+}
+}
+function sendChat(){
+var inp=document.getElementById(‘chInp’);
+var txt=inp.value.trim();
+if(!txt) return;
+addCM(txt,‘usr’); inp.value=’’;
+var om=orders.find(function(o){ return o.id.toLowerCase()===txt.toLowerCase(); });
+if(om){
+setTimeout(function(){
+var pct=getPct(om);
+addCM(‘พบออเดอร์ของคุณแล้วค่ะ 🎀\n\n📦 ‘+om.id+’ — ‘+om.name+’\n📊 สถานะ: ‘+SL[om.status]+’ (’+pct+’%)\n📝 งาน: ‘+(om.desc||’-’)+’\n📅 ลงคิว: ‘+fd(om.createdAt)+’\n🔄 อัปเดต: ‘+fd(om.updatedAt)+(om.adminMsg?’\n\n💌 ข้อความจากแอดมิน: ‘+om.adminMsg:’’)+’\n\nหากติดขัดหรืออยากทราบในส่วนไหน รอแอดมินตอบกลับภายใน 5-10 นาทีนะคะ หรือทักไลน์ @298djtan ได้เลยค่ะ 💜’,‘bot’);
+// show any admin replies from chat history
+var prevMsgs = chats[om.id] || [];
+prevMsgs.filter(function(m){ return m.role===‘admin’; }).forEach(function(m){
+addCM(‘👑 แอดมินตอบ (’+fd(m.ts)+’):\n’+m.text,‘bot’);
+});
+if(!chats[om.id]) chats[om.id]=[];
+chats[om.id].push({role:‘customer’,name:om.name,text:‘ลูกค้าตรวจสอบสถานะออเดอร์’,ts:Date.now(),read:false});
+saveC();
+document.getElementById(‘cnotif’).classList.add(‘on’);
+},700);
+} else {
+var nm=txt.length>1&&orders.find(function(o){ return o.name.toLowerCase().includes(txt.toLowerCase()); });
+if(nm){
+setTimeout(function(){
+addCM(‘คุณ ‘+nm.name+’ ใช่ไหมคะ? 🎀\n\n📦 ‘+nm.id+’\n📊 สถานะ: ‘+SL[nm.status]+’\n📝 งาน: ‘+(nm.desc||’-’)+(nm.adminMsg?’\n\n💌 ‘+nm.adminMsg:’’)+’\n\nหากติดขัดรอแอดมินตอบภายใน 5-10 นาทีนะคะ หรือทักไลน์ @298djtan ได้เลยค่ะ 💜’,‘bot’);
+if(!chats[nm.id]) chats[nm.id]=[];
+chats[nm.id].push({role:‘customer’,name:nm.name,text:txt,ts:Date.now(),read:false});
+saveC();
+},700);
+} else {
+setTimeout(function(){ addCM(‘รับทราบค่ะ 💜 แอดมินจะตอบกลับภายใน 5-10 นาทีนะคะ หรือทักไลน์ @298djtan ได้เลยค่ะ 🎀’,‘bot’); },700);
+}
+}
+}
+function addCM(text,role){
+var b=document.getElementById(‘chBody’);
+var d=document.createElement(‘div’);
+d.className=’cm2 ’+(role===‘bot’?‘bot’:‘usr’);
+d.textContent=text;
+b.appendChild(d);
+b.scrollTop=b.scrollHeight;
+}
+
+function copyForm(id){
+var t=’’;
+if(id===1) t=‘ฟอร์มที่ 1 : ข้อมูลพื้นฐานร้าน\n\nแจ้งว่ามีโลโก้/ไม่มีโลโก้ :\n1. ชื่อร้าน :\n2. ข้อความต้อนรับหน้าเว็บ :\n3. รายละเอียดร้านโดยย่อ :\n4. สถานะร้าน/ลิงก์ชีทคิว :\n5. หมวดหมู่สินค้า/บริการ :\n6. (ว่างสำหรับเรียงเอง)\n7. (ว่างสำหรับเรียงเอง)\n8. (ว่างสำหรับเรียงเอง)\n9. (ว่างสำหรับเรียงเอง)\n10. (ว่างสำหรับเรียงเอง)\n11. (ว่างสำหรับเรียงเอง)\n12. ช่องทางติดต่อ\n• Line :\n• Facebook :\n• Instagram :’;
+else if(id===2) t=‘ราคางานป้าย/สติกเกอร์\n• โลโก้ร้าน เริ่มต้นที่ … ฿\n• 50 coin … ฿’;
+else if(id===3) t=‘ราคาแอพพรีเมียม\nชื่อแอป :\n• 1 วัน … ฿\n• 7 วัน … ฿\n• 30 วัน … ฿\n\nเงื่อนไขการใช้งาน :\n• ไม่รับเคลม\n• ไม่คืนเงินทุกกรณี\n• ใช้งานได้ 1 เครื่อง’;
+else if(id===4) t=‘ผลงานร้าน/ตัวอย่างกลุ่ม\n• Cute (แนวน่ารัก)\nลิงก์ไดร์ฟ :\n• Aurora (แนวออโรร่า)\nลิงก์ไดร์ฟ :\n• อื่นๆ\nลิงก์ไดรฟ์ :’;
+navigator.clipboard.writeText(t).then(function(){ toast(‘คัดลอกแล้วค่ะ 🩵’); });
+}
+
+// INIT
+updateShopUI(); renderAnn(); renderStats();
+document.getElementById(‘bb-home’).classList.add(‘active’);
+</script>
+
 </body>
 </html>

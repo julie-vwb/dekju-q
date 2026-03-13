@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>pinkjulieland 🎀</title>
 <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -17,6 +17,10 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Mitr',sans-serif;background:var(--bg);min-height:100vh;color:var(--txt);overflow-x:hidden;}
+
+/* แก้ไข: ป้องกัน iOS ซูมเข้าตอนกด Input (ต้องมี font-size อย่างน้อย 16px หรือล็อกสเกล) */
+input, textarea, select { font-size: 16px !important; }
+
 .sp{position:fixed;pointer-events:none;z-index:0;animation:fl 5s ease-in-out infinite;opacity:.25;}
 .sp:nth-child(1){top:3%;left:4%;font-size:18px;}
 .sp:nth-child(2){top:10%;right:6%;font-size:12px;animation-delay:1s;}
@@ -254,7 +258,6 @@ body{font-family:'Mitr',sans-serif;background:var(--bg);min-height:100vh;color:v
   <div style="flex:1;"></div>
   <span class="shop-status-pill open" id="statusPill">🟢 เปิดรับคิว</span>
 </div>
-
 <div class="drw-ov" id="dov" onclick="closeDrawer()"></div>
 <div class="drawer" id="drw">
   <button class="drw-close" onclick="closeDrawer()">✕</button>
@@ -782,7 +785,6 @@ function addOrder(){
   currentUrgency = 'normal'; setUrgency('normal');
   var ds=fd(now);
   
-  // FIXED MESSAGE TEMPLATE
   sucMsg='ลงออเดอร์เรียบร้อยนะคะคุณ '+name+' ✨\nเลขออเดอร์ของคุณคือ '+id+' นะคะ 🎀\nขอบคุณที่ไว้วางใจให้ดูแลนะคะ รองานสวยๆ ได้เลย จะรีบปั่นให้สุดฝีมือเลยค่ะ! 🔥\n\nตรวจสอบสถานะคิวได้ที่นี่น้า:\nhttps://julie-vwb.github.io/dekju-q/\n(ใส่หมายเลขออเดอร์ในช่องค้นหาได้เลยค่ะ)\n\n📅 วันที่ลงคิว: '+ds+'\n🔄 อัปเดตล่าสุด: '+ds;
   
   document.getElementById('sucTxt').textContent=sucMsg;
@@ -905,6 +907,8 @@ function addCM(text,role){
   d.className='cm2 '+(role==='bot'?'bot':'usr');
   d.textContent=text;
   b.appendChild(d);
+  // แก้ไข: เลื่อนหน้าจอแชทลงมาล่างสุด (เพื่อให้ข้อความเด้ง)
+  d.scrollIntoView({behavior: "smooth", block: "end"});
   b.scrollTop=b.scrollHeight;
 }
 
